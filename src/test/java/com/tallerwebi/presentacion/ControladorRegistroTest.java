@@ -78,7 +78,6 @@ public class ControladorRegistroTest {
     //CUARTO TEST
     @Test
     public void siLasPasswordsSonDistintasElRegistroFalla(){
-        // String segundaContraseña = "123"
         givenNoExisteUsuario();
 
         String contraseñaErronea = "123";
