@@ -26,7 +26,6 @@ public class ControladorRegistro {
                                          @RequestParam("currentStep") int currentStep) {
         ModelMap modelo = new ModelMap();
 
-        // Validar la información del primer paso
         if (currentStep == 1) {
             if (usuario.getEmail().isEmpty()) {
                 modelo.put("errorMessage", "El email es obligatorio. Por favor complete el campo para continuar");
@@ -43,13 +42,11 @@ public class ControladorRegistro {
                 return new ModelAndView("nuevo-usuario", modelo);
             }
 
-            // Si todo está bien, pasar al siguiente paso
             modelo.put("usuario", usuario);
-            modelo.put("currentStep", 2); // Ahora estamos en el paso 2
+            modelo.put("currentStep", 2);
             return new ModelAndView("nuevo-usuario", modelo);
         }
 
-        // Validar la información del segundo paso
         if (currentStep == 2) {
             if (usuario.getNombreUsuario().isEmpty()) {
                 modelo.put("errorMessage", "El nombre de usuario es obligatorio");
@@ -57,13 +54,11 @@ public class ControladorRegistro {
                 return new ModelAndView("nuevo-usuario", modelo);
             }
 
-            // Si todo está bien, pasar al siguiente paso
             modelo.put("usuario", usuario);
-            modelo.put("currentStep", 3); // Ahora estamos en el paso 3
+            modelo.put("currentStep", 3);
             return new ModelAndView("nuevo-usuario", modelo);
         }
 
-        // Validar la información del tercer paso y finalizar
         if (currentStep == 3) {
             if (usuario.getNombre().isEmpty() || usuario.getEdad() == null) {
                 modelo.put("errorMessage", "El nombre y la edad son obligatorios");
@@ -71,13 +66,9 @@ public class ControladorRegistro {
                 return new ModelAndView("nuevo-usuario", modelo);
             }
 
-            // Aquí puedes guardar el usuario en la base de datos
-
-            // Redirigir al login después de completar todos los pasos
             return new ModelAndView("redirect:/login");
         }
 
-        // Si llegamos aquí, algo salió mal
         return new ModelAndView("nuevo-usuario", modelo);
     }
 
