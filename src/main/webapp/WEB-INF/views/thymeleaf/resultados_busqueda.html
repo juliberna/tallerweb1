@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados de Búsqueda</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Boostrap core css -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
+
+    <!-- custom style -->
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/resultados.css}">
+
+    <!-- Path to jQuery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+
+    <!-- Path to Popper - it is for dropsdowns etc in bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+            integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+            crossorigin="anonymous"></script>
+
+    <!-- Path to bootsrap -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+            integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+
+<main class="main">
+    <div class="contenedor-main">
+        <h1>Results</h1>
+        <form th:action="@{/buscar}" method="get" class="form">
+            <input type="text" th:value="${query}" class="form-control pl-3" placeholder="Search books" name="query">
+            <input type="submit" value="Search" class="button">
+        </form>
+        <div class="contenedor">
+            <div th:if="${error} != null" class="error">
+                <p>Error: <span th:text="${error}"></span></p>
+            </div>
+            <div th:if="${error} == null">
+                <article class="libro" th:each="libro : ${libros}">
+                    <figure class="d-flex">
+                        <div class="col-xs-5 col-md-3 portada">
+                            <a href="">
+                                <img
+                                        src="https://contentv2.tap-commerce.com/getcover.ashx?ISBN=9788490623411&size=2&coverNumber=1&id_com=1135"
+                                        alt="Portada libro" class="img">
+                            </a>
+                        </div>
+                        <div class="col-xs-7 col-md-9 info">
+                            <figcaption>
+                                <!-- Info general del libro -->
+                                <div>
+                                    <a href="#" class="titulo"><h3 th:text="${libro.titulo}"></h3></a>
+                                    <p><strong>Author/s:</strong></p>
+                                </div>
+                                <div class="col-xs-12 text-right ">
+                                    <form id="multiSubmitForm" method="post">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-success">Want to read</button>
+                                            <button type="button"
+                                                    class="btn btn-success dropdown-toggle dropdown-toggle-split"
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <button class="dropdown-item" type="button">Reading</button>
+                                                <button class="dropdown-item" type="button">Read</button>
+                                                <button class="dropdown-item" type="button">Want to read</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </figcaption>
+                        </div>
+                    </figure>
+                </article>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

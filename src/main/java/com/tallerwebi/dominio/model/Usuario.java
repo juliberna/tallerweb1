@@ -1,9 +1,10 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.dominio.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Entity
 public class Usuario {
@@ -15,6 +16,8 @@ public class Usuario {
     private String password;
     private String rol;
     private Boolean activo = false;
+
+    private String tokenRecuperacion;
 
     public Long getId() {
         return id;
@@ -53,5 +56,13 @@ public class Usuario {
 
     public void activar() {
         activo = true;
+    }
+
+    public String getTokenRecuperacion() {
+        return tokenRecuperacion;
+    }
+
+    public void setTokenRecuperacion(String tokenRecuperacion) {
+        this.tokenRecuperacion = tokenRecuperacion;
     }
 }

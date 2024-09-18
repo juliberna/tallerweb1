@@ -1,35 +1,133 @@
-<!DOCTYPE HTML>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
 
-  <title>Taller Web I</title>
-
-  <!-- Boostrap core css -->
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
-
-  <!-- custom style -->
-  <link rel="stylesheet" th:href="@{/css/main.css}"/>
-
+    <link rel="stylesheet" href="../../../resources/core/css/home-style.css">
 </head>
-
 <body>
-
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-  <a class="navbar-brand" href="#">UNLAM</a>
+<!-- Barra de navegación -->
+<nav class="navbar">
+    <div class="nav-left">
+        <h1><a href="#">Spring</a></h1>
+    </div>
+    <div class="nav-right">
+        <ul>
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Mis libros</a></li>
+            <li><a href="#">Explorar</a></li>
+            <li><a href="#">Comunidad</a></li>
+            <li>
+                <input type="text" placeholder="Buscar libros..." class="nav-search">
+            </li>
+            <div class="profile">
+                <a href="#"><p>Usuario</p>
+                    <img src="../../../resources/core/Images/default-user.png" alt="Foto de perfil" class="profile-pic"></a>
+            </div>
+        </ul>
+    </div>
 </nav>
 
-<main role="main" class="container">
-  <div class = "container">
-    <h1>Bienvenidos a Taller Web 1</h1>
+<div class="container">
+    <section class="left-panel">
+        <div class="currently-reading">
+            <h2>Actualmente leyendo</h2>
+            <img src="../../../resources/core/Images/default-portrait3.jpg" alt="Portada del libro" class="book-cover">
+            <h3>Título del libro</h3>
+            <input type="text" placeholder="Buscar libro..." class="book-search">
+        </div>
 
-    <a href="login.html" class="btn btn-lg btn-primary btn-block">Volver</a>
-  </div>
-</main>
-<!-- /.container -->
+        <div class="collection">
+            <h2>Colección</h2>
+            <ul>
+                <li><a href="#">0 Quiero Leer</a></li>
+                <li><a href="#">2 Actualmente Leyendo</a></li>
+                <li><a href="#">5 Leídos</a></li>
+            </ul>
+        </div>
+    </section>
 
-<!-- Boostrap core js -->
-<script type="text/javascript" th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
+    <section class="recommendations">
+        <h2>Recomendaciones</h2>
+        <div class="book-recommendation">
+            <img src="../../../resources/core/Images/default-portrait4.jpg" alt="Portada del libro" class="book-cover">
+            <div class="book-details">
+                <h3>Título del libro 1</h3>
+                <p>Autor del libro 1</p>
+                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam sequi et, officia quas inventore doloremque expedita? Assumenda maxime dolores, laudantium voluptatem laboriosam ipsam eius expedita.</p>
+                <button class="want-to-read">Quiero leerlo</button>
+            </div>
+        </div>
+
+        <div class="book-recommendation">
+            <img src="../../../resources/core/Images/default-portrait2.jpg" alt="Portada del libro" class="book-cover">
+            <div class="book-details">
+                <h3>Título del libro 2</h3>
+                <p>Autor del libro 2</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur quis ad quo delectus inventore amet rem cumque eaque nostrum id vero aliquid, ratione asperiores, suscipit sunt unde voluptatem hic. Ipsum nesciunt saepe placeat facilis nemo culpa quod, hic suscipit dolores eius rerum ad obcaecati sunt magni, nobis, illo quidem cum!
+                </p>
+                <button class="want-to-read">Quiero leerlo</button>
+            </div>
+        </div>
+
+        <button class="change-suggestions">Cambiar sugerencias</button>
+    </section>
+
+    <section class="comments">
+        <div class="comment-header">
+            <h2>Publicaciones</h2>
+            <select name="filter-comments" class="filter-comments">
+                <option value="all">Todas las publicaciones</option>
+                <option value="friends">Solo amigos</option>
+            </select>
+        </div>
+
+        <!-- Comentario con sistema de likes y dislikes -->
+        <div class="user-info">
+            <img src="../../../resources/core/Images/default-user.png" alt="Avatar del usuario" class="avatar">
+            <p id="username">Usuario</p>
+        </div>
+        <div class="comment">
+
+            <div class="book-info">
+                <img src="../../../resources/core/Images/default-portrait.jpg" alt="Portada del libro" class="book-cover">
+
+            </div>
+            <div class="comment-details">
+                <p>Nombre del libro</p>
+                <div class="rating">
+                    <span>⭐⭐⭐⭐⭐</span>
+                </div>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat laboriosam eum officia, sint deleniti incidunt recusandae corporis eligendi mollitia dicta aperiam, maiores omnis reprehenderit beatae iusto? Optio soluta molestias, quam ullam provident iure facilis nostrum vitae, sint aperiam asperiores officiis quis dolorum reprehenderit consequatur. Sit mollitia amet consequuntur, excepturi, vero cum error provident minima suscipit ducimus perferendis tempora laboriosam eum.</p>
+                <div class="likes-dislikes">
+                    <button id="like-button">
+                        <span id="like-icon">👍</span>
+                        <span id="like-count">0</span> Likes
+                    </button>
+                    <button id="dislike-button">
+                        <span id="dislike-icon">👎</span>
+                        <span id="dislike-count">0</span> Dislikes
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="comment-section">
+            <h3>Deja tu comentario</h3>
+            <textarea id="comment-input" placeholder="Escribí tu comentario acá"></textarea>
+            <button id="submit-comment">Enviar</button>
+
+            <div id="comments-container">
+                <h3>Comentarios:</h3>
+                <!-- Acá se muestran los comentarios -->
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="../../../resources/core/js/home-JS.js"></script>
 </body>
 </html>
