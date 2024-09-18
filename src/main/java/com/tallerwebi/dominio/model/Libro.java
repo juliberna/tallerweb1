@@ -13,6 +13,11 @@ public class Libro {
     private Long id;
     private String titulo;
 
+    private String autor;
+    private String editorial;
+    private Rating rating;
+
+
     public Long getId() {
         return id;
     }
@@ -28,4 +33,15 @@ public class Libro {
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
+
+    public String getAutor() { return autor; }
+
+    public void setAutor(String autor) { this.autor = autor; }
+
+    public String getEditorial() { return editorial; }
+
+    public void setEditorial(String editorial) { this.editorial = editorial; }
+    public Rating getRating() { return rating; }
+
+    public void setRating(Rating rating) { this.rating = rating; }
 }
