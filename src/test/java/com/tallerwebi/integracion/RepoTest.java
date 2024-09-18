@@ -1,8 +1,9 @@
-package com.tallerwebi.integracion.config;
+package com.tallerwebi.integracion;
 
 import com.tallerwebi.dominio.Libro;
-import com.tallerwebi.dominio.RepositorioLibro;
 import com.tallerwebi.infraestructura.RepositorioLibroImpl;
+import com.tallerwebi.integracion.config.HibernateTestConfig;
+import com.tallerwebi.integracion.config.SpringWebTestConfig;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
