@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/informacionLibro.css}">
+    <title>Detalle Libro</title>
+</head>
+<body>
+
+<h1 th:text="${libro.titulo}"></h1>
+<div class="container">
+    <div class="book-info">
+        <img th:src="@{'/images/' + ${libro.imagenUrl}}" alt="Imagen del libro">
+        <p><strong>Autor:</strong> <span th:text="${libro.autor}"></span></p>
+        <p><strong>Descripción:</strong> <span th:text="${libro.descripcion}"></span></p>
+        <p><strong>Género:</strong> <span th:text="${libro.genero}"></span></p>
+    </div>
+
+    <div class="book-actions">
+        <h2>Estado:</h2>
+        <form th:action="@{/libro/cambiarEstadoDeLectura}" method="post" accept-charset="UTF-8">
+            <input type="hidden" th:value="${libro.id}" name="id"/>
+            <select name="status">
+                <option th:selected="${libro.estadoDeLectura == 'Quiero leer'}" value="Quiero leer">Quiero leer</option>
+                <option th:selected="${libro.estadoDeLectura == 'Leyendo'}" value="Leyendo">Leyendo</option>
+                <option th:selected="${libro.estadoDeLectura == 'Leído'}" value="Leído">Leído</option>
+            </select>
+            <button type="submit">Guardar</button>
+            <p><strong>Tu estado de lectura es:</strong> <span th:text="${libro.estadoDeLectura}"></span></p>
+        </form>
+    </div>
+</div>
+
+
+</body>
+</html>
