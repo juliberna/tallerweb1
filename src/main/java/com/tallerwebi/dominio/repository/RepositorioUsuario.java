@@ -1,4 +1,6 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.dominio.repository;
+
+import com.tallerwebi.dominio.model.Usuario;
 
 public interface RepositorioUsuario {
 
@@ -6,5 +8,8 @@ public interface RepositorioUsuario {
     void guardar(Usuario usuario);
     Usuario buscar(String email);
     void modificar(Usuario usuario);
+
+
+    void guardarTokenDeRecuperacion(Usuario usuario, String token);
 }
 
