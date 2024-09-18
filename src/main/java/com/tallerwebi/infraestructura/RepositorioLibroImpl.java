@@ -10,13 +10,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RepositorioLibroImpl implements RepositorioLibro {
 
-    SessionFactory sessionFactory;
+   private final SessionFactory sessionFactory;
 
     public RepositorioLibroImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-    public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -37,17 +33,6 @@ public class RepositorioLibroImpl implements RepositorioLibro {
     public void actualizarLibro(Libro libro) {
         System.out.println("Actualizando libro con ID: " + libro.getId());
         sessionFactory.getCurrentSession().saveOrUpdate(libro);
-    }
-
-    @Override
-    public String guardarLibro(Libro libro) throws LibroNoEncontrado {
-        try{
-            sessionFactory.getCurrentSession().save(libro);
-        }catch (Exception e){
-            throw new LibroNoEncontrado("error al guardar el libro con ID: " + libro.getId());
-
-        }
-        return "libro guardado";
     }
 
 
