@@ -21,6 +21,7 @@ public class ControladorInicio {
 
         this.servicioInicio = servicioInicio;
     }
+
     @RequestMapping(path = "/home", method = RequestMethod.GET)
     public ModelAndView home(ModelMap model) { return new ModelAndView("home");}
 

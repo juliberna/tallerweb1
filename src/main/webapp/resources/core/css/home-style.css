@@ -1,102 +1,8 @@
-body {
-    font-family: 'Franklin Gothic light', 'Arial Narrow', Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: block;
-    justify-content: center;
-    background-color: #f4f4f4;
-}
-
 .container {
     width: 100%;
     max-width: 1200px;
     padding: 20px;
     margin: 0 auto;
-}
-
-header {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-/* barra de navegacion */
-.navbar {
-    width: 100%;
-    background-color: #dd8686;
-    color: white;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.nav-left h1 {
-    margin: 0;
-    font-size: 24px;
-}
-.nav-left a{
-    color: #ffff;
-    font-family: 'Franklin Gothic medium', 'Arial Narrow', Arial, sans-serif;
-    text-decoration: none;
-}
-
-.nav-right ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: center;
-}
-
-.nav-right ul li {
-    margin-left: 20px;
-}
-
-.nav-right ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    transition: all 1.1s;
-}
-.nav-right ul li a:hover{
-    background-color: #333;
-    padding: 5px;
-    border: none;
-    border-radius: 5px;
-    transition: all 1.1s;
-}
-
-.nav-search {
-    padding: 5px;
-    border-radius: 5px;
-    border: none;
-}
-
-.profile a {
-    display: flex;
-    align-items: center;
-    margin-left: 3em;
-    margin-right: 5em;
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-}
-
-
-.profile p {
-    margin-right: 10px;
-    font-size: 16px;
-}
-
-.profile-pic {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
 }
 
 /* Panel de libros y colecciones */
@@ -316,6 +222,7 @@ header {
     border-radius: 4px;
     border: 1px solid #ddd;
 }
+
 select{
     border: 1px solid #333;
     border-radius: 10px;
