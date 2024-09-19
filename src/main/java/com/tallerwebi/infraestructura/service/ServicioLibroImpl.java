@@ -36,4 +36,16 @@ public class ServicioLibroImpl implements ServicioLibro {
 
         return new HashSet<>(librosObtenidos);
     }
+
+    @Override
+    public Libro obtenerIdLibro(Long id) {
+        return repositorioLibro.buscarLibro(id);
+    }
+
+    @Override
+    public void actualizarLibro(Libro libro) {
+        repositorioLibro.actualizarLibro(libro);
+    }
+
+
 }

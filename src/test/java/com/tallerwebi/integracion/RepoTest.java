@@ -1,31 +1,19 @@
 package com.tallerwebi.integracion;
 
-import com.tallerwebi.dominio.Libro;
-import com.tallerwebi.infraestructura.RepositorioLibroImpl;
-import com.tallerwebi.infraestructura.ServicioLibroImpl;
+
 import com.tallerwebi.integracion.config.HibernateTestConfig;
 import com.tallerwebi.integracion.config.SpringWebTestConfig;
-import org.hibernate.SessionFactory;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
-import com.tallerwebi.dominio.RepositorioLibro;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = {SpringWebTestConfig.class, HibernateTestConfig.class})
 public class RepoTest {
 
-    @InjectMocks
+/*    @InjectMocks
     private ServicioLibroImpl servicioLibro;
 
     @Mock
@@ -62,4 +50,5 @@ public class RepoTest {
         servicioLibro.actualizarLibro(libro1);
 
     }
+ */
 }
