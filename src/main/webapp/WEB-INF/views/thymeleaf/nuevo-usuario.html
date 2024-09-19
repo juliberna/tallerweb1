@@ -6,43 +6,74 @@
 
   <title>Taller Web I</title>
 
-  <!-- Boostrap core css -->
   <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
-
-  <!-- custom style -->
   <link rel="stylesheet" th:href="@{/css/main.css}"/>
 
 </head>
-
 <body>
-
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-  <a class="navbar-brand" href="#">UNLAM</a>
+  <a class="navbar-brand" href="#">Registrarse</a>
 </nav>
 
-<main role="main" class="container">
+<main role="main" class="container mt-5">
+  <div class="col-md-6 offset-md-3">
+    <form th:action="@{/registrar}" th:object="${usuario}" method="post">
+      <input type="hidden" name="currentStep" id="currentStep" th:value="${currentStep}">
 
-  <div class = "container">
-    <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-      <form action="#" th:action="@{/registrarme}" method="POST" th:object="${usuario}">
-        <h3 class="form-signin-heading">Nuevo Usuario</h3>
-        <hr class="colorgraph"><br>
+      <div id="step1" class="card d-none">
+        <div class="card-body">
+          <h5 class="card-title">Paso 1:</h5>
+          <div class="mb-3">
+            <label for="email" class="form-label">Correo Electrónico</label>
+            <input th:field="*{email}" type="email" class="form-control" id="email"
+                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input th:field="*{password}" type="password" class="form-control" id="password" required>
+            <small class="form-text text-muted">Debe tener al menos 8 caracteres, incluir mayúsculas y minúsculas.</small>
+          </div>
+          <div class="mb-3">
+            <label for="passwordConfirm" class="form-label">Repita la Contraseña</label>
+            <input name="passwordConfirm" type="password" class="form-control" id="passwordConfirm" required>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="nextStep(2)">Siguiente</button>
+        </div>
+      </div>
 
-        <input th:field="*{email}" id="email" class="form-control" required/>
-        <input th:field="*{password}" type="password" id="password" class="form-control" required/>
+      <div id="step2" class="card d-none">
+        <div class="card-body">
+          <h5 class="card-title">Paso 2:</h5>
+          <div class="mb-3">
+            <label for="nombreUsuario" class="form-label">Nombre de Usuario</label>
+            <input th:field="*{nombreUsuario}" type="text" class="form-control" id="nombreUsuario" required>
+          </div>
+          <button type="button" class="btn btn-secondary" onclick="prevStep(1)">Atrás</button>
+          <button type="button" class="btn btn-primary" onclick="nextStep(3)">Siguiente</button>
+        </div>
+      </div>
 
-        <button id="btn-registrarme" class="btn btn-lg btn-primary btn-block" Type="Submit">Registrarme</button>
-        <p th:if="${error != null}" class="alert alert-danger" th:text="'Error ' + ${error}">
-        </p>
-      </form>
-
-    </div>
+      <div id="step3" class="card d-none">
+        <div class="card-body">
+          <h5 class="card-title">Paso 3:</h5>
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre Completo</label>
+            <input th:field="*{nombre}" type="text" class="form-control" id="nombre" required>
+          </div>
+          <div class="mb-3">
+            <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+            <input th:field="*{fechaNacimiento}" type="date" class="form-control" id="fechaNacimiento" required>
+          </div>
+          <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Atrás</button>
+          <button type="submit" class="btn btn-success">Registrar</button>
+        </div>
+      </div>
+    </form>
   </div>
-
 </main>
-<!-- /.container -->
 
-<!-- Boostrap core js -->
-<script type="text/javascript" th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/register.js}"></script>
+
 </body>
 </html>
