@@ -105,4 +105,8 @@ public class Libro {
     public void setReseña(String reseña) {
         this.reseña = reseña;
     }
+
+    public String generarUrlWikipedia() {
+        return "https://es.wikipedia.org/wiki/" + this.autor.replace(" ", "_");
+    }
 }
