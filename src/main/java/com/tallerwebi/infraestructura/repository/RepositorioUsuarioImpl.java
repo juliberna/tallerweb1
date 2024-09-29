@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDate;
+
 @Repository("repositorioUsuario")
 public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
@@ -31,8 +33,16 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
-    public void guardar(Usuario usuario) {
-        sessionFactory.getCurrentSession().save(usuario);
+    public void guardar(String email, String password, String nombreUsuario, String nombre, LocalDate fechaNacimiento) {
+        Session session = sessionFactory.getCurrentSession();
+        Usuario usuario = new Usuario();
+        usuario.setEmail(email);
+        usuario.setPassword(password);
+        usuario.setNombreUsuario(nombreUsuario);
+        usuario.setNombre(nombre);
+        usuario.setFechaNacimiento(fechaNacimiento);
+
+        session.save(usuario);
     }
 
     @Override

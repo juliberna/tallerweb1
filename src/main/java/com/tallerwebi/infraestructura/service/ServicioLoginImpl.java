@@ -1,14 +1,17 @@
 package com.tallerwebi.infraestructura.service;
 
+
 import com.tallerwebi.dominio.repository.RepositorioUsuario;
 import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 
-@Service("servicioLogin")
+import javax.transaction.Transactional;
+import java.time.LocalDate;
+
+@Service
 @Transactional
 public class ServicioLoginImpl implements ServicioLogin {
 
@@ -25,13 +28,12 @@ public class ServicioLoginImpl implements ServicioLogin {
     }
 
     @Override
-    public void registrar(Usuario usuario) throws UsuarioExistente {
-        Usuario usuarioEncontrado = repositorioUsuario.buscarUsuario(usuario.getEmail(), usuario.getPassword());
+    public void registrar(String email, String password, String nombreUsuario, String nombre, LocalDate fechaNacimiento) throws UsuarioExistente {
+        Usuario usuarioEncontrado = repositorioUsuario.buscarUsuario(email, password);
         if(usuarioEncontrado != null){
             throw new UsuarioExistente();
         }
-        repositorioUsuario.guardar(usuario);
+        repositorioUsuario.guardar(email, password, nombreUsuario, nombre, fechaNacimiento);
     }
-
 }
 
