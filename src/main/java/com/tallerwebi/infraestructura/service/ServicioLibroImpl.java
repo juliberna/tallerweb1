@@ -47,5 +47,16 @@ public class ServicioLibroImpl implements ServicioLibro {
         repositorioLibro.actualizarLibro(libro);
     }
 
+    @Override
+    public List<Libro> buscarPorEstadoDeLectura(String estadoLectura) throws ListaVacia {
+
+        List<Libro> librosObtenidos = repositorioLibro.buscarPorEstadoDeLectura(estadoLectura);
+
+        if(librosObtenidos.isEmpty())
+            throw new ListaVacia();
+
+        return librosObtenidos;
+    }
+
 
 }

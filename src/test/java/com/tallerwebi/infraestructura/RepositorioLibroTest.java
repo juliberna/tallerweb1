@@ -55,4 +55,32 @@ public class RepositorioLibroTest {
         assertThat(librosObtenidos.get(0).getTitulo(),equalTo("Harry potter 1"));
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    public void puedoBuscarLibrosPorEstadoDeLectura() {
+        //debo poder crear y  guardar libros
+        Libro libro1 = new Libro();
+        libro1.setTitulo("Harry potter 1");
+        libro1.setEstadoDeLectura("Quiero leer");
+        sessionFactory.getCurrentSession().save(libro1);
+
+        Libro libro2 = new Libro();
+        libro2.setTitulo("Harry potter 2");
+        libro2.setEstadoDeLectura("Quiero leer");
+        sessionFactory.getCurrentSession().save(libro2);
+
+        Libro libro3 = new Libro();
+        libro3.setTitulo("Test");
+        libro3.setEstadoDeLectura("Leyendo");
+        sessionFactory.getCurrentSession().save(libro2);
+
+        //buscarlos y comparar los resultados con los libros guardados
+        List<Libro> librosObtenidos = repositorioLibro.buscarPorEstadoDeLectura("Quiero leer");
+
+        assertThat(librosObtenidos,is(not(empty())));
+        assertThat(librosObtenidos.size(),is(2));
+        assertThat(librosObtenidos.get(0).getTitulo(),equalTo("Harry potter 1"));
+    }
+
 }

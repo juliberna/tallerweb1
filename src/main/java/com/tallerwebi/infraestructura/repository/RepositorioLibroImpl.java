@@ -25,9 +25,11 @@ public class RepositorioLibroImpl implements RepositorioLibro {
     @Override
     public List<Libro> buscar(String query) {
         Session session = sessionFactory.getCurrentSession();
-        //TODO agregar busqueda por autor y genero
+        //TODO agregar busqueda por genero
         return session.createCriteria(Libro.class)
-                .add(Restrictions.ilike("titulo",query, MatchMode.ANYWHERE))
+                .add(Restrictions.disjunction()
+                        .add(Restrictions.ilike("titulo", query, MatchMode.ANYWHERE))
+                        .add(Restrictions.ilike("autor", query, MatchMode.ANYWHERE)))
                 .list();
     }
 
@@ -47,6 +49,15 @@ public class RepositorioLibroImpl implements RepositorioLibro {
     @Override
     public void actualizarLibro(Libro libro) {
         sessionFactory.getCurrentSession().saveOrUpdate(libro);
+    }
+
+    @Override
+    public List<Libro> buscarPorEstadoDeLectura(String estadoDeLectura) {
+        Session session = sessionFactory.getCurrentSession();
+
+        return session.createCriteria(Libro.class)
+                .add(Restrictions.eq("estadoDeLectura", estadoDeLectura))
+                .list();
     }
 
 }

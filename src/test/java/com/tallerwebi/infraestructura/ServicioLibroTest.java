@@ -49,14 +49,43 @@ public class ServicioLibroTest {
         assertThrows(ListaVacia.class,() -> whenBuscarLibros("error"));
     }
 
+    @Test
+    public void siElEstadoDeLecturaExisteDevuelveLosLibrosQueCoincidan() throws ListaVacia {
+        givenExistenLibrosConEstadosDeLectura();
+
+        when(repositorioLibro.buscarPorEstadoDeLectura("Quiero leer")).thenReturn(new ArrayList<>(
+                List.of(new Libro())));
+
+        List<Libro> librosObtenidos = whenBuscarLibrosPorEstadoDeLectura("Quiero leer");
+
+        thenLaBusquedaEsExitosa(librosObtenidos);
+    }
+
+    @Test
+    public void siLaListaDeLibrosObtenidosPorEstadoEstaVaciaArrojaExcepcion() {
+        givenExistenLibrosConEstadosDeLectura();
+        when(repositorioLibro.buscarPorEstadoDeLectura("error")).thenReturn(new ArrayList<>());
+        assertThrows(ListaVacia.class, () -> whenBuscarLibrosPorEstadoDeLectura("error"));
+    }
+
     private void givenExistenLibros() {
     }
+
+    private void givenExistenLibrosConEstadosDeLectura() {}
 
     private Set<Libro> whenBuscarLibros(String query) throws QueryVacia, ListaVacia {
         return servicioLibro.buscar(query);
     }
 
+    private List<Libro> whenBuscarLibrosPorEstadoDeLectura(String estadoLectura) throws ListaVacia {
+        return servicioLibro.buscarPorEstadoDeLectura(estadoLectura);
+    }
+
     private void thenLaBusquedaEsExitosa(Set<Libro> librosObtenidos) {
+        assertThat(librosObtenidos, notNullValue());
+    }
+
+    private void thenLaBusquedaEsExitosa(List<Libro> librosObtenidos) {
         assertThat(librosObtenidos, notNullValue());
     }
 
