@@ -4,6 +4,7 @@ import com.tallerwebi.dominio.model.Libro;
 import com.tallerwebi.infraestructura.service.ServicioLibro;
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.QueryVacia;
+import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
 import com.tallerwebi.presentacion.controller.ControladorLibro;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,7 +19,8 @@ import static org.mockito.Mockito.*;
 public class ControladorLibroTest {
 
     ServicioLibro servicioLibro = mock(ServicioLibro.class);
-    ControladorLibro controladorLibro = new ControladorLibro(servicioLibro);
+    ServicioUsuarioLibro servicioUsuarioLibro = mock(ServicioUsuarioLibro.class);
+    ControladorLibro controladorLibro = new ControladorLibro(servicioLibro, servicioUsuarioLibro);
 
     @Test
     public void siLaQueryDeBusquedaContieneTextoLaBusquedaEsExitosa() throws ListaVacia, QueryVacia {

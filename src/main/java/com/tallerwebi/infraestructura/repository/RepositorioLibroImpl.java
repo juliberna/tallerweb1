@@ -2,7 +2,10 @@ package com.tallerwebi.infraestructura.repository;
 
 import com.tallerwebi.dominio.excepcion.LibroNoEncontrado;
 import com.tallerwebi.dominio.model.Libro;
+import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.dominio.repository.RepositorioLibro;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
@@ -32,21 +35,18 @@ public class RepositorioLibroImpl implements RepositorioLibro {
     }
 
     @Override
-    public Libro buscarLibro(Long id) {
-        try (Session session = sessionFactory.openSession()) {
-            Libro libro = session.get(Libro.class, id);
-            if (libro == null) {
-                throw new LibroNoEncontrado("Libro no encontrado con ID: " + id);
-            }
-            return libro;
-        } catch (Exception e) {
-            throw new LibroNoEncontrado("Error al buscar el libro con ID: " + id);
-        }
+    public Libro buscarLibroPorId(Long id) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria libro = session.createCriteria(Libro.class);
+        libro.add(Restrictions.eq("id", id));
+        return (Libro) libro.uniqueResult();
     }
 
     @Override
     public void actualizarLibro(Libro libro) {
         sessionFactory.getCurrentSession().saveOrUpdate(libro);
     }
+
+
 
 }

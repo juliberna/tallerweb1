@@ -2,9 +2,11 @@ package com.tallerwebi.presentacion.controller;
 
 import com.tallerwebi.dominio.excepcion.LibroNoEncontrado;
 import com.tallerwebi.dominio.model.Libro;
+import com.tallerwebi.dominio.model.UsuarioLibro;
 import com.tallerwebi.infraestructura.service.ServicioLibro;
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.QueryVacia;
+import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,10 +24,12 @@ import java.util.Set;
 public class ControladorLibro {
 
     private ServicioLibro servicioLibro;
+    private ServicioUsuarioLibro servicioUsuarioLibro;
 
     @Autowired
-    public ControladorLibro(ServicioLibro servicioLibro) {
+    public ControladorLibro(ServicioLibro servicioLibro, ServicioUsuarioLibro servicioUsuarioLibro) {
         this.servicioLibro = servicioLibro;
+        this.servicioUsuarioLibro = servicioUsuarioLibro;
     }
 
     @RequestMapping("/buscar")
@@ -51,7 +55,9 @@ public class ControladorLibro {
     public String detalleLibro(ModelMap model, @PathVariable Long id) {
         try {
             Libro libro = servicioLibro.obtenerIdLibro(id);
+            UsuarioLibro usuarioLibro = servicioUsuarioLibro.obtenerUsuarioLibro(2L, id);
             model.addAttribute("libro", libro);
+            model.addAttribute("usuarioLibro", usuarioLibro);
             return "infoLibro";
         } catch (LibroNoEncontrado e) {
             model.addAttribute("error", e.getMessage());
@@ -62,19 +68,18 @@ public class ControladorLibro {
     @RequestMapping(value = "/cambiarEstadoDeLectura", method = RequestMethod.POST)
     public String cambiarEstadoDeLectura(ModelMap model, @RequestParam Long id, @RequestParam String status, RedirectAttributes redirectAttributes) {
         try {
-            Libro libro = servicioLibro.obtenerIdLibro(id);
-            libro.setEstadoDeLectura(status);
-            servicioLibro.actualizarLibro(libro);
+            // Actualizar o crear la relación entre usuario y libro con el nuevo estado de lectura
+            servicioUsuarioLibro.crearOActualizarUsuarioLibro(2L, id, status, null, null);
 
             if (status.equals("Leído")) {
-                return "redirect:/libro/resena/" + id;
+                return "redirect:/libro/resena/" + id + "?usuarioId=" + 2L;
             }
 
             redirectAttributes.addFlashAttribute("mensaje", "Tu estado de lectura es: " + status);
-            return "redirect:/libro/detalle/" + id;
-        } catch (LibroNoEncontrado e) {
+            return "redirect:/libro/detalle/" + id + "?usuarioId=" + 2L;
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/libro/detalle/" + id;
+            return "redirect:/libro/detalle/" + id + "?usuarioId=" + 2L;
         }
     }
 
@@ -93,10 +98,7 @@ public class ControladorLibro {
     @RequestMapping(value = "/guardarResena", method = RequestMethod.POST)
     public String guardarResena(ModelMap model, @RequestParam Long id, @RequestParam Integer puntuacion, @RequestParam String reseña) {
         try {
-            Libro libro = servicioLibro.obtenerIdLibro(id);
-            libro.setPuntuacion(puntuacion);
-            libro.setReseña(reseña);
-            servicioLibro.actualizarLibro(libro);
+            servicioUsuarioLibro.crearOActualizarUsuarioLibro(2L, id, "Leído", puntuacion, reseña);
             return "redirect:/libro/detalle/" + id;
         } catch (LibroNoEncontrado e) {
             model.addAttribute("error", e.getMessage());

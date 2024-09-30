@@ -35,6 +35,22 @@ img {
     flex: 1;
 }
 
+.book-interactions {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.review-section, .book-actions {
+    flex: 1;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 .book-info p {
     font-size: 1.2em;
     margin-bottom: 15px;
@@ -82,19 +98,56 @@ button {
 button:hover {
     background-color: #2c6a3c;
 }
+.navbar1 {
+    background-color: #f5f5f5;
+    padding: 15px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
+.navbar-container2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
+.navbar-title2 {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #3b8052;
+}
 
+.navbar-links2 {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
 
+.navbar-links2 li {
+    margin: 0;
+}
 
+.navbar-links2 a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
 
+.navbar-links2 a:hover {
+    color: #3b8052;
+}
 
+.navbar-search3 {
+    display: flex;
+}
 
+.navbar-search3 input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 250px;
+}
 
-
-
-
-
-
-
-
+.navbar-search3 input::placeholder {
+    color: #bbb;
+}

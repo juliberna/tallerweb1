@@ -10,4 +10,5 @@ public interface ServicioLibro {
     Set<Libro> buscar(String query) throws QueryVacia, ListaVacia;
     Libro obtenerIdLibro(Long id);
     void actualizarLibro(Libro libro);
+
 }
