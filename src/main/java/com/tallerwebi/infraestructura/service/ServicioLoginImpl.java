@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.Period;
 
 @Service
 @Transactional
@@ -34,6 +35,14 @@ public class ServicioLoginImpl implements ServicioLogin {
             throw new UsuarioExistente();
         }
         repositorioUsuario.guardar(email, password, nombreUsuario, nombre, fechaNacimiento);
+    }
+
+    public static int calcularEdad(LocalDate fechaNacimiento) {
+        if (fechaNacimiento == null) {
+            throw new IllegalArgumentException("La fecha de nacimiento no puede ser nula.");
+        }
+        LocalDate fechaActual = LocalDate.now();
+        return Period.between(fechaNacimiento, fechaActual).getYears();
     }
 }
 

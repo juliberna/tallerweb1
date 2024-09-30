@@ -36,11 +36,14 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     public void guardar(String email, String password, String nombreUsuario, String nombre, LocalDate fechaNacimiento) {
         Session session = sessionFactory.getCurrentSession();
         Usuario usuario = new Usuario();
+
         usuario.setEmail(email);
         usuario.setPassword(password);
         usuario.setNombreUsuario(nombreUsuario);
         usuario.setNombre(nombre);
         usuario.setFechaNacimiento(fechaNacimiento);
+        usuario.setRol("Usuario");
+        usuario.setActivo(true);
 
         session.save(usuario);
     }
