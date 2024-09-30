@@ -66,7 +66,7 @@ public class RepositorioLibroTest {
         sessionFactory.getCurrentSession().save(libro);
 
         Long idLibroGuardado = libro.getId();
-        Libro libroObtenido = repositorioLibro.buscarLibro(idLibroGuardado);
+        Libro libroObtenido = repositorioLibro.buscarLibroPorId(idLibroGuardado);
 
 
         assertThat(libroObtenido, is(notNullValue()));
@@ -88,7 +88,7 @@ public class RepositorioLibroTest {
 
         repositorioLibro.actualizarLibro(libro);
 
-        Libro libroActualizado = repositorioLibro.buscarLibro(idLibro);
+        Libro libroActualizado = repositorioLibro.buscarLibroPorId(idLibro);
 
         assertThat(libroActualizado.getTitulo(), is("Cien años de soledad - Edición Revisada"));
     }

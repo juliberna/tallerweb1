@@ -39,7 +39,7 @@ public class ServicioLibroImpl implements ServicioLibro {
 
     @Override
     public Libro obtenerIdLibro(Long id) {
-        Libro libro = repositorioLibro.buscarLibro(id);
+        Libro libro = repositorioLibro.buscarLibroPorId(id);
         if (libro == null) {
             throw new LibroNoEncontrado("Libro no encontrado con ID: " + id);
         }

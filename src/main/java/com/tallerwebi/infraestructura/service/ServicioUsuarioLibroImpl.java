@@ -45,7 +45,7 @@ public class ServicioUsuarioLibroImpl implements ServicioUsuarioLibro {
 
             // Obtengo las entidades Usuario y Libro
             Usuario usuario = repositorioUsuario.buscarUsuarioPorId(usuarioId);
-            Libro libro = repositorioLibro.buscarLibro(libroId);
+            Libro libro = repositorioLibro.buscarLibroPorId(libroId);
 
             if (usuario == null || libro == null) {
                 throw new IllegalArgumentException("Usuario o Libro no encontrado.");

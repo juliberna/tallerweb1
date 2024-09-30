@@ -58,7 +58,7 @@ public class ServicioLibroTest {
         Long idLibro = 1L;
         Libro libroMock = new Libro();
         libroMock.setId(idLibro);
-        when(repositorioLibro.buscarLibro(idLibro)).thenReturn(libroMock);
+        when(repositorioLibro.buscarLibroPorId(idLibro)).thenReturn(libroMock);
 
         //when
         Libro libroObtenido = servicioLibro.obtenerIdLibro(idLibro);
@@ -71,7 +71,7 @@ public class ServicioLibroTest {
     @Test
     public void siElLibroNoExisteLanzaExcepcionLibroNoEncontrado(){
         Long idLibro = 1L;
-        when(repositorioLibro.buscarLibro(idLibro)).thenReturn(null);
+        when(repositorioLibro.buscarLibroPorId(idLibro)).thenReturn(null);
 
         assertThrows(LibroNoEncontrado.class, () -> servicioLibro.obtenerIdLibro(idLibro));
     }
