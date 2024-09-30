@@ -39,7 +39,7 @@ public class ServicioLibroImpl implements ServicioLibro {
 
     @Override
     public Libro obtenerIdLibro(Long id) {
-        Libro libro = repositorioLibro.buscarLibroPorId(id);
+        Libro libro = repositorioLibro.buscarLibro(id);
         if (libro == null) {
             throw new LibroNoEncontrado("Libro no encontrado con ID: " + id);
         }
@@ -49,6 +49,17 @@ public class ServicioLibroImpl implements ServicioLibro {
     @Override
     public void actualizarLibro(Libro libro) {
         repositorioLibro.actualizarLibro(libro);
+    }
+
+    @Override
+    public List<Libro> buscarPorEstadoDeLectura(String estadoLectura) throws ListaVacia {
+
+        List<Libro> librosObtenidos = repositorioLibro.buscarPorEstadoDeLectura(estadoLectura);
+
+        if(librosObtenidos.isEmpty())
+            throw new ListaVacia();
+
+        return librosObtenidos;
     }
 
 

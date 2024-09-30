@@ -1,5 +1,6 @@
 package com.tallerwebi.infraestructura;
 
+import com.tallerwebi.dominio.excepcion.LibroNoEncontrado;
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.QueryVacia;
 import com.tallerwebi.dominio.model.Libro;
@@ -13,7 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static net.bytebuddy.matcher.ElementMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -48,6 +51,46 @@ public class ServicioLibroTest {
         when(repositorioLibro.buscar("error")).thenReturn(new ArrayList<>());
         assertThrows(ListaVacia.class,() -> whenBuscarLibros("error"));
     }
+
+    @Test
+    public void siElLibroExisteSeDevuelveExitosamente(){
+        //given
+        Long idLibro = 1L;
+        Libro libroMock = new Libro();
+        libroMock.setId(idLibro);
+        when(repositorioLibro.buscarLibro(idLibro)).thenReturn(libroMock);
+
+        //when
+        Libro libroObtenido = servicioLibro.obtenerIdLibro(idLibro);
+
+        //then
+        assertThat(libroObtenido, notNullValue());
+        assertThat(libroObtenido.getId(), equalTo(idLibro));
+    }
+
+    @Test
+    public void siElLibroNoExisteLanzaExcepcionLibroNoEncontrado(){
+        Long idLibro = 1L;
+        when(repositorioLibro.buscarLibro(idLibro)).thenReturn(null);
+
+        assertThrows(LibroNoEncontrado.class, () -> servicioLibro.obtenerIdLibro(idLibro));
+    }
+
+    @Test
+    public void siElLibroSePuedeActualizarSeDevuelveExitosamente(){
+        //given
+        Long idLibro = 1L;
+        Libro libroMock = new Libro();
+        libroMock.setId(idLibro);
+        libroMock.setTitulo("amor");
+
+        //when
+        servicioLibro.actualizarLibro(libroMock);
+
+        //then
+        Mockito.verify(repositorioLibro).actualizarLibro(libroMock);
+    }
+
 
     private void givenExistenLibros() {
     }
