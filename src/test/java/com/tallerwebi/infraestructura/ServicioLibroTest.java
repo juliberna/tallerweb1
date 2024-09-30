@@ -1,5 +1,6 @@
 package com.tallerwebi.infraestructura;
 
+import com.tallerwebi.dominio.excepcion.LibroNoEncontrado;
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.QueryVacia;
 import com.tallerwebi.dominio.model.Libro;
@@ -13,7 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static net.bytebuddy.matcher.ElementMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -50,42 +53,53 @@ public class ServicioLibroTest {
     }
 
     @Test
-    public void siElEstadoDeLecturaExisteDevuelveLosLibrosQueCoincidan() throws ListaVacia {
-        givenExistenLibrosConEstadosDeLectura();
+    public void siElLibroExisteSeDevuelveExitosamente(){
+        //given
+        Long idLibro = 1L;
+        Libro libroMock = new Libro();
+        libroMock.setId(idLibro);
+        when(repositorioLibro.buscarLibroPorId(idLibro)).thenReturn(libroMock);
 
-        when(repositorioLibro.buscarPorEstadoDeLectura("Quiero leer")).thenReturn(new ArrayList<>(
-                List.of(new Libro())));
+        //when
+        Libro libroObtenido = servicioLibro.obtenerIdLibro(idLibro);
 
-        List<Libro> librosObtenidos = whenBuscarLibrosPorEstadoDeLectura("Quiero leer");
-
-        thenLaBusquedaEsExitosa(librosObtenidos);
+        //then
+        assertThat(libroObtenido, notNullValue());
+        assertThat(libroObtenido.getId(), equalTo(idLibro));
     }
 
     @Test
-    public void siLaListaDeLibrosObtenidosPorEstadoEstaVaciaArrojaExcepcion() {
-        givenExistenLibrosConEstadosDeLectura();
-        when(repositorioLibro.buscarPorEstadoDeLectura("error")).thenReturn(new ArrayList<>());
-        assertThrows(ListaVacia.class, () -> whenBuscarLibrosPorEstadoDeLectura("error"));
+    public void siElLibroNoExisteLanzaExcepcionLibroNoEncontrado(){
+        Long idLibro = 1L;
+        when(repositorioLibro.buscarLibroPorId(idLibro)).thenReturn(null);
+
+        assertThrows(LibroNoEncontrado.class, () -> servicioLibro.obtenerIdLibro(idLibro));
     }
+
+    @Test
+    public void siElLibroSePuedeActualizarSeDevuelveExitosamente(){
+        //given
+        Long idLibro = 1L;
+        Libro libroMock = new Libro();
+        libroMock.setId(idLibro);
+        libroMock.setTitulo("amor");
+
+        //when
+        servicioLibro.actualizarLibro(libroMock);
+
+        //then
+        Mockito.verify(repositorioLibro).actualizarLibro(libroMock);
+    }
+
 
     private void givenExistenLibros() {
     }
-
-    private void givenExistenLibrosConEstadosDeLectura() {}
 
     private Set<Libro> whenBuscarLibros(String query) throws QueryVacia, ListaVacia {
         return servicioLibro.buscar(query);
     }
 
-    private List<Libro> whenBuscarLibrosPorEstadoDeLectura(String estadoLectura) throws ListaVacia {
-        return servicioLibro.buscarPorEstadoDeLectura(estadoLectura);
-    }
-
     private void thenLaBusquedaEsExitosa(Set<Libro> librosObtenidos) {
-        assertThat(librosObtenidos, notNullValue());
-    }
-
-    private void thenLaBusquedaEsExitosa(List<Libro> librosObtenidos) {
         assertThat(librosObtenidos, notNullValue());
     }
 

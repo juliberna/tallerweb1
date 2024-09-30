@@ -8,8 +8,8 @@ public interface RepositorioUsuario {
     void guardar(Usuario usuario);
     Usuario buscar(String email);
     void modificar(Usuario usuario);
-
-
+    Usuario buscarUsuarioPorId(Long id);
     void guardarTokenDeRecuperacion(Usuario usuario, String token);
+    void guardarUsuario(Usuario usuario);
 }
 

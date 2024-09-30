@@ -1,10 +1,9 @@
 package com.tallerwebi.dominio.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Usuario {
@@ -18,6 +17,9 @@ public class Usuario {
     private Boolean activo = false;
 
     private String tokenRecuperacion;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<UsuarioLibro> usuarioLibros = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -65,4 +67,5 @@ public class Usuario {
     public void setTokenRecuperacion(String tokenRecuperacion) {
         this.tokenRecuperacion = tokenRecuperacion;
     }
+
 }
