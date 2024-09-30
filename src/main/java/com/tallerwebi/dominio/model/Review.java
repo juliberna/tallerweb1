@@ -1,19 +1,40 @@
 package com.tallerwebi.dominio.model;
 
 
-import java.util.TreeSet;
+import javax.persistence.*;
 
+import java.util.List;
+
+
+@Entity
 public class Review extends Publicacion {
 
-    private Rating rating;
-    private Libro libro;
-    TreeSet<Comentario> comentarios;
 
-    public Review(Usuario usuario, String textoComentario, Rating rating) {
-        super(usuario, textoComentario);
-        this.rating = rating;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+    @Column(nullable = false, name = "rating")
+    private Rating rating;
+
+    @ManyToOne
+    @JoinColumn(name = "libro_id")
+    private Libro libro;
+
+    public Review() {
+        super();
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public Libro getLibro() {
+        return libro;
+    }
+
+    public void setLibro(Libro libro) {
+        this.libro = libro;
+    }
 
     public Rating getRating() {
         return rating;

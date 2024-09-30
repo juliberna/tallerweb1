@@ -13,7 +13,7 @@ import javax.management.Query;
 import java.util.List;
 import java.util.TreeSet;
 
-@Repository("repositorioReview")
+@Repository
 public class RepositorioReviewImpl implements RepositorioReview {
 
      SessionFactory sessionFactory;
@@ -45,11 +45,11 @@ public class RepositorioReviewImpl implements RepositorioReview {
 
     @Override
     public List<Review> getReviewsDeAmigos() {
-       /*
+
         Session session = sessionFactory.getCurrentSession();
         return session.createCriteria(Review.class).list();
-        */
-        return null;
+
+
 
     }
 
