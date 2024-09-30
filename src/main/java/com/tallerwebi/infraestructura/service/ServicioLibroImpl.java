@@ -1,8 +1,8 @@
 package com.tallerwebi.infraestructura.service;
 
+import com.tallerwebi.dominio.excepcion.LibroNoEncontrado;
 import com.tallerwebi.dominio.model.Libro;
 import com.tallerwebi.dominio.repository.RepositorioLibro;
-import com.tallerwebi.infraestructura.service.ServicioLibro;
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.QueryVacia;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,4 +36,31 @@ public class ServicioLibroImpl implements ServicioLibro {
 
         return new HashSet<>(librosObtenidos);
     }
+
+    @Override
+    public Libro obtenerIdLibro(Long id) {
+        Libro libro = repositorioLibro.buscarLibroPorId(id);
+        if (libro == null) {
+            throw new LibroNoEncontrado("Libro no encontrado con ID: " + id);
+        }
+        return libro;
+    }
+
+    @Override
+    public void actualizarLibro(Libro libro) {
+        repositorioLibro.actualizarLibro(libro);
+    }
+
+    @Override
+    public List<Libro> buscarPorEstadoDeLectura(String estadoLectura) throws ListaVacia {
+
+        List<Libro> librosObtenidos = repositorioLibro.buscarPorEstadoDeLectura(estadoLectura);
+
+        if(librosObtenidos.isEmpty())
+            throw new ListaVacia();
+
+        return librosObtenidos;
+    }
+
+
 }

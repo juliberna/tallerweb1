@@ -31,22 +31,22 @@
 
 <main class="main">
     <div class="contenedor-main">
-        <h1>Results</h1>
-        <form th:action="@{/buscar}" method="get" class="form">
-            <input type="text" th:value="${query}" class="form-control pl-3" placeholder="Search books" name="query">
-            <input type="submit" value="Search" class="button">
+        <h1>Resultados</h1>
+        <form th:action="@{/libro/buscar}" method="get" class="form">
+            <input type="text" th:value="${query}" class="form-control pl-3" placeholder="Buscar libros" name="query">
+            <input type="submit" value="Buscar" class="button">
         </form>
         <div class="contenedor">
-            <div th:if="${error} != null" class="error">
-                <p>Error: <span th:text="${error}"></span></p>
+            <div th:if="${error} != null" class="alert alert-danger">
+                <p><strong>Error:</strong> <span th:text="${error}"></span></p>
             </div>
-            <div th:if="${error} == null">
+            <div th:if="${libros} != null">
                 <article class="libro" th:each="libro : ${libros}">
                     <figure class="d-flex">
                         <div class="col-xs-5 col-md-3 portada">
-                            <a href="">
+                            <a th:href="@{/libro/detalle/{id}(id=${libro.id})}">
                                 <img
-                                        src="https://contentv2.tap-commerce.com/getcover.ashx?ISBN=9788490623411&size=2&coverNumber=1&id_com=1135"
+                                        th:src="${libro.imagenUrl}"
                                         alt="Portada libro" class="img">
                             </a>
                         </div>
@@ -54,21 +54,23 @@
                             <figcaption>
                                 <!-- Info general del libro -->
                                 <div>
-                                    <a href="#" class="titulo"><h3 th:text="${libro.titulo}"></h3></a>
-                                    <p><strong>Author/s:</strong></p>
+                                    <a th:href="@{/libro/detalle/{id}(id=${libro.id})}" class="enlace"><h3 th:text="${libro.titulo}"></h3></a>
+                                    <p>Autor: <a th:href="${libro.generarUrlWikipedia()}" th:text="${libro.autor}" target="_blank" class="enlace"></a></p>
                                 </div>
                                 <div class="col-xs-12 text-right ">
-                                    <form id="multiSubmitForm" method="post">
+                                    <form th:action="@{/libro/cambiarEstadoDeLectura}" method="post" accept-charset="UTF-8">
+                                        <input type="hidden" th:name="id" th:value="${libro.id}" />
+
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-success">Want to read</button>
+                                            <button type="submit" name="status" value="Quiero leer" class="btn btn-success">Quiero leer</button>
                                             <button type="button"
                                                     class="btn btn-success dropdown-toggle dropdown-toggle-split"
                                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             </button>
                                             <div class="dropdown-menu">
-                                                <button class="dropdown-item" type="button">Reading</button>
-                                                <button class="dropdown-item" type="button">Read</button>
-                                                <button class="dropdown-item" type="button">Want to read</button>
+                                                <button class="dropdown-item" type="submit" name="status" value="Leyendo">Leyendo</button>
+                                                <button class="dropdown-item" type="submit" name="status" value="Leído">Leído</button>
+                                                <button class="dropdown-item" type="submit" name="status" value="Quiero leer">Quiero leer</button>
                                             </div>
                                         </div>
                                     </form>

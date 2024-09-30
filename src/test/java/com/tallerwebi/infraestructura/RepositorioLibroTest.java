@@ -1,7 +1,10 @@
 package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.model.Libro;
+import com.tallerwebi.dominio.model.Usuario;
+import com.tallerwebi.dominio.model.UsuarioLibro;
 import com.tallerwebi.dominio.repository.RepositorioLibro;
+import com.tallerwebi.dominio.repository.RepositorioUsuarioLibro;
 import com.tallerwebi.integracion.config.HibernateTestConfig;
 import com.tallerwebi.integracion.config.SpringWebTestConfig;
 import org.hibernate.SessionFactory;
@@ -13,9 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -29,6 +30,7 @@ public class RepositorioLibroTest {
 
     @Autowired
     private RepositorioLibro repositorioLibro;
+
 
     @Test
     @Transactional
@@ -54,5 +56,43 @@ public class RepositorioLibroTest {
         assertThat(librosObtenidos.size(),is(2));
         assertThat(librosObtenidos.get(0).getTitulo(),equalTo("Harry potter 1"));
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void queSePuedaBuscarLibrosPorId(){
+        Libro libro = new Libro();
+        libro.setTitulo("Cien años de soledad");
+        sessionFactory.getCurrentSession().save(libro);
+
+        Long idLibroGuardado = libro.getId();
+        Libro libroObtenido = repositorioLibro.buscarLibroPorId(idLibroGuardado);
+
+
+        assertThat(libroObtenido, is(notNullValue()));
+        assertThat(libroObtenido.getTitulo(), is("Cien años de soledad"));
+        assertThat(libroObtenido.getId(), is(idLibroGuardado));
+
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void queSePuedaActualizarUnLibro(){
+        Libro libro = new Libro();
+        libro.setTitulo("Cien años de soledad");
+        sessionFactory.getCurrentSession().save(libro);
+
+        Long idLibro = libro.getId();
+        libro.setTitulo("Cien años de soledad - Edición Revisada");
+
+        repositorioLibro.actualizarLibro(libro);
+
+        Libro libroActualizado = repositorioLibro.buscarLibroPorId(idLibro);
+
+        assertThat(libroActualizado.getTitulo(), is("Cien años de soledad - Edición Revisada"));
+    }
+
+
 
 }
