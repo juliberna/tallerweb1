@@ -14,9 +14,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Enumeration;
 import java.util.Set;
 
 @Controller
@@ -54,8 +59,13 @@ public class ControladorLibro {
     @RequestMapping(value = "/detalle/{id}" , method = RequestMethod.GET)
     public String detalleLibro(ModelMap model, @PathVariable Long id) {
         try {
+            ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+            HttpServletRequest request = attr.getRequest();
+            HttpSession session = request.getSession();
+            Long userId = (Long) session.getAttribute("USERID");
+
             Libro libro = servicioLibro.obtenerIdLibro(id);
-            UsuarioLibro usuarioLibro = servicioUsuarioLibro.obtenerUsuarioLibro(2L, id);
+            UsuarioLibro usuarioLibro = servicioUsuarioLibro.obtenerUsuarioLibro(userId, id);
             model.addAttribute("libro", libro);
             model.addAttribute("usuarioLibro", usuarioLibro);
             return "infoLibro";
@@ -66,20 +76,25 @@ public class ControladorLibro {
     }
 
     @RequestMapping(value = "/cambiarEstadoDeLectura", method = RequestMethod.POST)
-    public String cambiarEstadoDeLectura(ModelMap model, @RequestParam Long id, @RequestParam String status, RedirectAttributes redirectAttributes) {
-        try {
+    public String cambiarEstadoDeLectura( ModelMap model, @RequestParam Long id, @RequestParam String status, RedirectAttributes redirectAttributes) {
 
-            servicioUsuarioLibro.crearOActualizarUsuarioLibro(2L, id, status, null, null);
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = attr.getRequest();
+        HttpSession session = request.getSession();
+        Long userId = (Long) session.getAttribute("USERID");
+        try {
+            // Actualizar o crear la relación entre usuario y libro con el nuevo estado de lectura
+            servicioUsuarioLibro.crearOActualizarUsuarioLibro(userId, id, status, null, null);
 
             if (status.equals("Leído")) {
-                return "redirect:/libro/resena/" + id + "?usuarioId=" + 2L;
+                return "redirect:/libro/resena/" + id + "?usuarioId=" + userId;
             }
 
             redirectAttributes.addFlashAttribute("mensaje", "Tu estado de lectura es: " + status);
-            return "redirect:/libro/detalle/" + id + "?usuarioId=" + 2L;
+            return "redirect:/libro/detalle/" + id + "?usuarioId=" + userId;
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/libro/detalle/" + id + "?usuarioId=" + 2L;
+            return "redirect:/libro/detalle/" + id + "?usuarioId=" + userId;
         }
     }
 
@@ -98,7 +113,11 @@ public class ControladorLibro {
     @RequestMapping(value = "/guardarResena", method = RequestMethod.POST)
     public String guardarResena(ModelMap model, @RequestParam Long id, @RequestParam Integer puntuacion, @RequestParam String reseña) {
         try {
-            servicioUsuarioLibro.crearOActualizarUsuarioLibro(2L, id, "Leído", puntuacion, reseña);
+            ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+            HttpServletRequest request = attr.getRequest();
+            HttpSession session = request.getSession();
+            Long userId = (Long) session.getAttribute("USERID");
+            servicioUsuarioLibro.crearOActualizarUsuarioLibro(userId, id, "Leído", puntuacion, reseña);
             return "redirect:/libro/detalle/" + id;
         } catch (LibroNoEncontrado e) {
             model.addAttribute("error", e.getMessage());
