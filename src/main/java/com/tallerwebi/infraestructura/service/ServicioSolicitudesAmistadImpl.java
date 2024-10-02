@@ -26,7 +26,7 @@ public class ServicioSolicitudesAmistadImpl implements ServicioSolicitudesAmista
 
         } else {
             usuario.agregarAmigo(friend);
-            repositorioUsuario.guardar(usuario);
+            repositorioUsuario.guardarUsuario(usuario);
         }
     }
 }

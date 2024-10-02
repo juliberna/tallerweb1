@@ -1,33 +1,54 @@
 package com.tallerwebi.presentacion.controller;
 
+import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import com.tallerwebi.dominio.model.Usuario;
+import com.tallerwebi.infraestructura.service.ServicioLogin;
+import com.tallerwebi.infraestructura.service.ServicioLoginImpl;
+import net.bytebuddy.asm.Advice;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
 
 @Controller
+@RequestMapping("/usuario")
 public class ControladorRegistro {
 
-    public ModelAndView registrar(String email, String contraseña, String segundaContraseña) {
-        ModelMap modelo = new ModelMap();
+    private final ServicioLogin servicioLogin;
 
-        if(email.isEmpty()) {
-            modelo.put("error", "el email es obligatorio. Por favor complete el campo para continuar");
-        }
-        if (contraseña.isEmpty() || segundaContraseña.isEmpty()) {
-            modelo.put("error", "la contraseña es obligatoria. Por favor complete el campo para continuar");
-        }
-
-        if(!contraseña.equals(segundaContraseña)){
-            modelo.put("error", "las contraseñas deben coincidir. Intente nuevamente");
-        }
-
-        if(!modelo.isEmpty()){ //si el modelo no esta vacio, osea que por lo menos se le paso como parametro un error, se muestra la pantalla de registro con los errores.
-            return new ModelAndView("registro", modelo);
-        }
-
-        return new ModelAndView("redirect:/login");
+    @Autowired
+    public ControladorRegistro(ServicioLogin servicioLogin) {
+        this.servicioLogin = servicioLogin;
     }
 
+    @GetMapping("/mostrarRegistro")
+    public String mostrarFormularioRegistro(Model model) {
+        model.addAttribute("usuario", new Usuario());
+        return "nuevo-usuario";
+    }
+
+    @RequestMapping(value = "/guardar", method = RequestMethod.POST)
+    public String registrarUsuario(@RequestParam String email, @RequestParam String password, @RequestParam String nombreUsuario, @RequestParam String nombre, @RequestParam String fechaNacimiento, HttpSession session) {
+        try {
+            System.out.println(email);
+            System.out.println(password);
+            System.out.println(nombreUsuario);
+            System.out.println(nombre);
+            System.out.println(fechaNacimiento);
+            LocalDate fechaNac = LocalDate.parse(fechaNacimiento);
+            servicioLogin.registrar(email, password, nombreUsuario, nombre, fechaNac);
+
+            Usuario usuario = servicioLogin.buscar(email);
+            session.setAttribute("USERID", usuario.getId());
+            Long userId = (Long) session.getAttribute("USERID");
+            return "redirect:/onboarding/mostrarOnboarding" + "/" + userId;
+        } catch (UsuarioExistente e) {
+            return "nuevo-usuario";
+        }
+    }
 
 }
-

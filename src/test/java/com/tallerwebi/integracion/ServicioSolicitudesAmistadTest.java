@@ -47,7 +47,7 @@ public class ServicioSolicitudesAmistadTest {
 
         assertTrue(usuario1.getAmigos().contains(usuario2));
 
-        verify(usuarioRepositorio).guardar(usuario1);
+        verify(usuarioRepositorio).guardarUsuario(usuario1);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class ServicioSolicitudesAmistadTest {
 
         servicioSolicitudesAmistad.agregarAmigo(id1, id2);
 
-        verify(usuarioRepositorio, never()).guardar(any(Usuario.class));
+        verify(usuarioRepositorio, never()).guardarUsuario(any(Usuario.class));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class ServicioSolicitudesAmistadTest {
 
         servicioSolicitudesAmistad.agregarAmigo(id1, id2);
 
-        verify(usuarioRepositorio, never()).guardar(any(Usuario.class));
+        verify(usuarioRepositorio, never()).guardarUsuario(any(Usuario.class));
     }
 
     @Test
@@ -99,6 +99,6 @@ public class ServicioSolicitudesAmistadTest {
 
         servicioSolicitudesAmistad.agregarAmigo(id1, id2);
 
-        verify(usuarioRepositorio, never()).guardar(any(Usuario.class));
+        verify(usuarioRepositorio, never()).guardarUsuario(any(Usuario.class));
     }
 }

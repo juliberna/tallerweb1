@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 
-@Service("servicioLogin")
+@Service
 @Transactional
 public class ServicioLoginImpl implements ServicioLogin {
 
@@ -20,18 +21,18 @@ public class ServicioLoginImpl implements ServicioLogin {
     }
 
     @Override
-    public Usuario consultarUsuario (String email, String password) {
+    public Usuario consultarUsuario(String email, String password) {
         return repositorioUsuario.buscarUsuario(email, password);
     }
 
     @Override
-    public void registrar(Usuario usuario) throws UsuarioExistente {
-        Usuario usuarioEncontrado = repositorioUsuario.buscarUsuario(usuario.getEmail(), usuario.getPassword());
-        if(usuarioEncontrado != null){
-            throw new UsuarioExistente();
-        }
-        repositorioUsuario.guardar(usuario);
+    public void registrar(String email, String password, String nombreUsuario, String nombre, LocalDate fechaNacimiento) throws UsuarioExistente, IllegalArgumentException {
+        repositorioUsuario.guardar(email, password, nombreUsuario, nombre, fechaNacimiento);
     }
 
+    @Override
+    public Usuario buscar(String email) {
+        return repositorioUsuario.buscar(email);
+    }
 }
 

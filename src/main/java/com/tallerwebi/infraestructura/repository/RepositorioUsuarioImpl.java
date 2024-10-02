@@ -1,10 +1,9 @@
 package com.tallerwebi.infraestructura.repository;
 
-import com.tallerwebi.dominio.model.Libro;
+import com.tallerwebi.dominio.model.*;
 import com.tallerwebi.dominio.repository.RepositorioUsuario;
 import com.tallerwebi.dominio.model.Usuario;
 import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -13,14 +12,19 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDate;
+import java.util.List;
+
 @Repository("repositorioUsuario")
 public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
+    private final RepositorioOnboardingImpl repositorioOnboarding;
     private SessionFactory sessionFactory;
 
     @Autowired
-    public RepositorioUsuarioImpl(SessionFactory sessionFactory){
+    public RepositorioUsuarioImpl(SessionFactory sessionFactory, RepositorioOnboardingImpl repositorioOnboarding){
         this.sessionFactory = sessionFactory;
+        this.repositorioOnboarding = repositorioOnboarding;
     }
 
     @Override
@@ -34,8 +38,19 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
-    public void guardar(Usuario usuario) {
-        sessionFactory.getCurrentSession().save(usuario);
+    public void guardar(String email, String password, String nombreUsuario, String nombre, LocalDate fechaNacimiento) {
+        Session session = sessionFactory.getCurrentSession();
+        Usuario usuario = new Usuario();
+
+        usuario.setEmail(email);
+        usuario.setPassword(password);
+        usuario.setNombreUsuario(nombreUsuario);
+        usuario.setNombre(nombre);
+        usuario.setFechaNacimiento(fechaNacimiento);
+        usuario.setRol("Usuario");
+        usuario.setActivo(true);
+
+        session.save(usuario);
     }
 
     @Override
@@ -72,10 +87,27 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
+    public void guardarGeneros(Long usuarioId, List<Long> generos) {
+        Usuario usuario = buscarUsuarioPorId(usuarioId);
+
+        for (Long generoId : generos) {
+            Genero genero = repositorioOnboarding.obtenerGeneroPorId(generoId);
+            usuario.setGenero(genero);
+            guardarUsuario(usuario);
+        }
+    }
+
+    @Override
     public void guardarUsuario(Usuario usuario) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(usuario);
         session.close();
     }
 
+    @Override
+    public void guardarUsuarioOnboarding(Usuario usuario) {
+        sessionFactory.getCurrentSession().save(usuario);
+    }
+
 }
+

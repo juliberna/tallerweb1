@@ -84,12 +84,15 @@ public class SpringWebConfig implements WebMvcConfigurer {
         registry.addInterceptor(roleInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login",
+                        "/usuario/guardar",
                         "/verificar-codigo",
                         "/nueva-contrasena",
                         "/codigo-verificado-ok",
                         "/recuperar-contrasena",
                         "/validar-login",
                         "/nuevo-usuario",
+                        "/onboarding/guardarGeneros",
+                        "/onboarding/**",
                         "/css/**",
                         "/js/**",
                         "/images/**",
