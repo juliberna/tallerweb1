@@ -58,7 +58,7 @@ public class ControladorRecuperarContrasena {
             return new ModelAndView("nueva-contrasena", model);
 
         }
-        return new ModelAndView("redirect:/login");
+        return new ModelAndView("redirect:/codigo-verificado-ok");
     }
 
     @RequestMapping(path = "/recuperar-contrasena", method = RequestMethod.POST)
@@ -93,6 +93,12 @@ public class ControladorRecuperarContrasena {
         String email = (String) session.getAttribute("email");
         model.put("email", email);
         return new ModelAndView("verificar-codigo", model);
+    }
+
+    @RequestMapping(path = "/codigo-verificado-ok", method = RequestMethod.GET)
+    public ModelAndView codigoVerificadoOk() {
+        ModelMap model = new ModelMap();
+        return new ModelAndView("codigo-verificado-ok", model);
     }
     @RequestMapping(path = "/nueva-contrasena", method = RequestMethod.GET)
     public ModelAndView nuevaContrasena(HttpSession session) {
