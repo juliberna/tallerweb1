@@ -1,11 +1,13 @@
 package com.tallerwebi.config;
 
+import com.tallerwebi.dominio.interceptor.RoleInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -27,6 +29,7 @@ public class SpringWebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/css/**").addResourceLocations("/resources/core/css/");
         registry.addResourceHandler("/js/**").addResourceLocations("/resources/core/js/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/");
+        registry.addResourceHandler("/Images/**").addResourceLocations("/resources/core/Images/");
     }
 
     // https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html
@@ -71,4 +74,25 @@ public class SpringWebConfig implements WebMvcConfigurer {
         return viewResolver;
     }
 
+    @Bean
+    public RoleInterceptor roleInterceptor() {
+        return new RoleInterceptor();
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(roleInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns("/login",
+                        "/verificar-codigo",
+                        "/nueva-contrasena",
+                        "/codigo-verificado-ok",
+                        "/recuperar-contrasena",
+                        "/validar-login",
+                        "/nuevo-usuario",
+                        "/css/**",
+                        "/js/**",
+                        "/images/**",
+                        "/webjars/**");
+    }
 }

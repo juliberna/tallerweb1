@@ -1,25 +1,50 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.excepcion.LibroNoEncontrado;
 import com.tallerwebi.dominio.model.Libro;
+import com.tallerwebi.dominio.model.UsuarioLibro;
 import com.tallerwebi.infraestructura.service.ServicioLibro;
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.QueryVacia;
+import com.tallerwebi.infraestructura.service.ServicioSolicitudesAmistad;
+import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
 import com.tallerwebi.presentacion.controller.ControladorLibro;
+import com.tallerwebi.presentacion.controller.ControladorSolicitudesAmistad;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.mockito.Mockito.*;
 
 public class ControladorLibroTest {
 
     ServicioLibro servicioLibro = mock(ServicioLibro.class);
-    ControladorLibro controladorLibro = new ControladorLibro(servicioLibro);
+    ServicioUsuarioLibro servicioUsuarioLibro = mock(ServicioUsuarioLibro.class);
+    ControladorLibro controladorLibro = new ControladorLibro(servicioLibro, servicioUsuarioLibro);
 
+    private HttpServletRequest requestMock;
+    private HttpSession sessionMock;
+
+    @BeforeEach
+    public void setUp() {
+        requestMock = mock(HttpServletRequest.class);
+        sessionMock = mock(HttpSession.class);
+
+        ServletRequestAttributes attr = new ServletRequestAttributes(requestMock);
+        RequestContextHolder.setRequestAttributes(attr);
+    }
     @Test
     public void siLaQueryDeBusquedaContieneTextoLaBusquedaEsExitosa() throws ListaVacia, QueryVacia {
         //given
@@ -50,6 +75,78 @@ public class ControladorLibroTest {
         ModelAndView mav = whenBuscarLibro("*-,vasda");
 
         thenLaBusquedaFalla(mav, "No se encontraron libros que coincidan con la busqueda");
+    }
+
+    @Test
+    public void siElLibroExisteDevuelveDetalleLibro() throws LibroNoEncontrado {
+        Long userId = 70L;
+
+        when(requestMock.getSession()).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("USERID")).thenReturn(userId);
+
+
+        // Given
+        Long libroId = 1L;
+        Libro libro = new Libro();
+        when(servicioLibro.obtenerIdLibro(libroId)).thenReturn(libro);
+        when(servicioUsuarioLibro.obtenerUsuarioLibro(userId, libroId)).thenReturn(new UsuarioLibro());
+
+        // When
+        String vista = controladorLibro.detalleLibro(new ModelMap(), libroId);
+
+        // Then
+        assertThat(vista, equalTo("infoLibro"));
+    }
+
+    @Test
+    public void siElEstadoDeLecturaEsCambiadoExitosamenteRedirigeALaVistaDeDetalle() {
+        Long userId = 70L;
+
+        when(requestMock.getSession()).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("USERID")).thenReturn(userId);
+
+        // Given
+        Long libroId = 1L;
+        String nuevoEstado = "Leído";
+
+        // When
+        String vista = controladorLibro.cambiarEstadoDeLectura(new ModelMap(), libroId, nuevoEstado, new RedirectAttributesModelMap());
+
+        // Then
+        assertThat(vista, equalTo("redirect:/libro/resena/" + libroId + "?usuarioId=" + userId));
+    }
+
+    @Test
+    public void siElLibroExisteMuestraLaResena() throws LibroNoEncontrado {
+        // Given
+        Long libroId = 1L;
+        Libro libro = new Libro(); // Crea un libro simulado
+        when(servicioLibro.obtenerIdLibro(libroId)).thenReturn(libro);
+
+        // When
+        String vista = controladorLibro.mostrarResena(new ModelMap(), libroId);
+
+        // Then
+        assertThat(vista, equalTo("resenaLibro"));
+    }
+
+    @Test
+    public void siLaResenaSeGuardaCorrectamenteRedirigeAlDetalleDelLibro() throws LibroNoEncontrado {
+        Long userId = 70L;
+
+        when(requestMock.getSession()).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("USERID")).thenReturn(userId);
+
+        // Given
+        Long libroId = 1L;
+        Integer puntuacion = 5;
+        String reseña = "Excelente libro";
+
+        // When
+        String vista = controladorLibro.guardarResena(new ModelMap(), libroId, puntuacion, reseña);
+
+        // Then
+        assertThat(vista, equalTo("redirect:/libro/detalle/" + libroId));
     }
 
     private void givenExistenLibros() {

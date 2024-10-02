@@ -2,9 +2,11 @@ package com.tallerwebi.presentacion.controller;
 
 import com.tallerwebi.dominio.excepcion.LibroNoEncontrado;
 import com.tallerwebi.dominio.model.Libro;
+import com.tallerwebi.dominio.model.UsuarioLibro;
 import com.tallerwebi.infraestructura.service.ServicioLibro;
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.QueryVacia;
+import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -12,9 +14,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Enumeration;
 import java.util.Set;
 
 @Controller
@@ -22,10 +29,12 @@ import java.util.Set;
 public class ControladorLibro {
 
     private ServicioLibro servicioLibro;
+    private ServicioUsuarioLibro servicioUsuarioLibro;
 
     @Autowired
-    public ControladorLibro(ServicioLibro servicioLibro) {
+    public ControladorLibro(ServicioLibro servicioLibro, ServicioUsuarioLibro servicioUsuarioLibro) {
         this.servicioLibro = servicioLibro;
+        this.servicioUsuarioLibro = servicioUsuarioLibro;
     }
 
     @RequestMapping("/buscar")
@@ -50,8 +59,15 @@ public class ControladorLibro {
     @RequestMapping(value = "/detalle/{id}" , method = RequestMethod.GET)
     public String detalleLibro(ModelMap model, @PathVariable Long id) {
         try {
+            ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+            HttpServletRequest request = attr.getRequest();
+            HttpSession session = request.getSession();
+            Long userId = (Long) session.getAttribute("USERID");
+
             Libro libro = servicioLibro.obtenerIdLibro(id);
+            UsuarioLibro usuarioLibro = servicioUsuarioLibro.obtenerUsuarioLibro(userId, id);
             model.addAttribute("libro", libro);
+            model.addAttribute("usuarioLibro", usuarioLibro);
             return "infoLibro";
         } catch (LibroNoEncontrado e) {
             model.addAttribute("error", e.getMessage());
@@ -60,21 +76,25 @@ public class ControladorLibro {
     }
 
     @RequestMapping(value = "/cambiarEstadoDeLectura", method = RequestMethod.POST)
-    public String cambiarEstadoDeLectura(ModelMap model, @RequestParam Long id, @RequestParam String status, RedirectAttributes redirectAttributes) {
+    public String cambiarEstadoDeLectura( ModelMap model, @RequestParam Long id, @RequestParam String status, RedirectAttributes redirectAttributes) {
+
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = attr.getRequest();
+        HttpSession session = request.getSession();
+        Long userId = (Long) session.getAttribute("USERID");
         try {
-            Libro libro = servicioLibro.obtenerIdLibro(id);
-            libro.setEstadoDeLectura(status);
-            servicioLibro.actualizarLibro(libro);
+            // Actualizar o crear la relación entre usuario y libro con el nuevo estado de lectura
+            servicioUsuarioLibro.crearOActualizarUsuarioLibro(userId, id, status, null, null);
 
             if (status.equals("Leído")) {
-                return "redirect:/libro/resena/" + id;
+                return "redirect:/libro/resena/" + id + "?usuarioId=" + userId;
             }
 
             redirectAttributes.addFlashAttribute("mensaje", "Tu estado de lectura es: " + status);
-            return "redirect:/libro/detalle/" + id;
-        } catch (LibroNoEncontrado e) {
+            return "redirect:/libro/detalle/" + id + "?usuarioId=" + userId;
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/libro/detalle/" + id;
+            return "redirect:/libro/detalle/" + id + "?usuarioId=" + userId;
         }
     }
 
@@ -93,10 +113,11 @@ public class ControladorLibro {
     @RequestMapping(value = "/guardarResena", method = RequestMethod.POST)
     public String guardarResena(ModelMap model, @RequestParam Long id, @RequestParam Integer puntuacion, @RequestParam String reseña) {
         try {
-            Libro libro = servicioLibro.obtenerIdLibro(id);
-            libro.setPuntuacion(puntuacion);
-            libro.setReseña(reseña);
-            servicioLibro.actualizarLibro(libro);
+            ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+            HttpServletRequest request = attr.getRequest();
+            HttpSession session = request.getSession();
+            Long userId = (Long) session.getAttribute("USERID");
+            servicioUsuarioLibro.crearOActualizarUsuarioLibro(userId, id, "Leído", puntuacion, reseña);
             return "redirect:/libro/detalle/" + id;
         } catch (LibroNoEncontrado e) {
             model.addAttribute("error", e.getMessage());

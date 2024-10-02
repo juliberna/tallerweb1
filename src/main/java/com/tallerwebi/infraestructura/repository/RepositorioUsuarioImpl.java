@@ -1,7 +1,10 @@
 package com.tallerwebi.infraestructura.repository;
 
+import com.tallerwebi.dominio.model.Libro;
 import com.tallerwebi.dominio.repository.RepositorioUsuario;
 import com.tallerwebi.dominio.model.Usuario;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -61,6 +64,17 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
         sessionFactory.getCurrentSession().update(usuario);
     }
 
+    @Override
+    public Usuario buscarUsuarioPorId(Long id) {
+            Session session = sessionFactory.getCurrentSession();
+            Criteria usuario = session.createCriteria(Usuario.class);
+            usuario.add(Restrictions.eq("id", id));
+            Usuario usuarioEncontrado = (Usuario) usuario.uniqueResult();
+            return usuarioEncontrado;
+
+
+    }
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -68,6 +82,13 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     public void guardarTokenDeRecuperacion(Usuario usuario, String token) {
         usuario.setTokenRecuperacion(token);
         entityManager.merge(usuario);
+    }
+
+    @Override
+    public void guardarUsuario(Usuario usuario) {
+        Session session = sessionFactory.getCurrentSession();
+        session.saveOrUpdate(usuario);
+        session.close();
     }
 
 }

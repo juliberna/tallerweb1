@@ -108,7 +108,7 @@ public class ServicioRecuperarContrasenaImpl {
         message.setFrom(new InternetAddress(from));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
         message.setSubject("Recuperación de Contraseña");
-        message.setText("Tu token de recuperación es: " + token);
+        message.setText("Tu código de recuperación es: " + token);
 
         Transport.send(message);
     }

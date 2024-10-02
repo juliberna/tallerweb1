@@ -10,7 +10,8 @@ public interface RepositorioUsuario {
     void guardar(String email, String password, String nombreUsuario, String nombre, LocalDate fechaNacimiento);
     void modificar(Usuario usuario);
     Usuario buscar(String email);
-
+    Usuario buscarUsuarioPorId(Long id);
+    void guardarUsuario(Usuario usuario);
     void guardarTokenDeRecuperacion(Usuario usuario, String token);
 }
 
