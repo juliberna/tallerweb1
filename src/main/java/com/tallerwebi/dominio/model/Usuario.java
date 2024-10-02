@@ -20,6 +20,13 @@ public class Usuario {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<UsuarioLibro> usuarioLibros = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "usuario_usuario",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "amigo_id")
+    )
+    private List<Usuario> amigos = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -68,4 +75,19 @@ public class Usuario {
         this.tokenRecuperacion = tokenRecuperacion;
     }
 
+    public List<Usuario> getAmigos() {
+        return amigos;
+    }
+
+    public void setAmigos(List<Usuario> amigos) {
+        this.amigos = amigos;
+    }
+
+    public void agregarAmigo(Usuario amigo) {
+        this.amigos.add(amigo);
+    }
+
+    public void eliminarAmigo(Usuario amigo) {
+        this.amigos.remove(amigo);
+    }
 }
