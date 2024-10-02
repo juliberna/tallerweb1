@@ -6,13 +6,20 @@ import com.tallerwebi.dominio.model.UsuarioLibro;
 import com.tallerwebi.infraestructura.service.ServicioLibro;
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.QueryVacia;
+import com.tallerwebi.infraestructura.service.ServicioSolicitudesAmistad;
 import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
 import com.tallerwebi.presentacion.controller.ControladorLibro;
+import com.tallerwebi.presentacion.controller.ControladorSolicitudesAmistad;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,6 +34,17 @@ public class ControladorLibroTest {
     ServicioUsuarioLibro servicioUsuarioLibro = mock(ServicioUsuarioLibro.class);
     ControladorLibro controladorLibro = new ControladorLibro(servicioLibro, servicioUsuarioLibro);
 
+    private HttpServletRequest requestMock;
+    private HttpSession sessionMock;
+
+    @BeforeEach
+    public void setUp() {
+        requestMock = mock(HttpServletRequest.class);
+        sessionMock = mock(HttpSession.class);
+
+        ServletRequestAttributes attr = new ServletRequestAttributes(requestMock);
+        RequestContextHolder.setRequestAttributes(attr);
+    }
     @Test
     public void siLaQueryDeBusquedaContieneTextoLaBusquedaEsExitosa() throws ListaVacia, QueryVacia {
         //given
@@ -61,11 +79,17 @@ public class ControladorLibroTest {
 
     @Test
     public void siElLibroExisteDevuelveDetalleLibro() throws LibroNoEncontrado {
+        Long userId = 70L;
+
+        when(requestMock.getSession()).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("USERID")).thenReturn(userId);
+
+
         // Given
         Long libroId = 1L;
         Libro libro = new Libro();
         when(servicioLibro.obtenerIdLibro(libroId)).thenReturn(libro);
-        when(servicioUsuarioLibro.obtenerUsuarioLibro(2L, libroId)).thenReturn(new UsuarioLibro());
+        when(servicioUsuarioLibro.obtenerUsuarioLibro(userId, libroId)).thenReturn(new UsuarioLibro());
 
         // When
         String vista = controladorLibro.detalleLibro(new ModelMap(), libroId);
@@ -76,6 +100,11 @@ public class ControladorLibroTest {
 
     @Test
     public void siElEstadoDeLecturaEsCambiadoExitosamenteRedirigeALaVistaDeDetalle() {
+        Long userId = 70L;
+
+        when(requestMock.getSession()).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("USERID")).thenReturn(userId);
+
         // Given
         Long libroId = 1L;
         String nuevoEstado = "Leído";
@@ -84,7 +113,7 @@ public class ControladorLibroTest {
         String vista = controladorLibro.cambiarEstadoDeLectura(new ModelMap(), libroId, nuevoEstado, new RedirectAttributesModelMap());
 
         // Then
-        assertThat(vista, equalTo("redirect:/libro/resena/" + libroId + "?usuarioId=" + 2L));
+        assertThat(vista, equalTo("redirect:/libro/resena/" + libroId + "?usuarioId=" + userId));
     }
 
     @Test
@@ -103,6 +132,11 @@ public class ControladorLibroTest {
 
     @Test
     public void siLaResenaSeGuardaCorrectamenteRedirigeAlDetalleDelLibro() throws LibroNoEncontrado {
+        Long userId = 70L;
+
+        when(requestMock.getSession()).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("USERID")).thenReturn(userId);
+
         // Given
         Long libroId = 1L;
         Integer puntuacion = 5;
