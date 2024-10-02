@@ -1,25 +1,21 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.excepcion.ListaDeReviewsVacias;
-import com.tallerwebi.dominio.excepcion.QueryVacia;
 import com.tallerwebi.dominio.model.Usuario;
-import com.tallerwebi.infraestructura.service.ServicioInicio;
+import com.tallerwebi.infraestructura.service.ServicioHome;
 
-import com.tallerwebi.presentacion.controller.ControladorInicio;
+import com.tallerwebi.presentacion.controller.ControladorHome;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.web.servlet.ModelAndView;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
-public class ControladorInicioTest {
+public class ControladorHomeTest {
 
-    ServicioInicio servicioInicio = mock(ServicioInicio.class);
-    ControladorInicio controladorInicio = new ControladorInicio(servicioInicio);
+    ServicioHome servicioHome = mock(ServicioHome.class);
+    ControladorHome controladorInicio = new ControladorHome(servicioHome);
 
     @Test
     public void queSeMuestreElNombreDelUsuarioCorrectamente() {

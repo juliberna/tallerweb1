@@ -11,6 +11,8 @@ public interface RepositorioReview {
 
     public List<Review> getReviewsDeAmigos();
 
+    public Review getReviewPorId(Long id);
+
     public void guardar(Review review);
 
     public void modificar(Review review);

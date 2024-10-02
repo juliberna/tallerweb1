@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 
 @Service
 @Transactional
-public class ServicioInicioImpl implements ServicioInicio {
+public class ServicioHomeImpl implements ServicioHome {
 
 
     @Override
