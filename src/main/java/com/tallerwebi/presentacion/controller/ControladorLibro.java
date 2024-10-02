@@ -68,7 +68,7 @@ public class ControladorLibro {
     @RequestMapping(value = "/cambiarEstadoDeLectura", method = RequestMethod.POST)
     public String cambiarEstadoDeLectura(ModelMap model, @RequestParam Long id, @RequestParam String status, RedirectAttributes redirectAttributes) {
         try {
-            // Actualizar o crear la relación entre usuario y libro con el nuevo estado de lectura
+
             servicioUsuarioLibro.crearOActualizarUsuarioLibro(2L, id, status, null, null);
 
             if (status.equals("Leído")) {

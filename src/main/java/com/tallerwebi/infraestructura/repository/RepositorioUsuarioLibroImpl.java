@@ -25,11 +25,10 @@ public class RepositorioUsuarioLibroImpl implements RepositorioUsuarioLibro {
         Session session = sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(UsuarioLibro.class);
 
-        // Aplicar restricciones para usuario y libro
+
         criteria.add(Restrictions.eq("usuario.id", usuarioId));
         criteria.add(Restrictions.eq("libro.id", libroId));
 
-        // Obtener el resultado único o null si no se encuentra
         return (UsuarioLibro) criteria.uniqueResult();
     }
 
