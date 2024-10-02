@@ -10,6 +10,7 @@ import com.tallerwebi.integracion.config.SpringWebTestConfig;
 import org.hibernate.SessionFactory;
 
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.hamcrest.Matchers;
 import javax.transaction.Transactional;
 
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
 
 
 @ExtendWith(SpringExtension.class)
@@ -125,6 +127,56 @@ public class RepositorioReviewTest {
         MatcherAssert.assertThat(reviewEncontrada, notNullValue());
         MatcherAssert.assertThat(reviewEncontrada2, notNullValue());
         MatcherAssert.assertThat(reviewEncontrada3, notNullValue());
+
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void queLasReviewsAparezcanEnListaOrdenadaAscendentemente() {
+        Usuario usuario = new Usuario();
+        String texto = "contenidoPublicacion";
+        Rating estrellas = Rating.TRES_ESTRELLAS;
+        Libro libro = new Libro();
+        libro.setTitulo("Harry Potter");
+        libro.setAutor("J.K. Rowling");
+
+        Review review3 = new Review();
+        review3.setTextoComentario(texto);
+        review3.setUsuario(usuario);
+        review3.setRating(estrellas);
+        review3.setLibro(libro);
+
+        Review review = new Review();
+        review.setTextoComentario(texto);
+        review.setUsuario(usuario);
+        review.setRating(estrellas);
+        review.setLibro(libro);
+
+        Review review2 = new Review();
+        review2.setTextoComentario(texto);
+        review2.setUsuario(usuario);
+        review2.setRating(estrellas);
+        review2.setLibro(libro);
+
+
+
+        //when
+        sessionFactory.getCurrentSession().save(usuario);
+        sessionFactory.getCurrentSession().save(libro);
+        sessionFactory.getCurrentSession().save(usuario);
+        //SE GUARDA PRIMERO LA REVIEW 3
+        repositorioReview.guardar(review3);
+        //SE GUARDA PRIMERO LA REVIEW
+        repositorioReview.guardar(review);
+        repositorioReview.guardar(review2);
+        Review reviewEncontrada = repositorioReview.getReviews().get(0);
+        Review reviewEncontrada2 = repositorioReview.getReviews().get(1);
+
+
+        //then
+        Assertions.assertEquals(reviewEncontrada.getId(), review3.getId());
+        Assertions.assertEquals(reviewEncontrada2.getId(), review.getId());
 
     }
 

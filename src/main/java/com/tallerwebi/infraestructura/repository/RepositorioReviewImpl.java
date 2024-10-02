@@ -5,6 +5,7 @@ import com.tallerwebi.dominio.model.Review;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,8 +28,8 @@ public class RepositorioReviewImpl implements RepositorioReview {
     @Override
     public List<Review> getReviews() {
         Session session = sessionFactory.getCurrentSession();
-        return session.createCriteria(Review.class).list();
-
+        return session.createCriteria(Review.class).addOrder(Order.asc("fechaPublicacion")).list();
+        //TODO TEST
     }
 
     @Override
@@ -46,8 +47,10 @@ public class RepositorioReviewImpl implements RepositorioReview {
     }
     @Override
     public void modificar(Review review) {
-        //TODO
-//        sessionFactory.getCurrentSession().save(review);
+
+        sessionFactory.getCurrentSession().saveOrUpdate(review);
+
+        //TODO TEST
     }
 
 
@@ -58,7 +61,8 @@ public class RepositorioReviewImpl implements RepositorioReview {
         Session session = sessionFactory.getCurrentSession();
         return session.createCriteria(Review.class).list();
         //TODO
-
+        //AGREGAR USUARIO
+        //USUARIO DEBE TENER AMIGOS (AGREGAR EN LA TABLA DE USUARIO)
 
     }
 

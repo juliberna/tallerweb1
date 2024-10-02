@@ -2,7 +2,7 @@ package com.tallerwebi.infraestructura.service;
 
 import com.tallerwebi.dominio.model.Usuario;
 
-public interface ServicioHome {
+public interface ServicioInicio {
 
     public void buscar(String nombre);
 
