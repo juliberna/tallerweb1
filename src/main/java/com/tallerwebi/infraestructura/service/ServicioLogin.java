@@ -8,6 +8,6 @@ import java.time.LocalDate;
 public interface ServicioLogin {
 
     Usuario consultarUsuario(String email, String password);
-    void registrar(String email, String password, String nombreUsuario, String nombre, LocalDate fechaNacimiento) throws UsuarioExistente;
-
+    void registrar(String email, String password, String nombreUsuario, String nombre, LocalDate fechaNacimiento) throws UsuarioExistente, IllegalArgumentException;
+    Usuario buscar(String email);
 }

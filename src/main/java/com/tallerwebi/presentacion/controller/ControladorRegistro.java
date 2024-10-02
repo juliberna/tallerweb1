@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 
 @Controller
@@ -31,7 +32,7 @@ public class ControladorRegistro {
     }
 
     @RequestMapping(value = "/guardar", method = RequestMethod.POST)
-    public String registrarUsuario(@RequestParam String email, @RequestParam String password, @RequestParam String nombreUsuario, @RequestParam String nombre, @RequestParam String fechaNacimiento) {
+    public String registrarUsuario(@RequestParam String email, @RequestParam String password, @RequestParam String nombreUsuario, @RequestParam String nombre, @RequestParam String fechaNacimiento, HttpSession session) {
         try {
             System.out.println(email);
             System.out.println(password);
@@ -40,7 +41,11 @@ public class ControladorRegistro {
             System.out.println(fechaNacimiento);
             LocalDate fechaNac = LocalDate.parse(fechaNacimiento);
             servicioLogin.registrar(email, password, nombreUsuario, nombre, fechaNac);
-            return "redirect:/login";
+
+            Usuario usuario = servicioLogin.buscar(email);
+            session.setAttribute("USERID", usuario.getId());
+            Long userId = (Long) session.getAttribute("USERID");
+            return "redirect:/onboarding/mostrarOnboarding" + "/" + userId;
         } catch (UsuarioExistente e) {
             return "nuevo-usuario";
         }

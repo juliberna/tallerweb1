@@ -2,7 +2,10 @@ package com.tallerwebi.dominio.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "usuario")
@@ -21,6 +24,23 @@ public class Usuario {
     private Boolean activo = false;
     private String tokenRecuperacion;
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<UsuarioLibro> usuarioLibros = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "usuario_usuario",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "amigo_id")
+    )
+    private List<Usuario> amigos = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "usuario_genero",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "genero_id")
+    )
+    private List<Genero> generosFavoritos = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -108,5 +128,29 @@ public class Usuario {
 
     public void setTokenRecuperacion(String tokenRecuperacion) {
         this.tokenRecuperacion = tokenRecuperacion;
+    }
+
+    public List<Usuario> getAmigos() {
+        return amigos;
+    }
+
+    public void setAmigos(List<Usuario> amigos) {
+        this.amigos = amigos;
+    }
+
+    public void agregarAmigo(Usuario amigo) {
+        this.amigos.add(amigo);
+    }
+
+    public void eliminarAmigo(Usuario amigo) {
+        this.amigos.remove(amigo);
+    }
+
+    public List<Genero> getGeneros() {
+        return generosFavoritos;
+    }
+
+    public void setGenero(Genero genero) {
+        this.generosFavoritos.add(genero);
     }
 }

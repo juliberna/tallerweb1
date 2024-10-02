@@ -10,6 +10,8 @@ public class RoleInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println(request.getRequestURL());
+        System.out.println(request.getRequestURI());
         HttpSession session = request.getSession();
         Enumeration<String> attributeNames = session.getAttributeNames();
         Object usuario = null;

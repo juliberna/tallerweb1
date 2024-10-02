@@ -49,21 +49,6 @@ public class ControladorLogin {
         return new ModelAndView("login", model);
     }
 
-//    @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
-//    public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario) {
-//        ModelMap model = new ModelMap();
-//        try{
-//            servicioLogin.registrar(usuario);
-//        } catch (UsuarioExistente e){
-//            model.put("error", "El usuario ya existe");
-//            return new ModelAndView("nuevo-usuario", model);
-//        } catch (Exception e){
-//            model.put("error", "Error al registrar el nuevo usuario");
-//            return new ModelAndView("nuevo-usuario", model);
-//        }
-//        return new ModelAndView("redirect:/login");
-//    }
-
     @RequestMapping(path = "/nuevo-usuario", method = RequestMethod.GET)
     public ModelAndView nuevoUsuario() {
         ModelMap model = new ModelMap();
