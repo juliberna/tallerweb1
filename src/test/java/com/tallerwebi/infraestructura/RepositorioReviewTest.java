@@ -2,7 +2,7 @@ package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.dominio.model.*;
 
-import com.tallerwebi.dominio.repository.RepositorioLibro;
+
 import com.tallerwebi.infraestructura.repository.RepositorioReview;
 
 import com.tallerwebi.integracion.config.HibernateTestConfig;
@@ -19,11 +19,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+
 import javax.transaction.Transactional;
 
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
+
 
 
 @ExtendWith(SpringExtension.class)

@@ -20,9 +20,6 @@ public class Review {
     @Column(name = "user_commentary", nullable = false)
     private String textoComentario;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private Usuario Usuario;
 
     @Column(name = "likes_count", nullable = true)
     private Integer likes = 0;
@@ -33,6 +30,9 @@ public class Review {
     @Column(name = "publication_date", nullable = false)
     private LocalDateTime fechaPublicacion;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private Usuario Usuario;
 
     @ManyToOne
     @JoinColumn(name = "libro_id", nullable = false)

@@ -1,7 +1,7 @@
 package com.tallerwebi.presentacion.controller;
 
 import com.tallerwebi.infraestructura.repository.RepositorioReview;
-import com.tallerwebi.infraestructura.service.ServicioHome;
+import com.tallerwebi.infraestructura.service.ServicioInicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -11,15 +11,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 @Controller
-public class ControladorHome {
+public class ControladorInicio {
 
-    private ServicioHome servicioHome;
+    private ServicioInicio servicioInicio;
     private RepositorioReview repositorioReview;
 
     @Autowired
-    public ControladorHome(ServicioHome servicioHome) {
+    public ControladorInicio(ServicioInicio servicioInicio) {
 
-        this.servicioHome = servicioHome;
+        this.servicioInicio = servicioInicio;
     }
 
     @RequestMapping(path = "/home", method = RequestMethod.GET)
