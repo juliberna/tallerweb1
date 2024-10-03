@@ -25,8 +25,6 @@ public class Libro {
 
     public Libro() {}
 
-    @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL)
-    private List<UsuarioLibro> usuarioLibros = new ArrayList<>();
 
     public Long getId() {
         return id;

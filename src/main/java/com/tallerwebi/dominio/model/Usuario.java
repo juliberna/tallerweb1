@@ -24,8 +24,6 @@ public class Usuario {
     private Boolean activo = false;
     private String tokenRecuperacion;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<UsuarioLibro> usuarioLibros = new ArrayList<>();
     @ManyToMany
     @JoinTable(
             name = "usuario_usuario",
