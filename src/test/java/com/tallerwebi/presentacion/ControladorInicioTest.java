@@ -27,7 +27,7 @@ public class ControladorInicioTest {
         Usuario usuario = new Usuario();
         usuario.setEmail("hola123@gmail.com");
         usuario.setPassword("hola123");
-
+        //TODO
 
 
 
@@ -35,6 +35,8 @@ public class ControladorInicioTest {
     }
    @Test
     public void queNoSePuedaMostrarUnaListaDeReviewsVacia() {
+
+        //TODO CON MOCKITO
 
    }
 
