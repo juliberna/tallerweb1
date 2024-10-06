@@ -25,9 +25,6 @@ public class Usuario {
     private String tokenRecuperacion;
     private Long meta;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<UsuarioLibro> usuarioLibros = new ArrayList<>();
-
     @ManyToMany
     @JoinTable(
             name = "usuario_usuario",

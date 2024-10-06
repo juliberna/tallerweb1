@@ -1,26 +1,29 @@
 package com.tallerwebi.infraestructura;
 
-import com.tallerwebi.dominio.model.Comentario;
-import com.tallerwebi.dominio.model.Rating;
-import com.tallerwebi.dominio.model.Review;
-import com.tallerwebi.dominio.model.Usuario;
-import com.tallerwebi.infraestructura.repository.RepositorioReviewImpl;
+import com.tallerwebi.dominio.model.*;
+
+
+import com.tallerwebi.infraestructura.repository.RepositorioReview;
+
 import com.tallerwebi.integracion.config.HibernateTestConfig;
 import com.tallerwebi.integracion.config.SpringWebTestConfig;
 import org.hibernate.SessionFactory;
-import org.junit.Test;
+
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.hamcrest.MatcherAssert;
 
 import javax.transaction.Transactional;
 
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+
 
 
 @ExtendWith(SpringExtension.class)
@@ -31,38 +34,149 @@ import static org.junit.Assert.assertThat;
 public class RepositorioReviewTest {
 
 
-@Autowired
-SessionFactory sessionFactory;
+    @Autowired
+    private SessionFactory sessionFactory;
 
-@Autowired
-RepositorioReviewImpl repositorioReview;
+    @Autowired
+    private RepositorioReview repositorioReview;
+
 
     @Test
     public void queSePuedaCrearUnComentario() {
         Usuario usuario = new Usuario();
         String texto = "ComentarioContenido";
 
-        Comentario comentario = new Comentario(usuario, texto);
+        Comentario comentario = new Comentario();
+        comentario.setUsuario(usuario);
+        comentario.setTextoComentario(texto);
 
-        assertNotNull(comentario);
+        MatcherAssert.assertThat(comentario.getId(), notNullValue());
     }
 
     @Test
     @Transactional
     @Rollback
-    public void queSePuedaGuardarUnComentario() {
+    public void queSePuedaGuardarUnaReview() {
         Usuario usuario = new Usuario();
         String texto = "contenidoPublicacion";
         Rating estrellas = Rating.TRES_ESTRELLAS;
+        Libro libro = new Libro();
+        libro.setTitulo("Harry Potter");
+        libro.setAutor("J.K. Rowling");
 
-        Review review = new Review(usuario, texto, estrellas);
+        Review review = new Review();
+        review.setTextoComentario(texto);
+        review.setUsuario(usuario);
+        review.setRating(estrellas);
+        review.setLibro(libro);
 
         //when
+        sessionFactory.getCurrentSession().save(usuario);
+        sessionFactory.getCurrentSession().save(libro);
+        sessionFactory.getCurrentSession().save(usuario);
         repositorioReview.guardar(review);
+       Review reviewEncontrada = repositorioReview.getReviewPorId(review.getId());
 
         //then
-        assertThat(review.getId(), notNullValue());
+        MatcherAssert.assertThat(reviewEncontrada, notNullValue());
 
+
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void queSePuedaGuardarTresReviews() {
+        Usuario usuario = new Usuario();
+        String texto = "contenidoPublicacion";
+        Rating estrellas = Rating.TRES_ESTRELLAS;
+        Libro libro = new Libro();
+        libro.setTitulo("Harry Potter");
+        libro.setAutor("J.K. Rowling");
+
+        Review review = new Review();
+        review.setTextoComentario(texto);
+        review.setUsuario(usuario);
+        review.setRating(estrellas);
+        review.setLibro(libro);
+
+        Review review2 = new Review();
+        review2.setTextoComentario(texto);
+        review2.setUsuario(usuario);
+        review2.setRating(estrellas);
+        review2.setLibro(libro);
+
+        Review review3 = new Review();
+        review3.setTextoComentario(texto);
+        review3.setUsuario(usuario);
+        review3.setRating(estrellas);
+        review3.setLibro(libro);
+
+        //when
+        sessionFactory.getCurrentSession().save(usuario);
+        sessionFactory.getCurrentSession().save(libro);
+        sessionFactory.getCurrentSession().save(usuario);
+        repositorioReview.guardar(review);
+        repositorioReview.guardar(review2);
+        repositorioReview.guardar(review3);
+        Review reviewEncontrada = repositorioReview.getReviewPorId(review.getId());
+        Review reviewEncontrada2 = repositorioReview.getReviewPorId(review2.getId());
+        Review reviewEncontrada3 = repositorioReview.getReviewPorId(review3.getId());
+
+        //then
+        MatcherAssert.assertThat(reviewEncontrada, notNullValue());
+        MatcherAssert.assertThat(reviewEncontrada2, notNullValue());
+        MatcherAssert.assertThat(reviewEncontrada3, notNullValue());
+
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void queLasReviewsAparezcanEnListaOrdenadaAscendentemente() {
+        Usuario usuario = new Usuario();
+        String texto = "contenidoPublicacion";
+        Rating estrellas = Rating.TRES_ESTRELLAS;
+        Libro libro = new Libro();
+        libro.setTitulo("Harry Potter");
+        libro.setAutor("J.K. Rowling");
+
+        Review review3 = new Review();
+        review3.setTextoComentario(texto);
+        review3.setUsuario(usuario);
+        review3.setRating(estrellas);
+        review3.setLibro(libro);
+
+        Review review = new Review();
+        review.setTextoComentario(texto);
+        review.setUsuario(usuario);
+        review.setRating(estrellas);
+        review.setLibro(libro);
+
+        Review review2 = new Review();
+        review2.setTextoComentario(texto);
+        review2.setUsuario(usuario);
+        review2.setRating(estrellas);
+        review2.setLibro(libro);
+
+
+
+        //when
+        sessionFactory.getCurrentSession().save(usuario);
+        sessionFactory.getCurrentSession().save(libro);
+        sessionFactory.getCurrentSession().save(usuario);
+        //SE GUARDA PRIMERO LA REVIEW 3
+        repositorioReview.guardar(review3);
+        //SE GUARDA PRIMERO LA REVIEW
+        repositorioReview.guardar(review);
+        repositorioReview.guardar(review2);
+        Review reviewEncontrada = repositorioReview.getReviews().get(0);
+        Review reviewEncontrada2 = repositorioReview.getReviews().get(1);
+
+
+        //then
+        Assertions.assertEquals(reviewEncontrada.getId(), review3.getId());
+        Assertions.assertEquals(reviewEncontrada2.getId(), review.getId());
 
     }
 
