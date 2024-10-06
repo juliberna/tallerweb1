@@ -1,13 +1,10 @@
 package com.tallerwebi.presentacion.controller;
 
-import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import com.tallerwebi.dominio.model.Autor;
 import com.tallerwebi.dominio.model.Genero;
-import com.tallerwebi.dominio.model.Usuario;
-import com.tallerwebi.infraestructura.service.ServicioLogin;
 import com.tallerwebi.infraestructura.service.ServicioOnboarding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -16,7 +13,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -30,13 +26,28 @@ public class ControladorOnboarding {
         this.servicioOnboarding = servicioOnboarding;
     }
 
-    @RequestMapping(value = "/mostrarOnboarding/{id}", method = RequestMethod.GET)
-    public ModelAndView mostrarFormularioOnboarding(@PathVariable Long id) {
+    //    @RequestMapping(value = "/mostrarOnboarding/{id}", method = RequestMethod.GET)
+//    public ModelAndView mostrarFormularioOnboarding(@PathVariable Long id) {
+//        ModelMap model = new ModelMap();
+//        model.put("userId", id);
+//        List<Genero> generos = servicioOnboarding.obtenerGeneros();
+//        model.put("generos", generos);
+//        System.out.println(generos);
+//        return new ModelAndView("onboarding", model);
+//    }
+
+    @RequestMapping(value = "/mostrarOnboarding/{id}/{paso}", method = RequestMethod.GET)
+    public ModelAndView mostrarFormularioOnboarding(@PathVariable Long id, @PathVariable Integer paso) {
         ModelMap model = new ModelMap();
         model.put("userId", id);
+
         List<Genero> generos = servicioOnboarding.obtenerGeneros();
         model.put("generos", generos);
-        System.out.println(generos);
+
+        List<Autor> autores = servicioOnboarding.obtenerAutores(); // Asegúrate de tener este método en tu servicio
+        model.put("autores", autores);
+
+        model.put("paso", paso); // Añade el paso actual
         return new ModelAndView("onboarding", model);
     }
 
@@ -55,6 +66,36 @@ public class ControladorOnboarding {
         Long userId = (Long) session.getAttribute("USERID");
         if (userId != null) {
             servicioOnboarding.guardarGeneros(userId, generos);
+            return "redirect:/onboarding/mostrarOnboarding/" + userId + "/2" ;
+
+//            return "redirect:/onboarding/mostrarRegistroExitoso";
+        } else {
+            return "redirect:/login";
+        }
+    }
+
+    @RequestMapping(value = "/guardarAutores", method = RequestMethod.POST)
+    public String guardarAutores(@RequestParam List<Long> autores) {
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = attr.getRequest();
+        HttpSession session = request.getSession();
+        Long userId = (Long) session.getAttribute("USERID");
+        if (userId != null) {
+            servicioOnboarding.guardarAutores(userId, autores);
+            return "redirect:/onboarding/mostrarOnboarding/" + userId + "/3" ;
+        } else {
+            return "redirect:/login";
+        }
+    }
+
+    @RequestMapping(value = "/guardarMeta", method = RequestMethod.POST)
+    public String guardarMeta(@RequestParam Long metaLibros) {
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = attr.getRequest();
+        HttpSession session = request.getSession();
+        Long userId = (Long) session.getAttribute("USERID");
+        if (userId != null) {
+            servicioOnboarding.guardarMeta(userId, metaLibros);
             return "redirect:/onboarding/mostrarRegistroExitoso";
         } else {
             return "redirect:/login";

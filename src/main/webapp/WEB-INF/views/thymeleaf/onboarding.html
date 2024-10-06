@@ -19,7 +19,8 @@
 <main role="main" class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card shadow-sm">
+            <!-- Paso 1: Géneros Favoritos -->
+            <div class="card shadow-sm" th:if="${paso == 1}">
                 <div class="card-header text-center">
                     <h4>Onboarding: Géneros Favoritos</h4>
                 </div>
@@ -36,7 +37,57 @@
                         </div>
 
                         <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-block">Guardar y Continuar</button>
+                            <button type="button" class="btn btn-secondary btn-block" th:onclick="'location.href=\'/onboarding/mostrarOnboarding/' + ${userId} + '/2\' '">Saltar a Paso 2</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Paso 2: Autores Reconocidos -->
+            <div class="card shadow-sm" th:if="${paso == 2}">
+                <div class="card-header text-center">
+                    <h4>Onboarding: Autores Reconocidos</h4>
+                </div>
+                <div class="card-body">
+                    <form id="onboardingFormAutores" th:action="@{/onboarding/guardarAutores}" method="post">
+                        <input type="hidden" th:value="${userId}" name="usuarioId"/>
+
+                        <div class="mb-3">
+                            <h5>Selecciona tus autores favoritos:</h5>
+                            <div class="form-check" th:each="autor : ${autores}">
+                                <input class="form-check-input" type="checkbox" th:value="${autor.id}" th:id="'autor-' + ${autor.id}" name="autores"/>
+                                <label class="form-check-label" th:for="'autor-' + ${autor.id}" th:text="${autor.nombre}"></label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-block">Guardar y Continuar</button>
+                            <button type="button" class="btn btn-secondary btn-block" th:onclick="'location.href=\'/onboarding/paso1?userId=' + ${userId} + '\' '">Volver</button>
+                            <button type="button" class="btn btn-secondary btn-block" th:onclick="'location.href=\'/onboarding/paso3?userId=' + ${userId} + '\' '">Saltar a Paso 3</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Paso 3: Meta de Lectura -->
+            <div class="card shadow-sm" th:if="${paso == 3}">
+                <div class="card-header text-center">
+                    <h4>Onboarding: Meta de Lectura</h4>
+                </div>
+                <div class="card-body">
+                    <form id="onboardingFormMeta" th:action="@{/onboarding/guardarMeta}" method="post">
+                        <input type="hidden" th:value="${userId}" name="usuarioId"/>
+
+                        <div class="mb-3">
+                            <label for="metaLibros" class="form-label">¿Cuál es tu meta de libros para este año?</label>
+                            <input type="number" class="form-control" id="metaLibros" name="metaLibros" required min="1"/>
+                        </div>
+
+                        <div class="d-grid">
                             <button type="submit" class="btn btn-success btn-block">Finalizar</button>
+                            <button type="button" class="btn btn-secondary btn-block" th:onclick="'location.href=\'/onboarding/paso2?userId=' + ${userId} + '\' '">Volver</button>
+                            <button type="button" class="btn btn-secondary btn-block" th:onclick="'location.href=\'/home\' '">Saltar</button>
                         </div>
                     </form>
                 </div>

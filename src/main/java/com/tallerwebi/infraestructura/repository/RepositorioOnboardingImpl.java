@@ -1,5 +1,6 @@
 package com.tallerwebi.infraestructura.repository;
 
+import com.tallerwebi.dominio.model.Autor;
 import com.tallerwebi.dominio.model.Genero;
 import com.tallerwebi.dominio.repository.RepositorioOnboarding;
 import org.hibernate.Criteria;
@@ -29,6 +30,13 @@ public class RepositorioOnboardingImpl implements RepositorioOnboarding {
     }
 
     @Override
+    public List<Autor> obtenerAutores() {
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Autor", Autor.class)
+                .list();
+    }
+
+    @Override
     public Genero obtenerGeneroPorId(Long id) {
         Session session = sessionFactory.getCurrentSession();
         Criteria genero = session.createCriteria(Genero.class);
@@ -37,5 +45,13 @@ public class RepositorioOnboardingImpl implements RepositorioOnboarding {
         return generoEncontrado;
     }
 
+    @Override
+    public Autor obtenerAutorPorId(Long id) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria autor = session.createCriteria(Autor.class);
+        autor.add(Restrictions.eq("id", id));
+        Autor autorEncontrado = (Autor) autor.uniqueResult();
+        return autorEncontrado;
+    }
 }
 

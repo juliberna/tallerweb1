@@ -86,16 +86,16 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
         entityManager.merge(usuario);
     }
 
-    @Override
-    public void guardarGeneros(Long usuarioId, List<Long> generos) {
-        Usuario usuario = buscarUsuarioPorId(usuarioId);
-
-        for (Long generoId : generos) {
-            Genero genero = repositorioOnboarding.obtenerGeneroPorId(generoId);
-            usuario.setGenero(genero);
-            guardarUsuario(usuario);
-        }
-    }
+//    @Override
+//    public void guardarGeneros(Long usuarioId, List<Long> generos) {
+//        Usuario usuario = buscarUsuarioPorId(usuarioId);
+//
+//        for (Long generoId : generos) {
+//            Genero genero = repositorioOnboarding.obtenerGeneroPorId(generoId);
+//            usuario.setGenero(genero);
+//            guardarUsuario(usuario);
+//        }
+//    }
 
     @Override
     public void guardarUsuario(Usuario usuario) {
@@ -107,6 +107,22 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     @Override
     public void guardarUsuarioOnboarding(Usuario usuario) {
         sessionFactory.getCurrentSession().save(usuario);
+    }
+
+    @Override
+    public Usuario buscarPorEmail(String email) {
+        Session session = sessionFactory.getCurrentSession();
+        return (Usuario) session.createCriteria(Usuario.class)
+                .add(Restrictions.eq("email", email))
+                .uniqueResult();
+    }
+
+    @Override
+    public Usuario buscarPorNombreUsuario(String nombreUsuario) {
+        Session session = sessionFactory.getCurrentSession();
+        return (Usuario) session.createCriteria(Usuario.class)
+                .add(Restrictions.eq("nombreUsuario", nombreUsuario))
+                .uniqueResult();
     }
 
 }

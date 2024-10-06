@@ -31,6 +31,11 @@ public class ServicioOnboardingImpl implements ServicioOnboarding {
     }
 
     @Override
+    public List<Autor> obtenerAutores() {
+        return repositorioOnboarding.obtenerAutores();
+    }
+
+    @Override
     @Transactional
     public void guardarGeneros(Long usuarioId, List<Long> generos) {
         try {
@@ -45,4 +50,31 @@ public class ServicioOnboardingImpl implements ServicioOnboarding {
         }
     }
 
+    @Override
+    @Transactional
+    public void guardarAutores(Long usuarioId, List<Long> autores) {
+        try {
+            Usuario usuario = repositorioUsuario.buscarUsuarioPorId(usuarioId);
+            for (Long autorId : autores) {
+                Autor autor = repositorioOnboarding.obtenerAutorPorId(autorId);
+                usuario.setAutor(autor);
+            }
+        } catch (Exception e) {
+
+            System.out.println("Error al guardar autores: " + e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public void guardarMeta(Long usuarioId, Long meta) {
+        try {
+            Usuario usuario = repositorioUsuario.buscarUsuarioPorId(usuarioId);
+            usuario.setMeta(meta);
+
+        } catch (Exception e) {
+
+            System.out.println("Error al guardar la meta: " + e.getMessage());
+        }
+    }
 }

@@ -14,7 +14,9 @@ public interface RepositorioUsuario {
     Usuario buscarUsuarioPorId(Long id);
     void guardarUsuario(Usuario usuario);
     void guardarTokenDeRecuperacion(Usuario usuario, String token);
-    void guardarGeneros(Long usuarioId, List<Long> generos);
+//    void guardarGeneros(Long usuarioId, List<Long> generos);
     void guardarUsuarioOnboarding(Usuario usuario);
+    Usuario buscarPorEmail(String email);
+    Usuario buscarPorNombreUsuario(String nombreUsuario);
 }
 

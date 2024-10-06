@@ -17,8 +17,8 @@ public class Genero {
     @ManyToMany(mappedBy = "generosFavoritos")
     private Set<Usuario> usuarios = new HashSet<>();
 
-    @ManyToMany(mappedBy = "generos")
-    private Set<Autor> autores = new HashSet<>();
+//    @ManyToMany(mappedBy = "generos")
+//    private Set<Autor> autores = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -58,13 +58,13 @@ public class Genero {
         this.usuarios = usuarios;
     }
 
-    public Set<Autor> getAutores() {
-        return autores;
-    }
-
-    public void setAutores(Set<Autor> autores) {
-        this.autores = autores;
-    }
+//    public Set<Autor> getAutores() {
+//        return autores;
+//    }
+//
+//    public void setAutores(Set<Autor> autores) {
+//        this.autores = autores;
+//    }
 
     public Set<Libro> getLibros() {
         return libros;
