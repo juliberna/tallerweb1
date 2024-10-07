@@ -23,6 +23,7 @@ public class Usuario {
     private String rol;
     private Boolean activo = false;
     private String tokenRecuperacion;
+    private Long meta;
 
     @ManyToMany
     @JoinTable(
@@ -32,13 +33,21 @@ public class Usuario {
     )
     private List<Usuario> amigos = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "usuario_genero",
-            joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name = "genero_id")
-    )
-    private List<Genero> generosFavoritos = new ArrayList<>();
+//    @ManyToMany
+//    @JoinTable(
+//            name = "usuario_genero",
+//            joinColumns = @JoinColumn(name = "usuario_id"),
+//            inverseJoinColumns = @JoinColumn(name = "genero_id")
+//    )
+//    private List<Genero> generosFavoritos = new ArrayList<>();
+
+//    @ManyToMany
+//    @JoinTable(
+//            name = "usuario_autor",
+//            joinColumns = @JoinColumn(name = "usuario_id"),
+//            inverseJoinColumns = @JoinColumn(name = "autor_id")
+//    )
+//    private List<Autor> autoresFavoritos = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -128,6 +137,14 @@ public class Usuario {
         this.tokenRecuperacion = tokenRecuperacion;
     }
 
+    public Long getMeta() {
+        return meta;
+    }
+
+    public void setMeta(Long meta) {
+        this.meta = meta;
+    }
+
     public List<Usuario> getAmigos() {
         return amigos;
     }
@@ -144,11 +161,19 @@ public class Usuario {
         this.amigos.remove(amigo);
     }
 
-    public List<Genero> getGeneros() {
-        return generosFavoritos;
-    }
+//    public List<Genero> getGeneros() {
+//        return generosFavoritos;
+//    }
+//
+//    public void setGenero(Genero genero) {
+//        this.generosFavoritos.add(genero);
+//    }
 
-    public void setGenero(Genero genero) {
-        this.generosFavoritos.add(genero);
-    }
+//    public List<Autor> getAutores() {
+//        return autoresFavoritos;
+//    }
+//
+//    public void setAutor(Autor autor) {
+//        this.autoresFavoritos.add(autor);
+//    }
 }
