@@ -1,5 +1,8 @@
 package com.tallerwebi.dominio.repository;
 
+import com.tallerwebi.dominio.model.Autor;
+import com.tallerwebi.dominio.model.Genero;
+import com.tallerwebi.dominio.model.Libro;
 import com.tallerwebi.dominio.model.Usuario;
 
 import java.time.LocalDate;
@@ -18,5 +21,8 @@ public interface RepositorioUsuario {
     void guardarUsuarioOnboarding(Usuario usuario);
     Usuario buscarPorEmail(String email);
     Usuario buscarPorNombreUsuario(String nombreUsuario);
+//    void guardarGeneros(Long usuarioId, List<Long> generos);
+//    void guardarAutores(Long usuarioId, List<Long> autores);
+//    void guardarLibros(Long usuarioId, List<Long> libros);
 }
 

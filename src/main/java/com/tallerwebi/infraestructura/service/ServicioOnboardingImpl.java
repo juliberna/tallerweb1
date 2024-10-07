@@ -1,10 +1,7 @@
 package com.tallerwebi.infraestructura.service;
 
-import com.tallerwebi.dominio.model.Autor;
-import com.tallerwebi.dominio.model.Genero;
-import com.tallerwebi.dominio.model.Libro;
-import com.tallerwebi.dominio.model.Usuario;
-import com.tallerwebi.dominio.repository.RepositorioUsuario;
+import com.tallerwebi.dominio.model.*;
+import com.tallerwebi.dominio.repository.*;
 import com.tallerwebi.infraestructura.repository.RepositorioOnboardingImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +15,20 @@ public class ServicioOnboardingImpl implements ServicioOnboarding {
 
     private final RepositorioOnboardingImpl repositorioOnboarding;
     private RepositorioUsuario repositorioUsuario;
+    private RepositorioUsuarioGenero repositorioUsuarioGenero;
+    private RepositorioUsuarioAutor repositorioUsuarioAutor;
+    private RepositorioGenero repositorioGenero;
+    private RepositorioAutor repositorioAutor;
+
 
     @Autowired
-    public ServicioOnboardingImpl(RepositorioUsuario repositorioUsuario, RepositorioOnboardingImpl repositorioOnboarding) {
+    public ServicioOnboardingImpl(RepositorioUsuario repositorioUsuario, RepositorioOnboardingImpl repositorioOnboarding,RepositorioGenero repositorioGenero,RepositorioUsuarioGenero repositorioUsuarioGenero, RepositorioUsuarioAutor repositorioUsuarioAutor, RepositorioAutor repositorioAutor) {
         this.repositorioUsuario = repositorioUsuario;
         this.repositorioOnboarding = repositorioOnboarding;
+        this.repositorioGenero = repositorioGenero;
+        this.repositorioUsuarioGenero = repositorioUsuarioGenero;
+        this.repositorioUsuarioAutor = repositorioUsuarioAutor;
+        this.repositorioAutor = repositorioAutor;
     }
 
     @Override
@@ -37,30 +43,62 @@ public class ServicioOnboardingImpl implements ServicioOnboarding {
 
     @Override
     @Transactional
-    public void guardarGeneros(Long usuarioId, List<Long> generos) {
+    public void guardarGeneros(Long usuarioId, List<Long> generosIds) {
         try {
             Usuario usuario = repositorioUsuario.buscarUsuarioPorId(usuarioId);
-            for (Long generoId : generos) {
-                Genero genero = repositorioOnboarding.obtenerGeneroPorId(generoId);
-                usuario.setGenero(genero);
+            if (usuario == null) {
+                throw new IllegalArgumentException("Usuario no encontrado.");
+            }
+
+            for (Long generoId : generosIds) {
+                Genero genero = repositorioGenero.buscarGeneroPorId(generoId);
+                if (genero == null) {
+                    throw new IllegalArgumentException("Género no encontrado.");
+                }
+
+                // Verificar si la relación ya existe
+                UsuarioGenero usuarioGenero = repositorioUsuarioGenero.encontrarUsuarioIdYGeneroId(usuarioId, generoId);
+                if (usuarioGenero == null) {
+                    // Si no existe la relación, se crea una nueva
+                    usuarioGenero = new UsuarioGenero();
+                    usuarioGenero.setUsuario(usuario);
+                    usuarioGenero.setGenero(genero);
+
+                    repositorioUsuarioGenero.guardar(usuarioGenero);
+                }
             }
         } catch (Exception e) {
-
             System.out.println("Error al guardar géneros: " + e.getMessage());
         }
     }
 
     @Override
     @Transactional
-    public void guardarAutores(Long usuarioId, List<Long> autores) {
+    public void guardarAutores(Long usuarioId, List<Long> autoresIds) {
         try {
             Usuario usuario = repositorioUsuario.buscarUsuarioPorId(usuarioId);
-            for (Long autorId : autores) {
-                Autor autor = repositorioOnboarding.obtenerAutorPorId(autorId);
-                usuario.setAutor(autor);
+            if (usuario == null) {
+                throw new IllegalArgumentException("Usuario no encontrado.");
+            }
+
+            for (Long autorId : autoresIds) {
+                Autor autor = repositorioAutor.buscarAutorPorId(autorId);
+                if (autor == null) {
+                    throw new IllegalArgumentException("Autor no encontrado.");
+                }
+
+                // Verificar si la relación ya existe
+                UsuarioAutor usuarioAutor = repositorioUsuarioAutor.encontrarUsuarioIdYAutorId(usuarioId, autorId);
+                if (usuarioAutor == null) {
+                    // Si no existe la relación, se crea una nueva
+                    usuarioAutor = new UsuarioAutor();
+                    usuarioAutor.setUsuario(usuario);
+                    usuarioAutor.setAutor(autor);
+
+                    repositorioUsuarioAutor.guardar(usuarioAutor);
+                }
             }
         } catch (Exception e) {
-
             System.out.println("Error al guardar autores: " + e.getMessage());
         }
     }

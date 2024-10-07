@@ -12,8 +12,8 @@ public class Autor {
     private Long id;
     private String nombre;
 
-    @ManyToMany(mappedBy = "autoresFavoritos")
-    private Set<Usuario> usuarios = new HashSet<>();
+//    @ManyToMany(mappedBy = "autoresFavoritos")
+//    private Set<Usuario> usuarios = new HashSet<>();
 
 //    @ManyToMany
 //    @JoinTable(
@@ -45,12 +45,12 @@ public class Autor {
         this.nombre = nombre;
     }
 
-    public Set<Usuario> getUsuarios() {
-        return usuarios;
-    }
-
-    public void setUsuarios(Set<Usuario> usuarios) {
-        this.usuarios = usuarios;
-    }
+//    public Set<Usuario> getUsuarios() {
+//        return usuarios;
+//    }
+//
+//    public void setUsuarios(Set<Usuario> usuarios) {
+//        this.usuarios = usuarios;
+//    }
 
 }
