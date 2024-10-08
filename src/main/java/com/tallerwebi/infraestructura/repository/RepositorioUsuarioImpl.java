@@ -73,8 +73,6 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
             usuario.add(Restrictions.eq("id", id));
             Usuario usuarioEncontrado = (Usuario) usuario.uniqueResult();
             return usuarioEncontrado;
-
-
     }
 
     @PersistenceContext

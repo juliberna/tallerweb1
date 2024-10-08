@@ -99,7 +99,7 @@ public class ControladorLibro {
     }
 
     @RequestMapping(value = "/resena/{id}" , method = RequestMethod.GET)
-    public String mostrarResena(ModelMap model, @PathVariable Long id) {
+    public String mostrarResenia(ModelMap model, @PathVariable Long id) {
         try {
             Libro libro = servicioLibro.obtenerIdLibro(id);
             model.addAttribute("libro", libro);
