@@ -45,9 +45,9 @@
         <div class="review-section">
             <h2>Tu Reseña:</h2>
 
-            <p th:if="${usuarioLibro != null and usuarioLibro.resena != null}"
-               th:text="${usuarioLibro.resena}"></p>
-            <p th:if="${usuarioLibro == null or usuarioLibro.resena == null}">
+            <p th:if="${usuarioLibro != null and usuarioLibro.resenia != null}"
+               th:text="${usuarioLibro.resenia}"></p>
+            <p th:if="${usuarioLibro == null or usuarioLibro.resenia == null}">
                 Aún no has escrito una reseña.
             </p>
             <br>

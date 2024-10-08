@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class ControladorLogin {
@@ -58,6 +59,14 @@ public class ControladorLogin {
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public ModelAndView inicio() {
+        return new ModelAndView("redirect:/login");
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public ModelAndView logout(HttpSession session) {
+        // Invalida la session actual
+        session.invalidate();
+        // Redirige al login
         return new ModelAndView("redirect:/login");
     }
 }

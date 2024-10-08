@@ -17,7 +17,7 @@ public class UsuarioLibro {
 
     private String estadoDeLectura;
     private Integer puntuacion;
-    private String resena;
+    private String resenia;
 
 
     public Long getId() {
@@ -60,11 +60,11 @@ public class UsuarioLibro {
         this.puntuacion = puntuacion;
     }
 
-    public String getResena() {
-        return resena;
+    public String getResenia() {
+        return resenia;
     }
 
-    public void setResena(String reseña) {
-        this.resena = reseña;
+    public void setResenia(String resenia) {
+        this.resenia = resenia;
     }
 }

@@ -21,7 +21,7 @@ public class Libro {
     private String descripcion;
     private String genero;
     private String imagenUrl;
-    private String reseña;
+    private String resenia;
 
     public Libro() {}
 
@@ -106,12 +106,12 @@ public class Libro {
         this.imagenUrl = imagenUrl;
     }
 
-    public String getReseña() {
-        return reseña;
+    public String getResenia() {
+        return resenia;
     }
 
-    public void setReseña(String reseña) {
-        this.reseña = reseña;
+    public void setResenia(String resenia) {
+        this.resenia = resenia;
     }
 
     public String generarUrlWikipedia() {

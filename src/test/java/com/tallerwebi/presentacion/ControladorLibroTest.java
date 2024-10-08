@@ -124,7 +124,7 @@ public class ControladorLibroTest {
         when(servicioLibro.obtenerIdLibro(libroId)).thenReturn(libro);
 
         // When
-        String vista = controladorLibro.mostrarResena(new ModelMap(), libroId);
+        String vista = controladorLibro.mostrarResenia(new ModelMap(), libroId);
 
         // Then
         assertThat(vista, equalTo("resenaLibro"));

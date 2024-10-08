@@ -16,6 +16,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -66,8 +69,46 @@ public class RepositorioUsuarioLibroTest {
         assertThat(encontrado.getLibro().getId(), is(libro.getId()));
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    public void queSePuedaBuscarPorEstadoDeLectura() {
+        Usuario usuario = new Usuario();
+        usuario.setId(2L);
+        sessionFactory.getCurrentSession().save(usuario);
 
+        Libro libro1 = new Libro();
+        libro1.setId(1L);
+        sessionFactory.getCurrentSession().save(libro1);
 
+        Libro libro2 = new Libro();
+        libro2.setId(2L);
+        sessionFactory.getCurrentSession().save(libro2);
+
+        UsuarioLibro usuarioLibro1 = new UsuarioLibro();
+        usuarioLibro1.setUsuario(usuario);
+        usuarioLibro1.setLibro(libro1);
+        usuarioLibro1.setEstadoDeLectura("Leyendo");
+        repositorioUsuarioLibro.guardar(usuarioLibro1);
+
+        UsuarioLibro usuarioLibro2 = new UsuarioLibro();
+        usuarioLibro2.setUsuario(usuario);
+        usuarioLibro2.setLibro(libro2);
+        usuarioLibro2.setEstadoDeLectura("Leído");
+        repositorioUsuarioLibro.guardar(usuarioLibro2);
+
+        // Buscar libros con estado de lectura "Leyendo"
+        List<UsuarioLibro> libros = repositorioUsuarioLibro.buscarPorEstadoDeLectura("Leyendo", usuario);
+
+        // Verificar el tamaño de la lista
+        assertThat(libros.size(), is(1));
+
+        // Verificar que el libro recuperado es el correcto
+        assertThat(libros.get(0).getLibro().getId(), is(libro1.getId()));
+
+        // Verificar el estado de lectura del primer resultado
+        assertThat(libros.get(0).getEstadoDeLectura(), is("Leyendo"));
+    }
 
 
 }
