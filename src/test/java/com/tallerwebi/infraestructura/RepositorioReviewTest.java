@@ -3,7 +3,7 @@ package com.tallerwebi.infraestructura;
 import com.tallerwebi.dominio.model.*;
 
 
-import com.tallerwebi.infraestructura.repository.RepositorioReview;
+import com.tallerwebi.dominio.repository.RepositorioReview;
 
 import com.tallerwebi.integracion.config.HibernateTestConfig;
 import com.tallerwebi.integracion.config.SpringWebTestConfig;

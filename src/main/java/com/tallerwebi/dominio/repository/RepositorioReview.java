@@ -1,4 +1,4 @@
-package com.tallerwebi.infraestructura.repository;
+package com.tallerwebi.dominio.repository;
 
 import com.tallerwebi.dominio.model.Review;
 

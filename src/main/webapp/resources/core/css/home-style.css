@@ -228,3 +228,6 @@ select{
     border-radius: 10px;
     font-family: 'Franklin Gothic light', 'Arial Narrow', Arial, sans-serif;
 }
+.rating {
+     font-family: 'Segoe UI Symbol', 'Segoe UI Emoji', sans-serif;
+ }

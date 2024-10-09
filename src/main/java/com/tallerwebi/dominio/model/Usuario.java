@@ -25,6 +25,7 @@ public class Usuario {
     private String tokenRecuperacion;
     private Long meta;
 
+
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<UsuarioNotificacion> notificaciones;
 
