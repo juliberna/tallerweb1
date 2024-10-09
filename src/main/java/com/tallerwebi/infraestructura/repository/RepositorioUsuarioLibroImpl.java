@@ -52,4 +52,12 @@ public class RepositorioUsuarioLibroImpl implements RepositorioUsuarioLibro {
                 .add(Restrictions.eq("estadoDeLectura", estadoDeLectura))
                 .list();
     }
+
+    @Override
+    public List<UsuarioLibro> buscarLibroPorId(Long idLibro) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.createCriteria(UsuarioLibro.class)
+                .add(Restrictions.eq("libro.id", idLibro))
+                .list();
+    }
 }

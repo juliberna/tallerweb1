@@ -110,5 +110,44 @@ public class RepositorioUsuarioLibroTest {
         assertThat(libros.get(0).getEstadoDeLectura(), is("Leyendo"));
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    public void queSePuedaBuscarLibrosPorId() {
+        // Creo y guardo un usuario de prueba
+        Usuario usuario = new Usuario();
+        usuario.setId(2L);
+        sessionFactory.getCurrentSession().save(usuario); // Guardo usuario
 
+        // Creo y guardo un libro de prueba
+        Libro libro = new Libro();
+        libro.setId(1L);
+        sessionFactory.getCurrentSession().save(libro); // Guardo libro
+
+        // Creo y guardo un segundo libro de prueba
+        Libro otroLibro = new Libro();
+        otroLibro.setId(2L);
+        sessionFactory.getCurrentSession().save(otroLibro); // Guardo otro libro
+
+        // Creo dos registros de UsuarioLibro con el mismo libro pero diferente usuario o estado
+        UsuarioLibro usuarioLibro1 = new UsuarioLibro();
+        usuarioLibro1.setUsuario(usuario);
+        usuarioLibro1.setLibro(libro);
+        usuarioLibro1.setEstadoDeLectura("Leyendo");
+        repositorioUsuarioLibro.guardar(usuarioLibro1);
+
+        UsuarioLibro usuarioLibro2 = new UsuarioLibro();
+        usuarioLibro2.setUsuario(usuario);
+        usuarioLibro2.setLibro(otroLibro);
+        usuarioLibro2.setEstadoDeLectura("Leído");
+        repositorioUsuarioLibro.guardar(usuarioLibro2);
+
+        List<UsuarioLibro> resultados = repositorioUsuarioLibro.buscarLibroPorId(libro.getId());
+
+        // Verifico que se recupera solo un registro con el id del libro especificado
+        assertThat(resultados, hasSize(1)); // Verifico que solo hay un resultado
+        assertThat(resultados.get(0).getLibro().getId(), is(libro.getId())); // Verifico que el libro es el correcto
+
+
+    }
 }

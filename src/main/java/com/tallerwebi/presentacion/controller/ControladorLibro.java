@@ -66,8 +66,11 @@ public class ControladorLibro {
 
             Libro libro = servicioLibro.obtenerIdLibro(id);
             UsuarioLibro usuarioLibro = servicioUsuarioLibro.obtenerUsuarioLibro(userId, id);
+            Double promedioDePuntuacion = servicioUsuarioLibro.calcularPromedioDePuntuacion(id);
+
             model.addAttribute("libro", libro);
             model.addAttribute("usuarioLibro", usuarioLibro);
+            model.addAttribute("promedioDePuntuacion", promedioDePuntuacion);
             return "infoLibro";
         } catch (LibroNoEncontrado e) {
             model.addAttribute("error", e.getMessage());
