@@ -58,6 +58,9 @@
             <p th:if="${usuarioLibro == null or usuarioLibro.puntuacion == null}">
                 Aún no has puntuado este libro.
             </p>
+            <br>
+            <h3>Promedio de Puntuación:</h3>
+            <p th:text="'' + (${promedioDePuntuacion != null ? promedioDePuntuacion : '0'}) + ' estrellas'"></p>
         </div>
 </div>
 </div>

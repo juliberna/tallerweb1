@@ -78,5 +78,30 @@ public class ServicioUsuarioLibroImpl implements ServicioUsuarioLibro {
         return librosObtenidos;
     }
 
+    @Override
+    public Double calcularPromedioDePuntuacion(Long libroId) {
+        List<UsuarioLibro> usuariosLibro = repositorioUsuarioLibro.buscarLibroPorId(libroId);
+        if(usuariosLibro.isEmpty()){
+            return 0.0;
+        }
+
+        Integer cantidad = 0;
+        Integer suma = 0;
+
+        for(UsuarioLibro usuarioLibro : usuariosLibro){
+            if(usuarioLibro.getPuntuacion() != null){
+                suma += usuarioLibro.getPuntuacion();
+                cantidad++;
+            }
+
+        }
+
+        if(cantidad == 0){
+            return 0.0;
+        }
+
+        return (double)suma/cantidad;
+    }
+
 
 }
