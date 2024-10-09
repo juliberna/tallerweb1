@@ -2,6 +2,7 @@ package com.tallerwebi.infraestructura.repository;
 
 
 import com.tallerwebi.dominio.model.Review;
+import com.tallerwebi.dominio.repository.RepositorioReview;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.TreeSet;
 
 @Repository
 public class RepositorioReviewImpl implements RepositorioReview {

@@ -18,6 +18,7 @@ public class Usuario {
 
     private String tokenRecuperacion;
 
+
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<UsuarioLibro> usuarioLibros = new ArrayList<>();
 

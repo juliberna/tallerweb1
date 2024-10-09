@@ -12,8 +12,9 @@ public class Review {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "rating")
     private Rating rating;
 
@@ -22,10 +23,10 @@ public class Review {
 
 
     @Column(name = "likes_count", nullable = true)
-    private Integer likes = 0;
+    private Integer likes;
 
     @Column(name = "dislikes_count", nullable = true)
-    private Integer dislikes = 0;
+    private Integer dislikes;
 
     @Column(name = "publication_date", nullable = false)
     private LocalDateTime fechaPublicacion;

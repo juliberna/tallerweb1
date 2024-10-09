@@ -36,7 +36,7 @@
     <section class="left-panel">
         <div class="currently-reading">
             <h2>Actualmente leyendo</h2>
-            <img src="../../../resources/core/Images/default-portrait3.jpg" alt="Portada del libro" class="book-cover">
+            <img th:src="@{../../../resources/core/Images/default-portrait3.jpg}" alt="Portada del libro" class="book-cover">
             <h3>Título del libro</h3>
             <input type="text" placeholder="Buscar libro..." class="book-search">
         </div>
@@ -54,7 +54,7 @@
     <section class="recommendations">
         <h2>Recomendaciones</h2>
         <div class="book-recommendation">
-            <img src="../../../resources/core/Images/default-portrait4.jpg" alt="Portada del libro" class="book-cover">
+            <img th:src="@{../../../resources/core/Images/default-portrait4.jpg}" alt="Portada del libro" class="book-cover">
             <div class="book-details">
                 <h3>Título del libro 1</h3>
                 <p>Autor del libro 1</p>
@@ -64,7 +64,7 @@
         </div>
 
         <div class="book-recommendation">
-            <img src="../../../resources/core/Images/default-portrait2.jpg" alt="Portada del libro" class="book-cover">
+            <img th:src="@{../../../resources/core/Images/default-portrait2.jpg}" alt="Portada del libro" class="book-cover">
             <div class="book-details">
                 <h3>Título del libro 2</h3>
                 <p>Autor del libro 2</p>
@@ -79,58 +79,71 @@
 
     <section class="comments">
         <div class="comment-header">
-            <h2>Publicaciones</h2>
+            <h2>Reviews</h2>
             <select name="filter-comments" class="filter-comments">
                 <option value="all">Todas las publicaciones</option>
                 <option value="friends">Solo amigos</option>
             </select>
         </div>
-
-        <!-- Comentario con sistema de likes y dislikes -->
-        <div class="user-info">
-            <img src="../../../resources/core/Images/default-user.png" alt="Avatar del usuario" class="avatar">
-            <p id="username">Usuario</p>
+        <div th:if="${MensajeNoReviews}">
+            <p th:text="${MensajeNoReviews}"></p> <!-- Muestra el mensaje de la excepción -->
         </div>
-        <div class="comment">
-
-            <div class="book-info">
-                <img src="../../../resources/core/Images/default-portrait.jpg" alt="Portada del libro" class="book-cover">
-
+        <!-- review -->
+        <div th:each="review : ${reviews}">
+            <div class="user-info">
+                <img src="../../../resources/core/Images/default-user.png" alt="Avatar del usuario" class="avatar">
+                <p th:text="${review.usuario.getEmail()}">Usuario</p>
             </div>
-            <div class="comment-details">
-                <p>Nombre del libro</p>
-                <div class="rating">
-                    <span>⭐⭐⭐⭐⭐</span>
+            <div class="comment">
+                <div class="book-info">
+                    <img th:src="${review.libro.imagenUrl}" alt="Portada del libro" class="book-cover">
                 </div>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat laboriosam eum officia, sint deleniti incidunt recusandae corporis eligendi mollitia dicta aperiam, maiores omnis reprehenderit beatae iusto? Optio soluta molestias, quam ullam provident iure facilis nostrum vitae, sint aperiam asperiores officiis quis dolorum reprehenderit consequatur. Sit mollitia amet consequuntur, excepturi, vero cum error provident minima suscipit ducimus perferendis tempora laboriosam eum.</p>
-                <div class="likes-dislikes">
-                    <button id="like-button">
-                        <span id="like-icon">👍</span>
-                        <span id="like-count">0</span> Likes
-                    </button>
-                    <button id="dislike-button">
-                        <span id="dislike-icon">👎</span>
-                        <span id="dislike-count">0</span> Dislikes
-                    </button>
+                <div class="comment-details">
+                    <h4 th:text="${review.libro.getTitulo()}">Nombre del libro</h4>
+                    <div class="rating">
+                        <!--
+                        <span  th:if="${review.getRating().equals('UNA_ESTRELLA')}">&#11088;</span>
+                        <span  th:if="${review.getRating().equals('DOS_ESTRELLAS')}">&#11088; &#11088;</span>
+                        <span  th:if="${review.getRating().equals('TRES_ESTRELLAS')}">&#11088; &#11088; &#11088;</span>
+                        <span  th:if="${review.getRating().equals('CUATRO_ESTRELLAS')}">&#11088; &#11088; &#11088; &#11088;</span>
+                        <span  th:if="${review.getRating().equals('CINCO_ESTRELLAS')}">&#11088; &#11088; &#11088; &#11088; &#11088;</span>
+                           -->
+                        <span th:text="${review.getRating()}"></span>
+                    </div>
+                    <p th:text="${review.getTextoComentario()}">Lorem ipsum dolor sit amet...</p>
+                    <div class="likes-dislikes">
+                        <button id="like-button" class="like-button">
+                           <span >&#x1F44D;</span>
+                            <span th:text="${review.getLikes()}">0</span>
+                            <span>Likes</span>
+                        </button>
+                        <button id="dislike-button" class="dislike-button">
+                          <span >&#x1F44E;</span>
+                            <span th:text="${review.getDislikes()}">0</span>
+                            <span>Dislikes</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="comment-section">
+                <h3>Deja tu comentario</h3>
+                <textarea id="comment-input" placeholder="Escribí tu comentario acá"></textarea>
+                <button id="submit-comment">Enviar</button>
+
+                <div id="comments-container">
+                    <h3>Comentarios:</h3>
+                    <!-- Acá se muestran los comentarios -->
                 </div>
             </div>
         </div>
 
 
-        <div class="comment-section">
-            <h3>Deja tu comentario</h3>
-            <textarea id="comment-input" placeholder="Escribí tu comentario acá"></textarea>
-            <button id="submit-comment">Enviar</button>
 
-            <div id="comments-container">
-                <h3>Comentarios:</h3>
-                <!-- Acá se muestran los comentarios -->
-            </div>
-        </div>
     </section>
 </div>
 
 <script th:src="@{/js/main.js}"></script>
-<script th:src="@{/js/home-JS.js}"></script>
+
+<!-- <script th:src="@{/js/home-JS.js}"></script> -->
 </body>
 </html>
