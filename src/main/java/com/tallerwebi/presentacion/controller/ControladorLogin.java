@@ -41,6 +41,8 @@ public class ControladorLogin {
         if (usuarioBuscado != null) {
             request.getSession().setAttribute("ROL", usuarioBuscado.getRol());
             request.getSession().setAttribute("USERID", usuarioBuscado.getId());
+            request.getSession().setAttribute("USERNAME", usuarioBuscado.getNombre());
+            request.getSession().setAttribute("USERNICKNAME", usuarioBuscado.getNombreUsuario());
 
             System.out.println(usuarioBuscado.getTokenRecuperacion() + " token recuperacion");
             return new ModelAndView("redirect:/home");
