@@ -1,4 +1,4 @@
-package com.tallerwebi.integracion;
+package com.tallerwebi.infraestructura;
 
 import com.tallerwebi.integracion.config.HibernateTestConfig;
 import com.tallerwebi.integracion.config.SpringWebTestConfig;

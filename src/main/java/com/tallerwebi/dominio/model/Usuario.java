@@ -25,13 +25,9 @@ public class Usuario {
     private String tokenRecuperacion;
     private Long meta;
 
-    @ManyToMany
-    @JoinTable(
-            name = "usuario_usuario",
-            joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name = "amigo_id")
-    )
-    private List<Usuario> amigos = new ArrayList<>();
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<UsuarioNotificacion> notificaciones;
+
 
 //    @ManyToMany
 //    @JoinTable(
@@ -145,20 +141,12 @@ public class Usuario {
         this.meta = meta;
     }
 
-    public List<Usuario> getAmigos() {
-        return amigos;
+    public List<UsuarioNotificacion> getNotificaciones() {
+        return notificaciones;
     }
 
-    public void setAmigos(List<Usuario> amigos) {
-        this.amigos = amigos;
-    }
-
-    public void agregarAmigo(Usuario amigo) {
-        this.amigos.add(amigo);
-    }
-
-    public void eliminarAmigo(Usuario amigo) {
-        this.amigos.remove(amigo);
+    public void setNotificaciones(List<UsuarioNotificacion> notificaciones) {
+        this.notificaciones = notificaciones;
     }
 
 //    public List<Genero> getGeneros() {
