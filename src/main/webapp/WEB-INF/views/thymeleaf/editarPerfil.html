@@ -81,6 +81,11 @@
                         </div>
 
                         <div class="form-group mb-3">
+                            <label for="meta">Meta de libros</label>
+                            <input type="number" id="meta" class="form-control" th:field="*{meta}" required>
+                        </div>
+
+                        <div class="form-group mb-3">
                             <label for="biografia">Biografía</label>
                             <textarea id="biografia" class="form-control" th:field="*{biografia}"
                                       style="min-height: 120px;"></textarea>

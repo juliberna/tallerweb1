@@ -64,10 +64,17 @@ public class ControladorPerfil {
             model.addAttribute("usuario", usuario);
             List<UsuarioLibro> libros = servicioUsuarioLibro.buscarPorEstadoDeLectura(estadoDeLectura, usuario);
             model.addAttribute("libros", libros);
+
+            if (estadoDeLectura.equals("Leído")) {
+                Integer cantidadLibrosLeidos = libros.size();
+                model.addAttribute("cantidadLibrosLeidos", cantidadLibrosLeidos);
+            }
+
         } catch (UsuarioInexistente e) {
             return new ModelAndView("redirect:/login");
         } catch (ListaVacia e) {
             model.addAttribute("error", "No tiene libros con este estado");
+            model.addAttribute("cantidadLibrosLeidos", 0);
         }
 
         model.addAttribute("categoriaActual", estadoDeLectura);
@@ -130,7 +137,7 @@ public class ControladorPerfil {
         }
 
         // (solo jpg o png)
-        if (!imagenPerfil.isEmpty()&&!esFormatoValido(imagenPerfil.getContentType())) {
+        if (!imagenPerfil.isEmpty() && !esFormatoValido(imagenPerfil.getContentType())) {
             model.addAttribute("errorFormato", "El formato de la imagen debe ser JPG o PNG.");
             usuario.setImagenUrl(imagenActual);
             return true;

@@ -9,7 +9,8 @@
 
     <!-- custom style -->
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
-    <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <link rel="stylesheet" th:href="@{/css/perfil.css}">
+    <link rel="stylesheet" th:href="@{/css/home-style.css}">
 
     <!-- Path to jQuery -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -33,7 +34,7 @@
     <div class="perfil-container">
         <!-- Sección de información del usuario -->
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-3 ms-4">
                 <!-- Mostrar la imagen actual o la default si no existe -->
                 <div th:if="${usuario.imagenUrl} == null">
                     <img src="https://w7.pngwing.com/pngs/81/570/png-transparent-profile-logo-computer-icons-user-user-blue-heroes-logo-thumbnail.png"
@@ -46,17 +47,18 @@
                          style="width: 150px;">
                 </div>
                 <h2 class="mt-3" th:text="${usuario.nombreUsuario}"></h2>
-                <h3 class="mt-3" th:text="'Email: ' + ${usuario.email}"></h3>
+                <p class="mt-3" th:text="'Email: ' + ${usuario.email}"></p>
+                <p th:text="'Fecha nacimiento: ' + ${usuario.fechaNacimiento}"></p>
+                <p th:text="${usuario.meta} != null ? 'Meta de libros: ' + ${usuario.meta} : ''"></p>
                 <!-- La biografia al principio esta vacia, cuando el usuario edite el perfil podra agregar -->
                 <p th:text="${usuario.biografia} != null ? 'Bio: ' + ${usuario.biografia} : ''"></p>
-                <p th:text="'Fecha nacimiento: ' + ${usuario.fechaNacimiento}"></p>
                 <a th:href="@{/mostrarEditarPerfil/{id}(id=${usuario.id})}" class="btn btn-primary">Editar Perfil</a>
             </div>
 
-            <div class="col-md-8">
+            <div class="col-md-8 ms-3">
                 <!-- Estadísticas del usuario -->
                 <h3>Estadísticas</h3>
-                <div class="d-flex">
+                <div class="d-flex flex-column">
                     <!-- Acceso a estanterías -->
                     <div>
                         <h4>Tu estantería</h4>
@@ -73,29 +75,33 @@
                                th:classappend="${categoriaActual == 'Leído'} ? 'btn-primary text-white' : ''">Leído</a>
                         </div>
                     </div>
-                    <div class="ms-5">
-                        <h4>Progreso de Libros leídos en el año</h4>
-                        <div class="progress">
-                            <!-- Calcular la cantidad de libros leidos en el año dividido la meta * 100 para saber el % de progreso -->
-                            <!-- th:style="'width: ' + (${usuario.cantLibrosLeidos} / ${usuario.metaDeLibros} * 100) + '%;'" -->
-                            <!-- Hacer que la barra sea verde o roja de manera dinamica -->
-                            <!--  th:classappend="${usuario.cantLibrosLeidos >= usuario.metaDeLibros} ? 'bg-success' : 'bg-warning'"> -->
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 70%">
-                                <!-- th:text="${usuario.cantLibrosLeidos} + ' de ' + ${usuario.metaDeLibros} + ' libros leídos'" -->
-                                <span>10 de 12 libros leídos</span>
+                    <div th:if="${categoriaActual == 'Leído'}">
+                        <div class="mt-4">
+                            <h4>Progreso de Libros leídos en el año</h4>
+                            <div th:if="${usuario.meta} == null" class="alert alert-danger">
+                                <p><strong>Error:</strong> <span>No se establecio una meta</span></p>
                             </div>
+                            <div class="progress" th:if="${usuario.meta} != null">
+                                <!-- Calcular la cantidad de libros leidos en el año dividido la meta * 100 para saber el % de progreso -->
+                                <!-- Hacer que la barra sea verde o roja de manera dinamica -->
+                                <div class="progress-bar" role="progressbar"
+                                     th:style="'width: ' + (${cantidadLibrosLeidos} / ${usuario.meta} * 100) + '%;'"
+                                     th:classappend="${cantidadLibrosLeidos >= usuario.meta} ? 'bg-success' : 'bg-warning'">
+                                </div>
+                            </div>
+                            <p th:text="${cantidadLibrosLeidos} + ' de ' + ${usuario.meta} + ' libros leídos'"></p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Sección de libros actuales -->
-                <div class="row mt-5">
+                <div class="row mt-3">
+                    <h3 th:text="'Libros ' + ${categoriaActual == null ? 'leyendo' : categoriaActual}"></h3>
                     <div th:if="${error} != null" class="alert alert-danger">
                         <p><strong>Error:</strong> <span th:text="${error}"></span></p>
                     </div>
 
                     <div class="col-12" th:if="${error} == null">
-                        <h3 th:text="'Libros ' + ${categoriaActual == null ? 'leyendo' : categoriaActual}"></h3>
                         <div class="row">
                             <div class="col-md-4" th:each="usuarioLibro : ${libros}">
                                 <a th:href="@{/libro/detalle/{id}(id=${usuarioLibro.libro.id})}">
@@ -123,9 +129,8 @@
                     </div>
                 </div>
 
-
                 <!-- Sección de reseñas -->
-                <div th:if="${categoriaActual == 'Leído'}">
+                <div th:if="${categoriaActual == 'Leído'} and ${error} == null">
                     <h3 class="mt-4">Reseñas</h3>
                     <div class="list-group">
                         <!-- Iterar sobre los libros leídos con reseñas -->

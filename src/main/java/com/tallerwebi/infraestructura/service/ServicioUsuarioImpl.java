@@ -39,6 +39,7 @@ public class ServicioUsuarioImpl implements ServicioUsuario {
         // Actualizar los campos del usuario existente
         usuarioExistente.setNombreUsuario(usuarioActualizado.getNombreUsuario());
         usuarioExistente.setEmail(usuarioActualizado.getEmail());
+        usuarioExistente.setMeta(usuarioActualizado.getMeta());
         usuarioExistente.setBiografia(usuarioActualizado.getBiografia());
         usuarioExistente.setImagenUrl(usuarioActualizado.getImagenUrl());
 
