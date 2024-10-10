@@ -99,7 +99,6 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     public void guardarUsuario(Usuario usuario) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(usuario);
-        session.close();
     }
 
     @Override
