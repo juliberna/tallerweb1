@@ -11,7 +11,7 @@
         <h1 class="navbar-title2">Spring</h1>
         <ul class="navbar-links2">
             <li><a href="/spring/home">Home</a></li>
-            <li><a href="/spring/mis-libros">My Books</a></li>
+            <li><a th:href="@{/libro/misLibros}">My Books</a></li>
             <li><a href="/spring/explorar">Browse</a></li>
             <li><a href="/spring/comunidad">Community</a></li>
         </ul>
@@ -33,12 +33,21 @@
             <form th:action="@{/libro/cambiarEstadoDeLectura}" method="post" accept-charset="UTF-8">
                 <input type="hidden" th:value="${libro.id}" name="id"/>
                 <select name="status">
-                    <option th:value="'Quiero leer'" th:selected="${usuarioLibro != null and usuarioLibro.estadoDeLectura == 'Quiero leer'}">Quiero leer</option>
-                    <option th:value="'Leyendo'" th:selected="${usuarioLibro != null and usuarioLibro.estadoDeLectura == 'Leyendo'}">Leyendo</option>
-                    <option th:value="'Leído'" th:selected="${usuarioLibro != null and usuarioLibro.estadoDeLectura == 'Leído'}">Leído</option>
+                    <option th:value="'Quiero leer'"
+                            th:selected="${usuarioLibro != null and usuarioLibro.estadoDeLectura == 'Quiero leer'}">
+                        Quiero leer
+                    </option>
+                    <option th:value="'Leyendo'"
+                            th:selected="${usuarioLibro != null and usuarioLibro.estadoDeLectura == 'Leyendo'}">Leyendo
+                    </option>
+                    <option th:value="'Leído'"
+                            th:selected="${usuarioLibro != null and usuarioLibro.estadoDeLectura == 'Leído'}">Leído
+                    </option>
                 </select>
                 <button type="submit">Guardar</button>
-                <p><strong>Tu estado de lectura es:</strong> <span th:if="${usuarioLibro != null and usuarioLibro.estadoDeLectura != null}" th:text="${usuarioLibro.estadoDeLectura}"></span></p>
+                <p><strong>Tu estado de lectura es:</strong> <span
+                        th:if="${usuarioLibro != null and usuarioLibro.estadoDeLectura != null}"
+                        th:text="${usuarioLibro.estadoDeLectura}"></span></p>
             </form>
         </div>
 
@@ -62,7 +71,7 @@
             <h3>Promedio de Puntuación:</h3>
             <p th:text="'' + (${promedioDePuntuacion != null ? promedioDePuntuacion : '0'}) + ' estrellas'"></p>
         </div>
-</div>
+    </div>
 </div>
 </body>
 </html>

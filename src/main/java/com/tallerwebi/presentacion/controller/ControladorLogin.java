@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
 
 @Controller
 public class ControladorLogin {
@@ -21,7 +22,7 @@ public class ControladorLogin {
     private ServicioLogin servicioLogin;
 
     @Autowired
-    public ControladorLogin(ServicioLogin servicioLogin){
+    public ControladorLogin(ServicioLogin servicioLogin) {
         this.servicioLogin = servicioLogin;
     }
 
@@ -43,6 +44,7 @@ public class ControladorLogin {
             request.getSession().setAttribute("USERID", usuarioBuscado.getId());
             request.getSession().setAttribute("USERNAME", usuarioBuscado.getNombre());
             request.getSession().setAttribute("USERNICKNAME", usuarioBuscado.getNombreUsuario());
+            request.getSession().setAttribute("ANIOACTUAL", LocalDate.now().getYear());
 
             System.out.println(usuarioBuscado.getTokenRecuperacion() + " token recuperacion");
             return new ModelAndView("redirect:/home");

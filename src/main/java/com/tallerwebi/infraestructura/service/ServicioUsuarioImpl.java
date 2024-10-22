@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -23,7 +24,7 @@ public class ServicioUsuarioImpl implements ServicioUsuario {
     @Override
     public Usuario buscarUsuarioPorId(Long id) throws UsuarioInexistente {
         Usuario usuario = repositorioUsuario.buscarUsuarioPorId(id);
-        if(usuario == null)
+        if (usuario == null)
             throw new UsuarioInexistente();
 
         return usuario;
@@ -33,12 +34,15 @@ public class ServicioUsuarioImpl implements ServicioUsuario {
     public void actualizarUsuario(Long idUsuarioActual, Usuario usuarioActualizado) throws UsuarioInexistente {
         Usuario usuarioExistente = repositorioUsuario.buscarUsuarioPorId(idUsuarioActual);
 
-        if(usuarioExistente == null)
+        if (usuarioExistente == null)
             throw new UsuarioInexistente();
 
         // Actualizar los campos del usuario existente
+        usuarioExistente.setNombre(usuarioActualizado.getNombre());
         usuarioExistente.setNombreUsuario(usuarioActualizado.getNombreUsuario());
         usuarioExistente.setEmail(usuarioActualizado.getEmail());
+        usuarioExistente.setEdad(usuarioActualizado.getEdad());
+        usuarioExistente.setFechaNacimiento(usuarioActualizado.getFechaNacimiento());
         usuarioExistente.setMeta(usuarioActualizado.getMeta());
         usuarioExistente.setBiografia(usuarioActualizado.getBiografia());
         usuarioExistente.setImagenUrl(usuarioActualizado.getImagenUrl());
@@ -49,6 +53,22 @@ public class ServicioUsuarioImpl implements ServicioUsuario {
         } catch (Exception e) {
             throw new RuntimeException("Error al actualizar el usuario: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public List<Usuario> obtenerUsuarios() {
+        return repositorioUsuario.obtenerUsuarios();
+    }
+
+    @Override
+    public List<Usuario> obtenerUsuariosDesafio(Long userId) {
+        List<Usuario> usuariosDesafio = repositorioUsuario.obtenerUsuariosDesafio(userId);
+
+        if (usuariosDesafio.isEmpty()) {
+            System.out.println("Lista vacia");
+        }
+
+        return usuariosDesafio;
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -64,6 +65,10 @@ public class ServicioUsuarioLibroImpl implements ServicioUsuarioLibro {
         usuarioLibro.setPuntuacion(puntuacion);
         usuarioLibro.setResenia(resenia);
 
+        if (estadoDeLectura.equalsIgnoreCase("Leído")) {
+            usuarioLibro.setFechaLeido(LocalDate.now());
+        }
+
         // Guardo o actualizo la relación en la base de datos
         guardarUsuarioLibro(usuarioLibro);
     }
@@ -72,7 +77,7 @@ public class ServicioUsuarioLibroImpl implements ServicioUsuarioLibro {
     public List<UsuarioLibro> buscarPorEstadoDeLectura(String estadoDeLectura, Usuario usuario) throws ListaVacia {
         List<UsuarioLibro> librosObtenidos = repositorioUsuarioLibro.buscarPorEstadoDeLectura(estadoDeLectura, usuario);
 
-        if(librosObtenidos.isEmpty())
+        if (librosObtenidos.isEmpty())
             throw new ListaVacia();
 
         return librosObtenidos;
@@ -81,27 +86,36 @@ public class ServicioUsuarioLibroImpl implements ServicioUsuarioLibro {
     @Override
     public Double calcularPromedioDePuntuacion(Long libroId) {
         List<UsuarioLibro> usuariosLibro = repositorioUsuarioLibro.buscarLibroPorId(libroId);
-        if(usuariosLibro.isEmpty()){
+        if (usuariosLibro.isEmpty()) {
             return 0.0;
         }
 
         Integer cantidad = 0;
         Integer suma = 0;
 
-        for(UsuarioLibro usuarioLibro : usuariosLibro){
-            if(usuarioLibro.getPuntuacion() != null){
+        for (UsuarioLibro usuarioLibro : usuariosLibro) {
+            if (usuarioLibro.getPuntuacion() != null) {
                 suma += usuarioLibro.getPuntuacion();
                 cantidad++;
             }
 
         }
 
-        if(cantidad == 0){
+        if (cantidad == 0) {
             return 0.0;
         }
 
-        return (double)suma/cantidad;
+        return (double) suma / cantidad;
     }
 
+    @Override
+    public List<UsuarioLibro> buscarLibrosLeidosPorAño(Integer anio, Usuario usuario) throws ListaVacia {
+        List<UsuarioLibro> librosLeidos = repositorioUsuarioLibro.buscarLibrosLeidosPorAño(anio, usuario);
+
+        if (librosLeidos.isEmpty())
+            throw new ListaVacia();
+
+        return librosLeidos;
+    }
 
 }

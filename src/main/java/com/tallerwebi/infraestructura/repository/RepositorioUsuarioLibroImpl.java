@@ -8,11 +8,14 @@ import com.tallerwebi.dominio.repository.RepositorioUsuarioLibro;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -60,4 +63,24 @@ public class RepositorioUsuarioLibroImpl implements RepositorioUsuarioLibro {
                 .add(Restrictions.eq("libro.id", idLibro))
                 .list();
     }
+
+    @Override
+    public List<UsuarioLibro> buscarLibrosLeidosPorAño(Integer anio, Usuario usuario) {
+        Session session = sessionFactory.getCurrentSession();
+
+        // Definir el rango de fechas para el año actual
+        // 1 de enero del año actual
+        LocalDate inicioAnio = LocalDate.of(anio, 1, 1);
+        // 31 de diciembre del año actual
+        LocalDate finAnio = LocalDate.of(anio, 12, 31);
+
+        // Compara el campo anioLeido con el rango de fechas (inicioAnio, finAnio),
+        // devuelve los libros que fueron leídos durante ese año.
+        return session.createCriteria(UsuarioLibro.class)
+                .add(Restrictions.eq("usuario", usuario))
+                .add(Restrictions.eq("estadoDeLectura", "Leido"))
+                .add(Restrictions.between("fechaLeido", inicioAnio, finAnio))
+                .list();
+    }
+
 }

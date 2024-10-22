@@ -78,6 +78,7 @@
                 <div class="card-body">
                     <form id="onboardingFormMeta" th:action="@{/onboarding/guardarMeta}" method="post">
                         <input type="hidden" th:value="${userId}" name="usuarioId"/>
+                        <input type="hidden" name="redirectUrl" value="/onboarding/mostrarRegistroExitoso">
 
                         <div class="mb-3">
                             <label for="metaLibros" class="form-label">¿Cuál es tu meta de libros para este año?</label>

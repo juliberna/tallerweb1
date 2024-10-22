@@ -11,6 +11,7 @@ import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,22 +19,40 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.beans.PropertyEditorSupport;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
 public class ControladorPerfil {
 
     private ServicioUsuario servicioUsuario;
-    private ServicioUsuarioLibro servicioUsuarioLibro;
+
+    // Para que no de error el formato de las fechas cuando se edita el perfil
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) throws IllegalArgumentException {
+                setValue(LocalDate.parse(text, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            }
+
+            @Override
+            public String getAsText() {
+                LocalDate value = (LocalDate) getValue();
+                return value != null ? value.toString() : "";
+            }
+        });
+    }
 
     @Autowired
-    public ControladorPerfil(ServicioUsuarioLibro servicioUsuarioLibro, ServicioUsuario servicioUsuario) {
-        this.servicioUsuarioLibro = servicioUsuarioLibro;
+    public ControladorPerfil(ServicioUsuario servicioUsuario) {
         this.servicioUsuario = servicioUsuario;
     }
 
@@ -44,49 +63,21 @@ public class ControladorPerfil {
         try {
             Usuario usuario = servicioUsuario.buscarUsuarioPorId(id);
             model.addAttribute("usuario", usuario);
-            List<UsuarioLibro> libros = servicioUsuarioLibro.buscarPorEstadoDeLectura("Leyendo", usuario);
-            model.addAttribute("libros", libros);
 
         } catch (UsuarioInexistente e) {
             return new ModelAndView("redirect:/login");
-        } catch (ListaVacia e) {
-            model.addAttribute("error", "No tiene libros con este estado");
         }
+
         return new ModelAndView("perfil", model);
     }
 
-    @RequestMapping(value = "/perfil/{id}/estanteria")
-    public ModelAndView cambiarCategoria(@PathVariable Long id, @RequestParam("estado") String estadoDeLectura) {
+    @RequestMapping(value = "/mostrarEditarPerfil")
+    public ModelAndView mostrarEditarPerfil(HttpServletRequest request) {
         ModelMap model = new ModelMap();
-
+        HttpSession session = request.getSession();
+        Long idUsuario = (Long) session.getAttribute("USERID");
         try {
-            Usuario usuario = servicioUsuario.buscarUsuarioPorId(id);
-            model.addAttribute("usuario", usuario);
-            List<UsuarioLibro> libros = servicioUsuarioLibro.buscarPorEstadoDeLectura(estadoDeLectura, usuario);
-            model.addAttribute("libros", libros);
-
-            if (estadoDeLectura.equals("Leído")) {
-                Integer cantidadLibrosLeidos = libros.size();
-                model.addAttribute("cantidadLibrosLeidos", cantidadLibrosLeidos);
-            }
-
-        } catch (UsuarioInexistente e) {
-            return new ModelAndView("redirect:/login");
-        } catch (ListaVacia e) {
-            model.addAttribute("error", "No tiene libros con este estado");
-            model.addAttribute("cantidadLibrosLeidos", 0);
-        }
-
-        model.addAttribute("categoriaActual", estadoDeLectura);
-        return new ModelAndView("perfil", model);
-    }
-
-    @RequestMapping(value = "/mostrarEditarPerfil/{id}")
-    public ModelAndView mostrarEditarPerfil(@PathVariable Long id) {
-        ModelMap model = new ModelMap();
-
-        try {
-            Usuario usuario = servicioUsuario.buscarUsuarioPorId(id);
+            Usuario usuario = servicioUsuario.buscarUsuarioPorId(idUsuario);
             model.addAttribute("usuario", usuario);
             return new ModelAndView("editarPerfil", model);
         } catch (UsuarioInexistente e) {
@@ -135,6 +126,7 @@ public class ControladorPerfil {
             usuario.setImagenUrl(imagenActual);
             return false;
         }
+        System.out.println("La imagen no esta vacia");
 
         // (solo jpg o png)
         if (!imagenPerfil.isEmpty() && !esFormatoValido(imagenPerfil.getContentType())) {
@@ -143,12 +135,17 @@ public class ControladorPerfil {
             return true;
         }
 
+        System.out.println("La imagen es png o jpg");
+
         // Si el usuario tenía una imagen anterior, eliminarla del proyecto
         if (imagenActual != null && !imagenActual.isEmpty()) {
             eliminarImagen(imagenActual);
-            guardarNuevaImagen(usuario, imagenPerfil, idUsuarioActual);
+            System.out.println("Se elimina la imagen anterior");
         }
 
+        System.out.println("Validaciones hechas");
+
+        guardarNuevaImagen(usuario, imagenPerfil, idUsuarioActual);
         return false;
     }
 

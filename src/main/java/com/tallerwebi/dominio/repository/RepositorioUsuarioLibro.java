@@ -11,4 +11,5 @@ public interface RepositorioUsuarioLibro {
     void guardar(UsuarioLibro usuarioLibro);
     List<UsuarioLibro> buscarPorEstadoDeLectura(String estadoDeLectura, Usuario usuario);
     List<UsuarioLibro> buscarLibroPorId(Long idLibro);
+    List<UsuarioLibro> buscarLibrosLeidosPorAño(Integer anio, Usuario usuario);
 }

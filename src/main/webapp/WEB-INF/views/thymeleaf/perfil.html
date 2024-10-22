@@ -2,15 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${usuario.nombre} + ' - Perfil'"></title>
+    <title th:text="${usuario.nombreUsuario} + ' - Perfil'"></title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Boostrap core css -->
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
 
     <!-- custom style -->
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
-    <link rel="stylesheet" th:href="@{/css/perfil.css}">
-    <link rel="stylesheet" th:href="@{/css/home-style.css}">
 
     <!-- Path to jQuery -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -30,121 +28,63 @@
 <body>
 <div th:insert="navbar :: navbar"></div>
 
-<main class="main">
-    <div class="perfil-container">
-        <!-- Sección de información del usuario -->
-        <div class="row">
-            <div class="col-md-3 ms-4">
-                <!-- Mostrar la imagen actual o la default si no existe -->
-                <div th:if="${usuario.imagenUrl} == null">
-                    <img src="https://w7.pngwing.com/pngs/81/570/png-transparent-profile-logo-computer-icons-user-user-blue-heroes-logo-thumbnail.png"
-                         class="img-fluid rounded-circle" alt="Imagen de perfil"
-                         style="width: 150px;">
+<main role="main" class="container mt-2 pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header text-center text-white" style="background-color: #E18C78;">
+                    <h4 style="color:#ffffff" th:text="'Perfil de ' + ${usuario.nombreUsuario}"></h4>
                 </div>
-                <div th:if="${usuario.imagenUrl} != null">
-                    <img th:src="@{${usuario.imagenUrl}}"
-                         class="img-fluid rounded-circle" alt="Imagen de perfil"
-                         style="width: 150px;">
-                </div>
-                <h2 class="mt-3" th:text="${usuario.nombreUsuario}"></h2>
-                <p class="mt-3" th:text="'Email: ' + ${usuario.email}"></p>
-                <p th:text="'Fecha nacimiento: ' + ${usuario.fechaNacimiento}"></p>
-                <p th:text="${usuario.meta} != null ? 'Meta de libros: ' + ${usuario.meta} : ''"></p>
-                <!-- La biografia al principio esta vacia, cuando el usuario edite el perfil podra agregar -->
-                <p th:text="${usuario.biografia} != null ? 'Bio: ' + ${usuario.biografia} : ''"></p>
-                <a th:href="@{/mostrarEditarPerfil/{id}(id=${usuario.id})}" class="btn btn-primary">Editar Perfil</a>
-            </div>
-
-            <div class="col-md-8 ms-3">
-                <!-- Estadísticas del usuario -->
-                <h3>Estadísticas</h3>
-                <div class="d-flex flex-column">
-                    <!-- Acceso a estanterías -->
-                    <div>
-                        <h4>Tu estantería</h4>
-                        <div class="btn-group" role="group">
-                            <a th:href="@{/perfil/{id}/estanteria(id=${usuario.id}, estado='Quiero leer')}"
-                               class="btn btn-outline-primary"
-                               th:classappend="${categoriaActual == 'Quiero leer'} ? 'btn-primary text-white' : ''">Quiero
-                                leer</a>
-                            <a th:href="@{/perfil/{id}/estanteria(id=${usuario.id}, estado='Leyendo')}"
-                               class="btn btn-outline-primary"
-                               th:classappend="${categoriaActual == 'Leyendo'} ? 'btn-primary text-white' : ''">Leyendo</a>
-                            <a th:href="@{/perfil/{id}/estanteria(id=${usuario.id}, estado='Leído')}"
-                               class="btn btn-outline-primary"
-                               th:classappend="${categoriaActual == 'Leído'} ? 'btn-primary text-white' : ''">Leído</a>
+                <div class="card-body">
+                    <!-- Mostrar la imagen actual o la default si no existe -->
+                    <div th:if="${usuario.imagenUrl} == null">
+                        <img src="https://w7.pngwing.com/pngs/81/570/png-transparent-profile-logo-computer-icons-user-user-blue-heroes-logo-thumbnail.png"
+                             class="img-fluid rounded-circle" alt="Imagen de perfil"
+                             style="width: 150px;">
+                    </div>
+                    <div th:if="${usuario.imagenUrl} != null">
+                        <img th:src="@{${usuario.imagenUrl}}"
+                             class="img-fluid rounded-circle" alt="Imagen de perfil"
+                             style="width: 150px;">
+                    </div>
+                    <div class="form-group mb-3 mt-3">
+                        <label class="fw-bold">Nombre Completo</label>
+                        <p th:text="${usuario.nombre}"></p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Nombre de Usuario</label>
+                        <p th:text="${usuario.nombreUsuario}"></p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Email</label>
+                        <p th:text="${usuario.email}"></p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Edad</label>
+                        <p th:text="${usuario.edad}"></p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Fecha de Nacimiento</label>
+                        <p th:text="${usuario.fechaNacimiento}"></p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Meta de libros</label>
+                        <p th:text="${usuario.meta}"></p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Biografía</label>
+                        <p th:text="${usuario.biografia}"></p>
+                    </div>
+                    <div class="mt-5 text-center">
+                        <div th:if="${usuario.id} == ${#httpSession.getAttribute('USERID')}">
+                            <a th:href="@{/mostrarEditarPerfil}" class="btn btn-primary">Editar
+                                Perfil</a>
                         </div>
-                    </div>
-                    <div th:if="${categoriaActual == 'Leído'}">
-                        <div class="mt-4">
-                            <h4>Progreso de Libros leídos en el año</h4>
-                            <div th:if="${usuario.meta} == null" class="alert alert-danger">
-                                <p><strong>Error:</strong> <span>No se establecio una meta</span></p>
-                            </div>
-                            <div class="progress" th:if="${usuario.meta} != null">
-                                <!-- Calcular la cantidad de libros leidos en el año dividido la meta * 100 para saber el % de progreso -->
-                                <!-- Hacer que la barra sea verde o roja de manera dinamica -->
-                                <div class="progress-bar" role="progressbar"
-                                     th:style="'width: ' + (${cantidadLibrosLeidos} / ${usuario.meta} * 100) + '%;'"
-                                     th:classappend="${cantidadLibrosLeidos >= usuario.meta} ? 'bg-success' : 'bg-warning'">
-                                </div>
-                            </div>
-                            <p th:text="${cantidadLibrosLeidos} + ' de ' + ${usuario.meta} + ' libros leídos'"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sección de libros actuales -->
-                <div class="row mt-3">
-                    <h3 th:text="'Libros ' + ${categoriaActual == null ? 'leyendo' : categoriaActual}"></h3>
-                    <div th:if="${error} != null" class="alert alert-danger">
-                        <p><strong>Error:</strong> <span th:text="${error}"></span></p>
-                    </div>
-
-                    <div class="col-12" th:if="${error} == null">
-                        <div class="row">
-                            <div class="col-md-4" th:each="usuarioLibro : ${libros}">
-                                <a th:href="@{/libro/detalle/{id}(id=${usuarioLibro.libro.id})}">
-                                    <div class="card mb-3">
-                                        <!-- Imagen del libro -->
-                                        <img th:src="${usuarioLibro.libro.imagenUrl}"
-                                             class="card-img-top" alt="Portada del libro">
-                                        <div class="card-body">
-                                            <h5 class="card-title" th:text="${usuarioLibro.libro.titulo}"></h5>
-                                            <p class="card-text" th:text="'Autor: ' + ${usuarioLibro.libro.autor}"></p>
-
-                                            <!-- Barra de progreso de lectura -->
-                                            <div class="progress">
-                                                <!-- th:style="'width:' + ${libro.progreso} + '%'" -->
-                                                <!-- th:text="${libro.progreso + '% leído'}" -->
-                                                <div class="progress-bar" role="progressbar" style="width: 50%">
-                                                    50% leído
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sección de reseñas -->
-                <div th:if="${categoriaActual == 'Leído'} and ${error} == null">
-                    <h3 class="mt-4">Reseñas</h3>
-                    <div class="list-group">
-                        <!-- Iterar sobre los libros leídos con reseñas -->
-                        <div th:each="usuarioLibro : ${libros}">
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <!-- Mostrar el título del libro -->
-                                <h5 th:text="${usuarioLibro.libro.titulo}"></h5>
-                                <!-- Mostrar la reseña -->
-                                <p th:if="${usuarioLibro.resenia != null}"
-                                   th:text="${usuarioLibro.resenia}">Reseña del libro</p>
-                                <p th:if="${usuarioLibro.resenia == null}">
-                                    No ha dado reseña de este libro
-                                </p>
-                            </a>
+                        <div th:if="${usuario.id} != ${#httpSession.getAttribute('USERID')}">
+                            <form th:action="@{/solicitud-amistad/{id}(id=${usuario.id})}" method="post"
+                                  accept-charset="UTF-8">
+                                <button type="submit" class="btn btn-primary">Enviar solicitud de amistad</button>
+                            </form>
                         </div>
                     </div>
                 </div>

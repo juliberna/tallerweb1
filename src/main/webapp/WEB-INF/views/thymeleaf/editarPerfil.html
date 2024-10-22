@@ -65,8 +65,14 @@
 
                         <!-- Otros campos del perfil -->
                         <div class="form-group mb-3">
+                            <label for="nombre">Nombre Completo</label>
+                            <input type="text" id="nombre" class="form-control" th:field="*{nombre}" required>
+                        </div>
+
+                        <div class="form-group mb-3">
                             <label for="nombreUsuario">Nombre de Usuario</label>
-                            <input type="text" id="nombreUsuario" class="form-control" th:field="*{nombreUsuario}" required>
+                            <input type="text" id="nombreUsuario" class="form-control" th:field="*{nombreUsuario}"
+                                   required>
                             <div th:if="${errorNombreUsuario} != null" style="color:red;">
                                 <p th:text="${errorNombreUsuario}"></p>
                             </div>
@@ -78,6 +84,16 @@
                             <div th:if="${errorEmail} != null" style="color:red;">
                                 <p th:text="${errorEmail}"></p>
                             </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="edad">Edad</label>
+                            <input type="number" id="edad" class="form-control" th:field="*{edad}" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="fechaNacimiento">Fecha de Nacimiento</label>
+                            <input type="date" id="fechaNacimiento" class="form-control" th:field="*{fechaNacimiento}" required>
                         </div>
 
                         <div class="form-group mb-3">

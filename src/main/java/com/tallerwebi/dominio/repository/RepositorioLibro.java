@@ -8,5 +8,4 @@ public interface RepositorioLibro {
     List<Libro> buscar(String query);
     Libro buscarLibroPorId(Long id);
     void actualizarLibro(Libro libro);
-    List<Libro> buscarPorEstadoDeLectura(String estadoDeLectura);
 }

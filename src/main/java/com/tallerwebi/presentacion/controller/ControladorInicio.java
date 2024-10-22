@@ -2,9 +2,15 @@ package com.tallerwebi.presentacion.controller;
 
 import com.tallerwebi.dominio.excepcion.ListaDeReviewsVacias;
 import com.tallerwebi.dominio.excepcion.ListaVacia;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.model.Review;
+import com.tallerwebi.dominio.model.Usuario;
+import com.tallerwebi.dominio.model.UsuarioLibro;
 import com.tallerwebi.dominio.repository.RepositorioReview;
 import com.tallerwebi.infraestructura.service.ServicioInicio;
+import com.tallerwebi.infraestructura.service.ServicioUsuario;
+import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
+import com.tallerwebi.infraestructura.service.ServicioUsuarioLibroImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,8 +18,13 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -21,30 +32,44 @@ import java.util.List;
 public class ControladorInicio {
 
     private final ServicioInicio servicioInicio;
+    private final ServicioUsuario servicioUsuario;
+    private final ServicioUsuarioLibro servicioUsuarioLibro;
 
     @Autowired
-    public ControladorInicio(ServicioInicio servicioInicio) {
+    public ControladorInicio(ServicioInicio servicioInicio, ServicioUsuario servicioUsuario, ServicioUsuarioLibro servicioUsuarioLibro) {
         this.servicioInicio = servicioInicio;
+        this.servicioUsuario = servicioUsuario;
+        this.servicioUsuarioLibro = servicioUsuarioLibro;
     }
 
     @GetMapping("/home")
-    public String mostrarHome(Model model) {
+    public String mostrarHome(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Long userId = (Long) session.getAttribute("USERID");
+        Integer anioActual = (Integer) session.getAttribute("ANIOACTUAL");
         try {
+            Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
+            model.addAttribute("usuario", usuario);
+            List<UsuarioLibro> librosLeidos = servicioUsuarioLibro.buscarLibrosLeidosPorAño(anioActual, usuario);
+            Integer cantidadLibrosLeidos = librosLeidos.size();
+            model.addAttribute("cantidadLibrosLeidos", cantidadLibrosLeidos);
+
+            int porcentajeLibrosLeidos = (int) Math.round((double) cantidadLibrosLeidos / (double) usuario.getMeta() * 100);
+            model.addAttribute("porcentajeLibrosLeidos", porcentajeLibrosLeidos);
+
             List<Review> reviews = servicioInicio.cargarTodasLasReviews();
             model.addAttribute("reviews", reviews);
+        } catch (UsuarioInexistente e) {
+            return "redirect:/login";
         } catch (ListaDeReviewsVacias ex) {
             model.addAttribute("MensajeNoReviews", ex.getMessage());
+        } catch (ListaVacia e) {
+            model.addAttribute("cantidadLibrosLeidos", 0);
+            model.addAttribute("porcentajeLibrosLeidos", 0);
         }
 
         return "home";
     }
-
-
-
-
-
-
-
 
 
 }
