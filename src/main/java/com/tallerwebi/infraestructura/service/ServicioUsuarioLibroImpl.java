@@ -1,6 +1,8 @@
 package com.tallerwebi.infraestructura.service;
 
+import com.tallerwebi.dominio.excepcion.LibroNoEncontrado;
 import com.tallerwebi.dominio.excepcion.ListaVacia;
+import com.tallerwebi.dominio.excepcion.PaginasExcedidas;
 import com.tallerwebi.dominio.model.Libro;
 import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.dominio.model.UsuarioLibro;
@@ -101,6 +103,41 @@ public class ServicioUsuarioLibroImpl implements ServicioUsuarioLibro {
         }
 
         return (double)suma/cantidad;
+    }
+
+    @Override
+    public List<UsuarioLibro> obtenerReseniaDeUsuarioLibro(Long usuarioId, Long libroId) {
+        return repositorioUsuarioLibro.obtenerReseniasDeOtrosUsuarios(usuarioId, libroId);
+    }
+
+    @Override
+    public void actualizarPaginasLeidas(Long usuarioId, Long libroId, Integer paginasLeidas) throws PaginasExcedidas {
+        UsuarioLibro usuarioLibro = obtenerUsuarioLibro(usuarioId, libroId);
+        Libro libro = repositorioLibro.buscarLibroPorId(libroId);
+
+        if(libro == null){
+            throw new LibroNoEncontrado("Libro no encontrado");
+        }
+
+        if(paginasLeidas > libro.getCantidadDePaginas()){
+            throw new PaginasExcedidas("Error. " + libro.getTitulo() +  " tiene " + libro.getCantidadDePaginas() + " páginas");
+        }
+
+        usuarioLibro.setCantidadDePaginas(paginasLeidas);
+        guardarUsuarioLibro(usuarioLibro);
+    }
+
+    @Override
+    public Double calcularProgresoDeLectura(Long usuarioId, Long libroId, Integer cantidadDePaginasLeidas) {
+        UsuarioLibro usuarioLibro = obtenerUsuarioLibro(usuarioId, libroId);
+        Libro libro = repositorioLibro.buscarLibroPorId(libroId);
+
+        if(libro == null || libro.getCantidadDePaginas() == null || usuarioLibro == null){
+            return 0.0;
+        }
+
+        double progreso = (double) cantidadDePaginasLeidas/libro.getCantidadDePaginas()*100;
+        return Math.min(progreso, 100.0);
     }
 
 

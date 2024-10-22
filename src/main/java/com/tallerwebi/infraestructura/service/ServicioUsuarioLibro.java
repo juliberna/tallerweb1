@@ -13,4 +13,7 @@ public interface ServicioUsuarioLibro {
     void crearOActualizarUsuarioLibro(Long usuarioId, Long libroId, String estadoDeLectura, Integer puntuacion, String reseña);
     List<UsuarioLibro> buscarPorEstadoDeLectura(String estadoDeLectura, Usuario usuario) throws ListaVacia;
     Double calcularPromedioDePuntuacion(Long libroId);
+    List<UsuarioLibro> obtenerReseniaDeUsuarioLibro(Long usuarioId, Long libroId);
+    void actualizarPaginasLeidas(Long usuarioId, Long libroId, Integer paginasLeidas);
+    Double calcularProgresoDeLectura(Long usuarioId, Long libroId, Integer cantidadDePaginasLeidas);
 }
