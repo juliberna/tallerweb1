@@ -20,6 +20,15 @@ public class UsuarioLibro {
     private Integer puntuacion;
     private String resenia;
     private LocalDate fechaLeido;
+    private Integer cantidadDePaginas;
+
+    public Integer getCantidadDePaginas() {
+        return cantidadDePaginas;
+    }
+
+    public void setCantidadDePaginas(Integer cantidadDePaginas) {
+        this.cantidadDePaginas = cantidadDePaginas;
+    }
 
     public Long getId() {
         return id;

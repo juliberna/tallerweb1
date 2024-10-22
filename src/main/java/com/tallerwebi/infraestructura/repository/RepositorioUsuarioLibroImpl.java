@@ -1,17 +1,12 @@
 package com.tallerwebi.infraestructura.repository;
 
-import com.tallerwebi.dominio.model.Libro;
 import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.dominio.model.UsuarioLibro;
-import com.tallerwebi.dominio.repository.RepositorioUsuario;
 import com.tallerwebi.dominio.repository.RepositorioUsuarioLibro;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -62,6 +57,23 @@ public class RepositorioUsuarioLibroImpl implements RepositorioUsuarioLibro {
         return session.createCriteria(UsuarioLibro.class)
                 .add(Restrictions.eq("libro.id", idLibro))
                 .list();
+    }
+
+    @Override
+    public List<UsuarioLibro> obtenerReseniasDeOtrosUsuarios(Long idUsuarioActual, Long idLibro) {
+        Session session = sessionFactory.getCurrentSession();
+
+        Criteria criteria = session.createCriteria(UsuarioLibro.class);
+
+        // Filtro por el libro específico
+        criteria.add(Restrictions.eq("libro.id", idLibro));
+
+        // Excluyo las reseñas del usuario actual
+        criteria.add(Restrictions.ne("usuario.id", idUsuarioActual));
+
+        // Retorno la lista de resultados (objetos UsuarioLibro)
+        return criteria.list();
+
     }
 
     @Override

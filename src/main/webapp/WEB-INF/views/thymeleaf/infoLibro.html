@@ -25,6 +25,7 @@
         <p><strong>Autor:</strong> <span th:text="${libro.autor}"></span></p>
         <p><strong>Descripción:</strong> <span th:text="${libro.descripcion}"></span></p>
         <p><strong>Género:</strong> <span th:text="${libro.genero}"></span></p>
+        <p><strong>Páginas:</strong> <span th:text="${libro.cantidadDePaginas}"></span></p>
     </div>
 
     <div class="book-interactions">
@@ -44,10 +45,30 @@
                             th:selected="${usuarioLibro != null and usuarioLibro.estadoDeLectura == 'Leído'}">Leído
                     </option>
                 </select>
+
+                <!-- Campo de páginas leídas -->
+                <div th:if="${usuarioLibro != null and usuarioLibro.estadoDeLectura == 'Leyendo'}">
+                    <label for="paginasLeidas">Páginas leídas:</label>
+                    <input type="number" name="cantidadDePaginasLeidas" id="paginasLeidas" min="0"
+                           th:value="${usuarioLibro.cantidadDePaginas}" />
+                    <br>
+                    <div class="progress-bar">
+                        <div class="progress" th:style="'width: ' + ${progreso} + '%;'" ></div>
+                    </div>
+                    <p th:text="'Progreso: ' + ${progreso} + '%'"></p>
+                </div>
+                <br>
+
+
+
+                <div th:if="${error != null}" style="color: red;">
+                    <p th:text="${error}"></p>
+                </div>
+                <br>
+
                 <button type="submit">Guardar</button>
-                <p><strong>Tu estado de lectura es:</strong> <span
-                        th:if="${usuarioLibro != null and usuarioLibro.estadoDeLectura != null}"
-                        th:text="${usuarioLibro.estadoDeLectura}"></span></p>
+                <br>
+                <p><strong>Tu estado de lectura es:</strong> <span th:if="${usuarioLibro != null and usuarioLibro.estadoDeLectura != null}" th:text="${usuarioLibro.estadoDeLectura}"></span></p>
             </form>
         </div>
 
@@ -71,7 +92,16 @@
             <h3>Promedio de Puntuación:</h3>
             <p th:text="'' + (${promedioDePuntuacion != null ? promedioDePuntuacion : '0'}) + ' estrellas'"></p>
         </div>
-    </div>
+
+        <h2>Reseñas de otros usuarios</h2>
+        <ul>
+            <li th:each="resenia : ${reseniasDeOtrosUsuarios}" style="margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #ddd; background-color: #fff; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <strong th:text="${resenia.usuario.nombre}"></strong> escribió:
+                <p th:text="${resenia.resenia}"></p>
+                <span>Puntuación: <span th:text="${resenia.puntuacion}"></span></span>
+            </li>
+        </ul>
+</div>
 </div>
 </body>
 </html>

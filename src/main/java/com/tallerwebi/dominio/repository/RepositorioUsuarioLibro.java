@@ -12,4 +12,5 @@ public interface RepositorioUsuarioLibro {
     List<UsuarioLibro> buscarPorEstadoDeLectura(String estadoDeLectura, Usuario usuario);
     List<UsuarioLibro> buscarLibroPorId(Long idLibro);
     List<UsuarioLibro> buscarLibrosLeidosPorAño(Integer anio, Usuario usuario);
+    List<UsuarioLibro> obtenerReseniasDeOtrosUsuarios(Long idUsuarioActual, Long idLibro);
 }

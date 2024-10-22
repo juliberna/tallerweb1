@@ -151,3 +151,19 @@ button:hover {
 .navbar-search3 input::placeholder {
     color: #bbb;
 }
+.progress-bar {
+    width: 100%; /* O el valor deseado, como 80% */
+    max-width: 400px; /* Establece un ancho máximo */
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 10px 0; /* Espaciado superior e inferior */
+}
+
+.progress {
+    height: 20px; /* Altura de la barra */
+    background-color: #aaab60;
+    width: 0; /* Este valor se actualizará con Thymeleaf */
+    transition: width 0.5s; /* Transición suave al cambiar el ancho */
+}
+

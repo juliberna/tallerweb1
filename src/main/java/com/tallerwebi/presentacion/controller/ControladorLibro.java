@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -73,10 +75,19 @@ public class ControladorLibro {
             Libro libro = servicioLibro.obtenerIdLibro(id);
             UsuarioLibro usuarioLibro = servicioUsuarioLibro.obtenerUsuarioLibro(userId, id);
             Double promedioDePuntuacion = servicioUsuarioLibro.calcularPromedioDePuntuacion(id);
+            List<UsuarioLibro> reseniasDeOtrosUsuarios = servicioUsuarioLibro.obtenerReseniaDeUsuarioLibro(userId, id);
+
+            double progreso = 0.0;
+            if(usuarioLibro != null && usuarioLibro.getCantidadDePaginas() != null){
+                progreso = servicioUsuarioLibro.calcularProgresoDeLectura(userId, id, usuarioLibro.getCantidadDePaginas());
+            }
 
             model.addAttribute("libro", libro);
             model.addAttribute("usuarioLibro", usuarioLibro);
             model.addAttribute("promedioDePuntuacion", promedioDePuntuacion);
+            model.addAttribute("reseniasDeOtrosUsuarios", reseniasDeOtrosUsuarios);
+            model.addAttribute("progreso", progreso);
+
             return "infoLibro";
         } catch (LibroNoEncontrado e) {
             model.addAttribute("error", e.getMessage());
@@ -85,18 +96,28 @@ public class ControladorLibro {
     }
 
     @RequestMapping(value = "/cambiarEstadoDeLectura", method = RequestMethod.POST)
-    public String cambiarEstadoDeLectura(ModelMap model, @RequestParam Long id, @RequestParam String status, RedirectAttributes redirectAttributes) {
+    public String cambiarEstadoDeLectura( ModelMap model, @RequestParam Long id, @RequestParam String status, @RequestParam(required = false) Integer cantidadDePaginasLeidas , RedirectAttributes redirectAttributes) {
 
         ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = attr.getRequest();
         HttpSession session = request.getSession();
         Long userId = (Long) session.getAttribute("USERID");
         try {
+            Libro libro = servicioLibro.obtenerIdLibro(id);
             // Actualizar o crear la relación entre usuario y libro con el nuevo estado de lectura
             servicioUsuarioLibro.crearOActualizarUsuarioLibro(userId, id, status, null, null);
 
             if (status.equals("Leído")) {
                 return "redirect:/libro/resena/" + id + "?usuarioId=" + userId;
+            }
+
+            if(status.equals("Leyendo")){
+                servicioUsuarioLibro.actualizarPaginasLeidas(userId, id, cantidadDePaginasLeidas);
+            }
+
+            if(status.equals("Leyendo") && cantidadDePaginasLeidas > libro.getCantidadDePaginas()){
+                redirectAttributes.addFlashAttribute("error", "Páginas leídas no pueden exceder la cantidad total de páginas del libro.");
+                return "redirect:/libro/detalle/" + id + "?usuarioId=" + userId;
             }
 
             redirectAttributes.addFlashAttribute("mensaje", "Tu estado de lectura es: " + status);
