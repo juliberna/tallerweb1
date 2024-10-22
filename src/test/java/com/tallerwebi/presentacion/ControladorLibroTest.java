@@ -106,9 +106,10 @@ public class ControladorLibroTest {
         // Given
         Long libroId = 1L;
         String nuevoEstado = "Leído";
+        Integer cantidadDePaginas = 520;
 
         // When
-        String vista = controladorLibro.cambiarEstadoDeLectura(new ModelMap(), libroId, nuevoEstado, new RedirectAttributesModelMap());
+        String vista = controladorLibro.cambiarEstadoDeLectura(new ModelMap(), libroId, nuevoEstado, cantidadDePaginas ,new RedirectAttributesModelMap());
 
         // Then
         assertThat(vista, equalTo("redirect:/libro/resena/" + libroId + "?usuarioId=" + userId));

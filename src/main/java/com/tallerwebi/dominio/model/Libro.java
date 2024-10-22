@@ -22,9 +22,17 @@ public class Libro {
     private String genero;
     private String imagenUrl;
     private String resenia;
+    private Integer cantidadDePaginas;
 
     public Libro() {}
 
+    public Integer getCantidadDePaginas() {
+        return cantidadDePaginas;
+    }
+
+    public void setCantidadDePaginas(Integer cantidadDePaginas) {
+        this.cantidadDePaginas = cantidadDePaginas;
+    }
 
     public Long getId() {
         return id;

@@ -60,4 +60,21 @@ public class RepositorioUsuarioLibroImpl implements RepositorioUsuarioLibro {
                 .add(Restrictions.eq("libro.id", idLibro))
                 .list();
     }
+
+    @Override
+    public List<UsuarioLibro> obtenerReseniasDeOtrosUsuarios(Long idUsuarioActual, Long idLibro) {
+        Session session = sessionFactory.getCurrentSession();
+
+        Criteria criteria = session.createCriteria(UsuarioLibro.class);
+
+        // Filtro por el libro específico
+        criteria.add(Restrictions.eq("libro.id", idLibro));
+
+        // Excluyo las reseñas del usuario actual
+        criteria.add(Restrictions.ne("usuario.id", idUsuarioActual));
+
+        // Retorno la lista de resultados (objetos UsuarioLibro)
+        return criteria.list();
+
+    }
 }
