@@ -137,7 +137,7 @@ public class ServicioUsuarioLibroImpl implements ServicioUsuarioLibro {
         }
 
         double progreso = (double) cantidadDePaginasLeidas/libro.getCantidadDePaginas()*100;
-        return Math.min(progreso, 100.0);
+        return (double) Math.round(Math.min(progreso, 100.0));
     }
 
 
