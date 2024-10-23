@@ -30,13 +30,70 @@
 </head>
 <body>
 <!-- Barra de navegación -->
-<div th:insert="navbar :: navbar"> </div>
+<div th:insert="navbar :: navbar"></div>
 
 <div class="container">
     <section class="left-panel">
+        <!-- 2024 Reading Challenge -->
+        <div class="card mb-3">
+            <h4 class="card-title text-center">
+                <span th:text="${#httpSession.getAttribute('ANIOACTUAL')}"></span>
+                <br>
+                Desafio de libros
+            </h4>
+            <div class="d-flex align-items-center justify-content-around mb-3">
+                <div class="badge bg-dark text-center p-3 d-flex flex-column align-items-center ms-2"
+                     style="width: 80px;">
+                    <span class="h5 text-white" th:text="${#httpSession.getAttribute('ANIOACTUAL')}"></span>
+                    <img src="https://s.gr-assets.com/assets/challenges/yearly/img_RCBook-626ef5100b911207af0c4d84f02df03a.svg"
+                         alt="Challenge Badge" class="img-fluid mx-auto d-block">
+                    <div class="mt-2 text-center">
+                        <div>DESAFIO</div>
+                        <div>DE LIBROS</div>
+                    </div>
+                </div>
+
+                <!-- Sección si no hay meta establecida -->
+                <div th:if="${usuario.meta} == null">
+                    <form th:action="@{/onboarding/guardarMeta}" method="post">
+                        <input type="hidden" name="redirectUrl" value="/desafios/desafio-libros">
+
+                        <p class="small">Quiero leer</p>
+                        <input type="number" id="metaLibros" name="metaLibros" required min="1" style="width: 50px; height: 30px">
+                        <p class="small" th:text="'libros en ' + ${#httpSession.getAttribute('ANIOACTUAL')}"></p>
+                        <input type="submit" class="btn-close-white" value="Empezar desafio">
+                    </form>
+                </div>
+
+                <!-- Sección si hay meta establecida -->
+                <div th:if="${usuario.meta} != null">
+                    <!-- Número de libros leídos -->
+                    <h5 class="mb-0" th:text="${cantidadLibrosLeidos}"></h5>
+                    <span class="small">libros leidos</span>
+
+                    <!-- Barra de progreso -->
+                    <div class="progress my-1" style="height: 8px; width: 70px;">
+                        <div class="progress-bar bg-success" role="progressbar"
+                             th:style="'width: ' + (${cantidadLibrosLeidos} / ${usuario.meta} * 100) + '%;'">
+                        </div>
+                    </div>
+
+                    <!-- Texto con el porcentaje -->
+                    <span class="small"
+                          th:text="${porcentajeLibrosLeidos} + '%'"></span>
+
+                    <!-- Enlace al desafío -->
+                    <div class="mt-1">
+                        <a th:href="@{/desafios/desafio-libros}">Ver desafio</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="currently-reading">
             <h2>Actualmente leyendo</h2>
-            <img th:src="@{../../../resources/core/Images/default-portrait3.jpg}" alt="Portada del libro" class="book-cover">
+            <img th:src="@{../../../resources/core/Images/default-portrait3.jpg}" alt="Portada del libro"
+                 class="book-cover">
             <h3>Título del libro</h3>
             <input type="text" placeholder="Buscar libro..." class="book-search">
         </div>
@@ -54,21 +111,28 @@
     <section class="recommendations">
         <h2>Recomendaciones</h2>
         <div class="book-recommendation">
-            <img th:src="@{../../../resources/core/Images/default-portrait4.jpg}" alt="Portada del libro" class="book-cover">
+            <img th:src="@{../../../resources/core/Images/default-portrait4.jpg}" alt="Portada del libro"
+                 class="book-cover">
             <div class="book-details">
                 <h3>Título del libro 1</h3>
                 <p>Autor del libro 1</p>
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam sequi et, officia quas inventore doloremque expedita? Assumenda maxime dolores, laudantium voluptatem laboriosam ipsam eius expedita.</p>
+                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam sequi et, officia quas inventore
+                    doloremque expedita? Assumenda maxime dolores, laudantium voluptatem laboriosam ipsam eius
+                    expedita.</p>
                 <button class="want-to-read">Quiero leerlo</button>
             </div>
         </div>
 
         <div class="book-recommendation">
-            <img th:src="@{../../../resources/core/Images/default-portrait2.jpg}" alt="Portada del libro" class="book-cover">
+            <img th:src="@{../../../resources/core/Images/default-portrait2.jpg}" alt="Portada del libro"
+                 class="book-cover">
             <div class="book-details">
                 <h3>Título del libro 2</h3>
                 <p>Autor del libro 2</p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur quis ad quo delectus inventore amet rem cumque eaque nostrum id vero aliquid, ratione asperiores, suscipit sunt unde voluptatem hic. Ipsum nesciunt saepe placeat facilis nemo culpa quod, hic suscipit dolores eius rerum ad obcaecati sunt magni, nobis, illo quidem cum!
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur quis ad quo delectus inventore
+                    amet rem cumque eaque nostrum id vero aliquid, ratione asperiores, suscipit sunt unde voluptatem
+                    hic. Ipsum nesciunt saepe placeat facilis nemo culpa quod, hic suscipit dolores eius rerum ad
+                    obcaecati sunt magni, nobis, illo quidem cum!
                 </p>
                 <button class="want-to-read">Quiero leerlo</button>
             </div>
@@ -113,12 +177,12 @@
                     <p th:text="${review.getTextoComentario()}">Lorem ipsum dolor sit amet...</p>
                     <div class="likes-dislikes">
                         <button id="like-button" class="like-button">
-                           <span >&#x1F44D;</span>
+                            <span>&#x1F44D;</span>
                             <span th:text="${review.getLikes()}">0</span>
                             <span>Likes</span>
                         </button>
                         <button id="dislike-button" class="dislike-button">
-                          <span >&#x1F44E;</span>
+                            <span>&#x1F44E;</span>
                             <span th:text="${review.getDislikes()}">0</span>
                             <span>Dislikes</span>
                         </button>
@@ -136,7 +200,6 @@
                 </div>
             </div>
         </div>
-
 
 
     </section>

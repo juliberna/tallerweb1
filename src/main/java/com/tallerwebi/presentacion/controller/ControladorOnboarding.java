@@ -1,8 +1,9 @@
 package com.tallerwebi.presentacion.controller;
 
-import com.tallerwebi.dominio.model.Autor;
-import com.tallerwebi.dominio.model.Genero;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.model.*;
 import com.tallerwebi.infraestructura.service.ServicioOnboarding;
+import com.tallerwebi.infraestructura.service.ServicioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -13,6 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -66,7 +69,7 @@ public class ControladorOnboarding {
         Long userId = (Long) session.getAttribute("USERID");
         if (userId != null) {
             servicioOnboarding.guardarGeneros(userId, generos);
-            return "redirect:/onboarding/mostrarOnboarding/" + userId + "/2" ;
+            return "redirect:/onboarding/mostrarOnboarding/" + userId + "/2";
 
 //            return "redirect:/onboarding/mostrarRegistroExitoso";
         } else {
@@ -82,24 +85,25 @@ public class ControladorOnboarding {
         Long userId = (Long) session.getAttribute("USERID");
         if (userId != null) {
             servicioOnboarding.guardarAutores(userId, autores);
-            return "redirect:/onboarding/mostrarOnboarding/" + userId + "/3" ;
+            return "redirect:/onboarding/mostrarOnboarding/" + userId + "/3";
         } else {
             return "redirect:/login";
         }
     }
 
     @RequestMapping(value = "/guardarMeta", method = RequestMethod.POST)
-    public String guardarMeta(@RequestParam Long metaLibros) {
+    public String guardarMeta(@RequestParam Long metaLibros, @RequestParam String redirectUrl) {
         ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = attr.getRequest();
         HttpSession session = request.getSession();
         Long userId = (Long) session.getAttribute("USERID");
-        if (userId != null) {
-            servicioOnboarding.guardarMeta(userId, metaLibros);
-            return "redirect:/onboarding/mostrarRegistroExitoso";
-        } else {
+
+        if (userId == null)
             return "redirect:/login";
-        }
+
+        servicioOnboarding.guardarMeta(userId, metaLibros);
+
+        return "redirect:" + redirectUrl;
     }
 
 }

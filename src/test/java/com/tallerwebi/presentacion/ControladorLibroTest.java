@@ -6,6 +6,7 @@ import com.tallerwebi.dominio.model.UsuarioLibro;
 import com.tallerwebi.infraestructura.service.ServicioLibro;
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.QueryVacia;
+import com.tallerwebi.infraestructura.service.ServicioUsuario;
 import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
 import com.tallerwebi.presentacion.controller.ControladorLibro;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,8 +30,9 @@ import static org.mockito.Mockito.*;
 public class ControladorLibroTest {
 
     ServicioLibro servicioLibro = mock(ServicioLibro.class);
+    ServicioUsuario servicioUsuario = mock(ServicioUsuario.class);
     ServicioUsuarioLibro servicioUsuarioLibro = mock(ServicioUsuarioLibro.class);
-    ControladorLibro controladorLibro = new ControladorLibro(servicioLibro, servicioUsuarioLibro);
+    ControladorLibro controladorLibro = new ControladorLibro(servicioLibro, servicioUsuario, servicioUsuarioLibro);
 
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
@@ -43,6 +45,7 @@ public class ControladorLibroTest {
         ServletRequestAttributes attr = new ServletRequestAttributes(requestMock);
         RequestContextHolder.setRequestAttributes(attr);
     }
+
     @Test
     public void siLaQueryDeBusquedaContieneTextoLaBusquedaEsExitosa() throws ListaVacia, QueryVacia {
         //given

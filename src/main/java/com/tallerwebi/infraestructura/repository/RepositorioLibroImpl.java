@@ -47,13 +47,4 @@ public class RepositorioLibroImpl implements RepositorioLibro {
         sessionFactory.getCurrentSession().saveOrUpdate(libro);
     }
 
-    @Override
-    public List<Libro> buscarPorEstadoDeLectura(String estadoDeLectura) {
-        Session session = sessionFactory.getCurrentSession();
-
-        return session.createCriteria(Libro.class)
-                .add(Restrictions.eq("estadoDeLectura", estadoDeLectura))
-                .list();
-    }
-
 }

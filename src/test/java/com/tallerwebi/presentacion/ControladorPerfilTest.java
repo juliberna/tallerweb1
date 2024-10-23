@@ -15,7 +15,7 @@ public class ControladorPerfilTest {
 
     ServicioUsuario servicioUsuario = mock(ServicioUsuario.class);
     ServicioUsuarioLibro servicioUsuarioLibro = mock(ServicioUsuarioLibro.class);
-    ControladorPerfil controladorPerfil = new ControladorPerfil(servicioUsuarioLibro, servicioUsuario);
+    ControladorPerfil controladorPerfil = new ControladorPerfil(servicioUsuario);
 
     @Test
     public void siElIdDelUsuarioTienePerfilMostrarlo() throws Exception {
@@ -35,15 +35,6 @@ public class ControladorPerfilTest {
         thenSeRedireccionaAlLogin(mav);
     }
 
-    @Test
-    public void elUsuarioPuedeCambiarLaCategoriaDeLaEstanteria() {
-        givenExisteUnUsuarioRegistrado();
-
-        ModelAndView mav = controladorPerfil.cambiarCategoria(1L, "Quiero leer");
-
-        thenSeMuestraElPerfil(mav);
-        assertThat(mav.getModel().get("categoriaActual").toString(), equalToIgnoringCase("Quiero leer"));
-    }
 
     private void givenExisteUnUsuarioRegistrado() {
     }

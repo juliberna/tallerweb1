@@ -26,12 +26,12 @@ public class ServicioLibroImpl implements ServicioLibro {
 
     @Override
     public Set<Libro> buscar(String query) throws QueryVacia, ListaVacia {
-        if(query.isEmpty())
-           throw new QueryVacia();
+        if (query.isEmpty())
+            throw new QueryVacia();
 
         List<Libro> librosObtenidos = repositorioLibro.buscar(query);
 
-        if(librosObtenidos.isEmpty())
+        if (librosObtenidos.isEmpty())
             throw new ListaVacia();
 
         return new HashSet<>(librosObtenidos);
@@ -50,17 +50,5 @@ public class ServicioLibroImpl implements ServicioLibro {
     public void actualizarLibro(Libro libro) {
         repositorioLibro.actualizarLibro(libro);
     }
-
-    @Override
-    public List<Libro> buscarPorEstadoDeLectura(String estadoLectura) throws ListaVacia {
-
-        List<Libro> librosObtenidos = repositorioLibro.buscarPorEstadoDeLectura(estadoLectura);
-
-        if(librosObtenidos.isEmpty())
-            throw new ListaVacia();
-
-        return librosObtenidos;
-    }
-
 
 }

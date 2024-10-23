@@ -58,10 +58,6 @@ h5,
   justify-content: flex-start; /* Asegura que los elementos se alineen correctamente a la izquierda */
 }
 
-.bg-primary {
-  background: #f1bc31 !important;
-}
-
 .ftco-section {
   padding: 7em 0;
 }
@@ -333,10 +329,6 @@ h5,
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
   border: 1px solid rgba(0, 0, 0, 0.1);
-}
-.form-control:focus,
-.form-control:active {
-  border-color: #000;
 }
 
 .imagen-perfil {

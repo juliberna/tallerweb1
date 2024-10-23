@@ -5,6 +5,8 @@ import com.tallerwebi.dominio.excepcion.QueryVacia;
 import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.infraestructura.service.ServicioInicio;
 
+import com.tallerwebi.infraestructura.service.ServicioUsuario;
+import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
 import com.tallerwebi.presentacion.controller.ControladorInicio;
 
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,9 @@ import static org.mockito.Mockito.mock;
 public class ControladorInicioTest {
 
     ServicioInicio servicioInicio = mock(ServicioInicio.class);
-    ControladorInicio controladorInicio = new ControladorInicio(servicioInicio);
+    ServicioUsuario servicioUsuario = mock(ServicioUsuario.class);
+    ServicioUsuarioLibro servicioUsuarioLibro = mock(ServicioUsuarioLibro.class);
+    ControladorInicio controladorInicio = new ControladorInicio(servicioInicio, servicioUsuario, servicioUsuarioLibro);
 
     @Test
     public void queSeMuestreElNombreDelUsuarioCorrectamente() {
@@ -30,14 +34,13 @@ public class ControladorInicioTest {
         //TODO
 
 
-
-
     }
-   @Test
+
+    @Test
     public void queNoSePuedaMostrarUnaListaDeReviewsVacia() {
 
         //TODO CON MOCKITO
 
-   }
+    }
 
 }

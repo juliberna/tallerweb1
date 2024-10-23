@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Objects;
+
 @Service
 @Transactional
 public class ServicioUsuarioImpl implements ServicioUsuario {
@@ -21,9 +24,63 @@ public class ServicioUsuarioImpl implements ServicioUsuario {
     @Override
     public Usuario buscarUsuarioPorId(Long id) throws UsuarioInexistente {
         Usuario usuario = repositorioUsuario.buscarUsuarioPorId(id);
-        if(usuario == null)
+        if (usuario == null)
             throw new UsuarioInexistente();
 
         return usuario;
+    }
+
+    @Override
+    public void actualizarUsuario(Long idUsuarioActual, Usuario usuarioActualizado) throws UsuarioInexistente {
+        Usuario usuarioExistente = repositorioUsuario.buscarUsuarioPorId(idUsuarioActual);
+
+        if (usuarioExistente == null)
+            throw new UsuarioInexistente();
+
+        // Actualizar los campos del usuario existente
+        usuarioExistente.setNombre(usuarioActualizado.getNombre());
+        usuarioExistente.setNombreUsuario(usuarioActualizado.getNombreUsuario());
+        usuarioExistente.setEmail(usuarioActualizado.getEmail());
+        usuarioExistente.setEdad(usuarioActualizado.getEdad());
+        usuarioExistente.setFechaNacimiento(usuarioActualizado.getFechaNacimiento());
+        usuarioExistente.setMeta(usuarioActualizado.getMeta());
+        usuarioExistente.setBiografia(usuarioActualizado.getBiografia());
+        usuarioExistente.setImagenUrl(usuarioActualizado.getImagenUrl());
+
+        // Guardar el usuario actualizado en la base de datos
+        try {
+            repositorioUsuario.guardarUsuario(usuarioExistente);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al actualizar el usuario: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<Usuario> obtenerUsuarios() {
+        return repositorioUsuario.obtenerUsuarios();
+    }
+
+    @Override
+    public List<Usuario> obtenerUsuariosDesafio(Long userId) {
+        List<Usuario> usuariosDesafio = repositorioUsuario.obtenerUsuariosDesafio(userId);
+
+        if (usuariosDesafio.isEmpty()) {
+            System.out.println("Lista vacia");
+        }
+
+        return usuariosDesafio;
+    }
+
+    @Override
+    public boolean existeNombreUsuario(String nombre, Long idUsuario) {
+        Usuario usuario = repositorioUsuario.buscarPorNombreUsuario(nombre);
+        // Verifica si existe el usuario y que no sea el actual
+        return usuario != null && !(Objects.equals(usuario.getId(), idUsuario));
+    }
+
+    @Override
+    public boolean existeEmailUsuario(String email, Long idUsuario) {
+        Usuario usuario = repositorioUsuario.buscarPorEmail(email);
+        return usuario != null && !(Objects.equals(usuario.getId(), idUsuario));
     }
 }

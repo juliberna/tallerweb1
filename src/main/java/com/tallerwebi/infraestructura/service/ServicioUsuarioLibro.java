@@ -1,7 +1,6 @@
 package com.tallerwebi.infraestructura.service;
 
 import com.tallerwebi.dominio.excepcion.ListaVacia;
-import com.tallerwebi.dominio.model.Libro;
 import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.dominio.model.UsuarioLibro;
 
@@ -16,4 +15,5 @@ public interface ServicioUsuarioLibro {
     List<UsuarioLibro> obtenerReseniaDeUsuarioLibro(Long usuarioId, Long libroId);
     void actualizarPaginasLeidas(Long usuarioId, Long libroId, Integer paginasLeidas);
     Double calcularProgresoDeLectura(Long usuarioId, Long libroId, Integer cantidadDePaginasLeidas);
+    List<UsuarioLibro> buscarLibrosLeidosPorAño(Integer anio, Usuario usuario) throws ListaVacia;
 }

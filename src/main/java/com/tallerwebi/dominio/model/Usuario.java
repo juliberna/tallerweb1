@@ -24,6 +24,9 @@ public class Usuario {
     private Boolean activo = false;
     private String tokenRecuperacion;
     private Long meta;
+    @Column(name = "imagen_url")
+    private String imagenUrl;
+    private String biografia;
 
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
@@ -150,7 +153,23 @@ public class Usuario {
         this.notificaciones = notificaciones;
     }
 
-//    public List<Genero> getGeneros() {
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
+    }
+
+    public String getBiografia() {
+        return biografia;
+    }
+
+    public void setBiografia(String biografia) {
+        this.biografia = biografia;
+    }
+
+    //    public List<Genero> getGeneros() {
 //        return generosFavoritos;
 //    }
 //

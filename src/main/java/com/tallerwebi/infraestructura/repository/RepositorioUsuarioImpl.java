@@ -6,6 +6,7 @@ import com.tallerwebi.dominio.model.Usuario;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -13,18 +14,19 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 @Repository("repositorioUsuario")
 public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
-    private final RepositorioOnboardingImpl repositorioOnboarding;
     private SessionFactory sessionFactory;
 
     @Autowired
-    public RepositorioUsuarioImpl(SessionFactory sessionFactory, RepositorioOnboardingImpl repositorioOnboarding){
+    public RepositorioUsuarioImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        this.repositorioOnboarding = repositorioOnboarding;
     }
 
     @Override
@@ -68,11 +70,11 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
     @Override
     public Usuario buscarUsuarioPorId(Long id) {
-            Session session = sessionFactory.getCurrentSession();
-            Criteria usuario = session.createCriteria(Usuario.class);
-            usuario.add(Restrictions.eq("id", id));
-            Usuario usuarioEncontrado = (Usuario) usuario.uniqueResult();
-            return usuarioEncontrado;
+        Session session = sessionFactory.getCurrentSession();
+        Criteria usuario = session.createCriteria(Usuario.class);
+        usuario.add(Restrictions.eq("id", id));
+        Usuario usuarioEncontrado = (Usuario) usuario.uniqueResult();
+        return usuarioEncontrado;
     }
 
     @PersistenceContext
@@ -99,7 +101,6 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     public void guardarUsuario(Usuario usuario) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(usuario);
-        session.close();
     }
 
     @Override
@@ -121,6 +122,40 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
         return (Usuario) session.createCriteria(Usuario.class)
                 .add(Restrictions.eq("nombreUsuario", nombreUsuario))
                 .uniqueResult();
+    }
+
+    @Override
+    public List<Usuario> obtenerUsuarios() {
+        Session session = sessionFactory.getCurrentSession();
+        return session.createCriteria(Usuario.class).list();
+    }
+
+    @Override
+    public List<Usuario> obtenerUsuariosDesafio(Long userId) {
+        Session session = sessionFactory.getCurrentSession();
+
+        // Cantidad total de usuarios que cumplen la condicion, excluyendo el usuario actual
+        Long count = (Long) session.createCriteria(Usuario.class)
+                .add(Restrictions.isNotNull("meta"))
+                .add(Restrictions.ne("id", userId))
+                .setProjection(Projections.rowCount())
+                .uniqueResult();
+
+        // Verificar si el conteo es mayor que 0
+        if (count == null || count == 0) {
+            // Retorna una lista vacía si no hay usuarios que cumplan la condición
+            return Collections.emptyList();
+        }
+
+        // Genera un indice de arranque aleatorio
+        int randomIndex = new Random().nextInt(count.intValue());
+
+        return session.createCriteria(Usuario.class)
+                .add(Restrictions.isNotNull("meta"))
+                .add(Restrictions.ne("id", userId))
+                .setFirstResult(randomIndex) // Empieza en un indice aleatorio
+                .setMaxResults(4)
+                .list();
     }
 
 }

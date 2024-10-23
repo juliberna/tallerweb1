@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio.model;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 public class UsuarioLibro {
@@ -18,6 +19,7 @@ public class UsuarioLibro {
     private String estadoDeLectura;
     private Integer puntuacion;
     private String resenia;
+    private LocalDate fechaLeido;
     private Integer cantidadDePaginas;
 
     public Integer getCantidadDePaginas() {
@@ -74,5 +76,13 @@ public class UsuarioLibro {
 
     public void setResenia(String resenia) {
         this.resenia = resenia;
+    }
+
+    public LocalDate getFechaLeido() {
+        return fechaLeido;
+    }
+
+    public void setFechaLeido(LocalDate fechaLeido) {
+        this.fechaLeido = fechaLeido;
     }
 }

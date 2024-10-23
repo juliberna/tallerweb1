@@ -21,6 +21,8 @@ public interface RepositorioUsuario {
     void guardarUsuarioOnboarding(Usuario usuario);
     Usuario buscarPorEmail(String email);
     Usuario buscarPorNombreUsuario(String nombreUsuario);
+    List<Usuario> obtenerUsuarios();
+    List<Usuario> obtenerUsuariosDesafio(Long userId);
 //    void guardarGeneros(Long usuarioId, List<Long> generos);
 //    void guardarAutores(Long usuarioId, List<Long> autores);
 //    void guardarLibros(Long usuarioId, List<Long> libros);
