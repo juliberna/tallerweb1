@@ -25,10 +25,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
+import java.util.*;
 import java.util.List;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/libro")
@@ -78,7 +76,7 @@ public class ControladorLibro {
             List<UsuarioLibro> reseniasDeOtrosUsuarios = servicioUsuarioLibro.obtenerReseniaDeUsuarioLibro(userId, id);
 
             double progreso = 0.0;
-            if(usuarioLibro != null && usuarioLibro.getCantidadDePaginas() != null){
+            if (usuarioLibro != null && usuarioLibro.getCantidadDePaginas() != null) {
                 progreso = servicioUsuarioLibro.calcularProgresoDeLectura(userId, id, usuarioLibro.getCantidadDePaginas());
             }
 
@@ -96,7 +94,7 @@ public class ControladorLibro {
     }
 
     @RequestMapping(value = "/cambiarEstadoDeLectura", method = RequestMethod.POST)
-    public String cambiarEstadoDeLectura( ModelMap model, @RequestParam Long id, @RequestParam String status, @RequestParam(required = false) Integer cantidadDePaginasLeidas , RedirectAttributes redirectAttributes) {
+    public String cambiarEstadoDeLectura(ModelMap model, @RequestParam Long id, @RequestParam String status, @RequestParam(required = false) Integer cantidadDePaginasLeidas, RedirectAttributes redirectAttributes) {
 
         ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = attr.getRequest();
@@ -111,11 +109,11 @@ public class ControladorLibro {
                 return "redirect:/libro/resena/" + id + "?usuarioId=" + userId;
             }
 
-            if(status.equals("Leyendo")){
+            if (status.equals("Leyendo")) {
                 servicioUsuarioLibro.actualizarPaginasLeidas(userId, id, cantidadDePaginasLeidas);
             }
 
-            if(status.equals("Leyendo") && cantidadDePaginasLeidas > libro.getCantidadDePaginas()){
+            if (status.equals("Leyendo") && cantidadDePaginasLeidas > libro.getCantidadDePaginas()) {
                 redirectAttributes.addFlashAttribute("error", "Páginas leídas no pueden exceder la cantidad total de páginas del libro.");
                 return "redirect:/libro/detalle/" + id + "?usuarioId=" + userId;
             }
@@ -165,13 +163,16 @@ public class ControladorLibro {
         try {
             Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
             model.addAttribute("usuario", usuario);
-            List<UsuarioLibro> libros = servicioUsuarioLibro.buscarPorEstadoDeLectura("Quiero Leer",usuario);
+            // Por defecto muestra los libros en estado Quiero Leer
+            List<UsuarioLibro> libros = servicioUsuarioLibro.buscarPorEstadoDeLectura("Quiero Leer", usuario);
             model.addAttribute("libros", libros);
         } catch (UsuarioInexistente e) {
             return new ModelAndView("redirect:/login");
         } catch (ListaVacia e) {
             model.addAttribute("error", "No tiene libros con este estado");
         }
+
+        model.addAttribute("categoriaActual", "Quiero Leer");
         return new ModelAndView("mostrar-libros", model);
     }
 
@@ -179,22 +180,34 @@ public class ControladorLibro {
     public ModelAndView cambiarCategoria(HttpServletRequest request, @RequestParam("estado") String estadoDeLectura) {
         ModelMap model = new ModelMap();
         HttpSession session = request.getSession();
-        Long idUsuario = (Long) session.getAttribute("USERID");
+        Long userId = (Long) session.getAttribute("USERID");
 
         try {
-            Usuario usuario = servicioUsuario.buscarUsuarioPorId(idUsuario);
+            Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
             model.addAttribute("usuario", usuario);
             List<UsuarioLibro> libros;
 
             if (estadoDeLectura.equals("Leído")) {
+                // Obtener libros leidos por año
                 libros = servicioUsuarioLibro.buscarLibrosLeidosPorAño(LocalDate.now().getYear(), usuario);
                 Integer cantidadLibrosLeidos = libros.size();
                 model.addAttribute("cantidadLibrosLeidos", cantidadLibrosLeidos);
+                model.addAttribute("libros", libros);
             } else {
                 libros = servicioUsuarioLibro.buscarPorEstadoDeLectura(estadoDeLectura, usuario);
-            }
+                Map<UsuarioLibro, Double> librosConProgreso = new HashMap<>();
 
-            model.addAttribute("libros", libros);
+                // Calcular el progreso de cada libro
+                for (UsuarioLibro usuarioLibro : libros) {
+                    double progreso = 0.0;
+                    if (usuarioLibro != null && usuarioLibro.getCantidadDePaginas() != null) {
+                        progreso = servicioUsuarioLibro.calcularProgresoDeLectura(userId, usuarioLibro.getLibro().getId(), usuarioLibro.getCantidadDePaginas());
+                    }
+                    librosConProgreso.put(usuarioLibro, progreso);
+                }
+                model.addAttribute("librosConProgreso", librosConProgreso);
+                model.addAttribute("libros", libros); // Tambien pasar la lista de libros
+            }
 
         } catch (UsuarioInexistente e) {
             return new ModelAndView("redirect:/login");

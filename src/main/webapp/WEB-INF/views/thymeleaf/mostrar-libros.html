@@ -31,8 +31,9 @@
         }
 
         .card-img-top {
-            object-fit: cover;
             width: 100%;
+            height: 400px;
+            object-fit: cover;
         }
 
         .card-body {
@@ -79,37 +80,64 @@
         </div>
 
         <!-- Sección de libros actuales -->
-        <div class="row mt-3">
-            <h3 th:text="'Libros ' + ${categoriaActual == null ? 'leyendo' : categoriaActual}"></h3>
-            <div th:if="${error} != null" class="alert alert-danger">
-                <p><span th:text="${error}"></span></p>
-            </div>
+        <div th:if="${categoriaActual == 'Leyendo'}">
+            <div class="row mt-5">
+                <h3 th:text="'Libros ' + ${categoriaActual}"></h3>
 
-            <div class="col-12" th:if="${error} == null">
-                <div class="row">
-                    <div class="col-md-3" th:each="usuarioLibro : ${libros}">
-                        <a th:href="@{/libro/detalle/{id}(id=${usuarioLibro.libro.id})}">
-                            <div class="card mb-3">
-                                <!-- Imagen del libro -->
-                                <img th:src="${usuarioLibro.libro.imagenUrl}"
-                                     class="card-img-top" alt="Portada del libro">
-                                <div class="card-body">
-                                    <h5 class="card-title" th:text="${usuarioLibro.libro.titulo}"></h5>
-                                    <p class="card-text" th:text="'Autor: ' + ${usuarioLibro.libro.autor}"></p>
+                <div th:if="${error} != null" class="alert alert-danger">
+                    <p><strong>Error:</strong> <span th:text="${error}"></span></p>
+                </div>
 
-                                    <!-- Barra de progreso de lectura -->
+                <div class="col-12" th:if="${error} == null">
+                    <div class="row">
+                        <div class="col-md-3" th:each="entry : ${librosConProgreso.entrySet()}">
+                            <a th:href="@{/libro/detalle/{id}(id=${entry.key.libro.id})}">
+                                <div class="card mb-3">
+                                    <!-- Imagen del libro -->
+                                    <img th:src="${entry.key.libro.imagenUrl}"
+                                         class="card-img-top" alt="Portada del libro" style="max-height: 500px">
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${entry.key.libro.titulo}"></h5>
+                                        <p class="card-text" th:text="'Autor: ' + ${entry.key.libro.autor}"></p>
 
-                                    <div class="progress" th:if="${categoriaActual != 'Quiero leer'}">
-                                        <!-- th:style="'width:' + ${libro.progreso} + '%'" -->
-                                        <!-- th:text="${libro.progreso + '% leído'}" -->
-                                        <div class="progress-bar" role="progressbar" style="width: 50%">
-                                            50% leído
+                                        <!-- Barra de progreso de lectura -->
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar"
+                                                 th:style="'width:' + ${entry.value} + '%' ">
+                                            </div>
                                         </div>
                                     </div>
-
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${categoriaActual != 'Leyendo'}">
+            <div class="row mt-5">
+                <h3 th:text="'Libros ' + ${categoriaActual}"></h3>
+
+                <div th:if="${error} != null" class="alert alert-danger">
+                    <p><strong>Error:</strong> <span th:text="${error}"></span></p>
+                </div>
+
+                <div class="col-12" th:if="${error} == null">
+                    <div class="row">
+                        <div class="col-md-3" th:each="usuarioLibro : ${libros}">
+                            <a th:href="@{/libro/detalle/{id}(id=${usuarioLibro.libro.id})}">
+                                <div class="card mb-3">
+                                    <!-- Imagen del libro -->
+                                    <img th:src="${usuarioLibro.libro.imagenUrl}"
+                                         class="card-img-top" alt="Portada del libro" style="max-height: 500px">
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${usuarioLibro.libro.titulo}"></h5>
+                                        <p class="card-text" th:text="'Autor: ' + ${usuarioLibro.libro.autor}"></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
