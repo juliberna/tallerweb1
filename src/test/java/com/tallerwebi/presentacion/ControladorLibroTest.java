@@ -1,13 +1,13 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.excepcion.LibroNoEncontrado;
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.model.Libro;
+import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.dominio.model.UsuarioLibro;
-import com.tallerwebi.infraestructura.service.ServicioLibro;
+import com.tallerwebi.infraestructura.service.*;
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.QueryVacia;
-import com.tallerwebi.infraestructura.service.ServicioUsuario;
-import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
 import com.tallerwebi.presentacion.controller.ControladorLibro;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,10 @@ public class ControladorLibroTest {
     ServicioLibro servicioLibro = mock(ServicioLibro.class);
     ServicioUsuario servicioUsuario = mock(ServicioUsuario.class);
     ServicioUsuarioLibro servicioUsuarioLibro = mock(ServicioUsuarioLibro.class);
-    ControladorLibro controladorLibro = new ControladorLibro(servicioLibro, servicioUsuario, servicioUsuarioLibro);
+    ServicioLibroGenero servicioLibroGenero = mock(ServicioLibroGenero.class);
+    ServicioResenia servicioResenia = mock(ServicioResenia.class);
+    ControladorLibro controladorLibro = new ControladorLibro(servicioLibro, servicioUsuario,
+            servicioUsuarioLibro, servicioLibroGenero, servicioResenia);
 
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
@@ -71,11 +74,13 @@ public class ControladorLibroTest {
     @Test
     public void siLaListaDeLibrosObtenidosEstaVaciaMuestraError() throws ListaVacia, QueryVacia {
         givenExistenLibros();
-        doThrow(ListaVacia.class).when(servicioLibro).buscar("*-,vasda");
+        String mensajeError = "No se encontraron libros que coincidan con la busqueda";
+
+        doThrow(new ListaVacia(mensajeError)).when(servicioLibro).buscar("*-,vasda");
 
         ModelAndView mav = whenBuscarLibro("*-,vasda");
 
-        thenLaBusquedaFalla(mav, "No se encontraron libros que coincidan con la busqueda");
+        thenLaBusquedaFalla(mav, mensajeError);
     }
 
     @Test
@@ -112,7 +117,7 @@ public class ControladorLibroTest {
         Integer cantidadDePaginas = 520;
 
         // When
-        String vista = controladorLibro.cambiarEstadoDeLectura(new ModelMap(), libroId, nuevoEstado, cantidadDePaginas ,new RedirectAttributesModelMap());
+        String vista = controladorLibro.cambiarEstadoDeLectura(new ModelMap(), libroId, nuevoEstado, cantidadDePaginas, new RedirectAttributesModelMap());
 
         // Then
         assertThat(vista, equalTo("redirect:/libro/resena/" + libroId + "?usuarioId=" + userId));
@@ -133,16 +138,26 @@ public class ControladorLibroTest {
     }
 
     @Test
-    public void siLaResenaSeGuardaCorrectamenteRedirigeAlDetalleDelLibro() throws LibroNoEncontrado {
+    public void siLaResenaSeGuardaCorrectamenteRedirigeAlDetalleDelLibro() throws LibroNoEncontrado, UsuarioInexistente {
         Long userId = 70L;
+
+        Usuario usuario = new Usuario();
+        usuario.setId(userId);
 
         when(requestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getAttribute("USERID")).thenReturn(userId);
+        when(servicioUsuario.buscarUsuarioPorId(userId)).thenReturn(usuario);
 
         // Given
         Long libroId = 1L;
+        Libro libro = new Libro();
+        libro.setId(libroId);
+        libro.setTitulo("Libro 1");
+
         Integer puntuacion = 5;
         String reseña = "Excelente libro";
+
+        when(servicioLibro.obtenerIdLibro(libroId)).thenReturn(libro);
 
         // When
         String vista = controladorLibro.guardarResena(new ModelMap(), libroId, puntuacion, reseña);

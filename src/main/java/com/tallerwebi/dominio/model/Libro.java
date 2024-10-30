@@ -3,6 +3,7 @@ package com.tallerwebi.dominio.model;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Libro")
@@ -16,15 +17,12 @@ public class Libro {
     private String estadoDeLectura;
     private String autor;
     private String editorial;
-    private Integer puntuacion;
-    private Rating rating;
     private String descripcion;
-    private String genero;
     private String imagenUrl;
-    private String resenia;
     private Integer cantidadDePaginas;
 
-    public Libro() {}
+    public Libro() {
+    }
 
     public Integer getCantidadDePaginas() {
         return cantidadDePaginas;
@@ -42,14 +40,6 @@ public class Libro {
         this.id = id;
     }
 
-    public Integer getPuntuacion() {
-        return puntuacion;
-    }
-
-    public void setPuntuacion(Integer puntuacion) {
-        this.puntuacion = puntuacion;
-    }
-
     public String getTitulo() {
         return titulo;
     }
@@ -58,20 +48,20 @@ public class Libro {
         this.titulo = titulo;
     }
 
-    public String getAutor() { return autor; }
-
-    public void setAutor(String autor) { this.autor = autor; }
-
-    public String getEditorial() { return editorial; }
-
-    public void setEditorial(String editorial) { this.editorial = editorial; }
-
-    public Rating getRating() {
-        return rating;
+    public String getAutor() {
+        return autor;
     }
 
-    public void setRating(Rating rating) {
-        this.rating = rating;
+    public void setAutor(String autor) {
+        this.autor = autor;
+    }
+
+    public String getEditorial() {
+        return editorial;
+    }
+
+    public void setEditorial(String editorial) {
+        this.editorial = editorial;
     }
 
     public String getIsbn() {
@@ -98,14 +88,6 @@ public class Libro {
         this.descripcion = descripcion;
     }
 
-    public String getGenero() {
-        return genero;
-    }
-
-    public void setGenero(String genero) {
-        this.genero = genero;
-    }
-
     public String getImagenUrl() {
         return imagenUrl;
     }
@@ -114,15 +96,20 @@ public class Libro {
         this.imagenUrl = imagenUrl;
     }
 
-    public String getResenia() {
-        return resenia;
-    }
-
-    public void setResenia(String resenia) {
-        this.resenia = resenia;
-    }
-
     public String generarUrlWikipedia() {
         return "https://es.wikipedia.org/wiki/" + this.autor.replace(" ", "_");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Libro libro = (Libro) o;
+        return Objects.equals(id, libro.id) && Objects.equals(titulo, libro.titulo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, titulo);
     }
 }

@@ -2,75 +2,68 @@ package com.tallerwebi.dominio.model;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 
-public class Comentario{
+@Entity
+public class Comentario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "user_commentary", nullable = false)
-    private String textoComentario;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Usuario Usuario;
-
-    @Column(name = "like", nullable = true)
-    private Integer likes = 0;
-
-    @Column(name = "dislike", nullable = true)
-    private Integer dislikes = 0;
-
-    @Column(name = "publication_date", nullable = false)
-    private LocalDateTime fechaPublicacion;
-
+    // Texto del comentario que el usuario hizo sobre la reseña
+    private String texto;
 
     @ManyToOne
-    private Review review;
+    @JoinColumn(name = "resenia_id", nullable = false)
+    private Resenia resenia;
 
-    public Comentario( ) {
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private Usuario usuario;
 
-        fechaPublicacion = LocalDateTime.now();
+    private LocalDateTime fechaComentario;
+
+    public Comentario() {
+        this.fechaComentario = LocalDateTime.now();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public com.tallerwebi.dominio.model.Usuario getUsuario() {
-        return Usuario;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getTextoComentario() {
-        return textoComentario;
+    public String getTexto() {
+        return texto;
     }
 
-    public LocalDateTime getFechaPublicacion() {
-        return fechaPublicacion;
+    public void setTexto(String texto) {
+        this.texto = texto;
     }
 
-    public Integer getLikes() {
-        return likes;
+    public Resenia getResenia() {
+        return resenia;
     }
 
-    public Integer getDislikes() { return dislikes; }
-
-    public void setTextoComentario(String textoComentario) {
-        this.textoComentario = textoComentario;
+    public void setResenia(Resenia resenia) {
+        this.resenia = resenia;
     }
 
-    public void setUsuario(com.tallerwebi.dominio.model.Usuario usuario) {
-        Usuario = usuario;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setLikes(Integer likes) {
-        this.likes = likes;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
-    public void setDislikes(Integer dislikes) {
-        this.dislikes = dislikes;
+    public LocalDateTime getFechaComentario() {
+        return fechaComentario;
     }
 
+    public void setFechaComentario(LocalDateTime fechaComentario) {
+        this.fechaComentario = fechaComentario;
+    }
 }
