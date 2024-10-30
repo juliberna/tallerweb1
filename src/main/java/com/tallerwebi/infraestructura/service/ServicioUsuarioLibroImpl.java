@@ -80,7 +80,7 @@ public class ServicioUsuarioLibroImpl implements ServicioUsuarioLibro {
         List<UsuarioLibro> librosObtenidos = repositorioUsuarioLibro.buscarPorEstadoDeLectura(estadoDeLectura, usuario);
 
         if (librosObtenidos.isEmpty())
-            throw new ListaVacia();
+            throw new ListaVacia("No tiene libros con este estado");
 
         return librosObtenidos;
     }
@@ -108,11 +108,6 @@ public class ServicioUsuarioLibroImpl implements ServicioUsuarioLibro {
         }
 
         return (double) suma / cantidad;
-    }
-
-    @Override
-    public List<UsuarioLibro> obtenerReseniaDeUsuarioLibro(Long usuarioId, Long libroId) {
-        return repositorioUsuarioLibro.obtenerReseniasDeOtrosUsuarios(usuarioId, libroId);
     }
 
     @Override
@@ -150,7 +145,7 @@ public class ServicioUsuarioLibroImpl implements ServicioUsuarioLibro {
         List<UsuarioLibro> librosLeidos = repositorioUsuarioLibro.buscarLibrosLeidosPorAño(anio, usuario);
 
         if (librosLeidos.isEmpty())
-            throw new ListaVacia();
+            throw new ListaVacia("No tiene libros leidos este año.");
 
         return librosLeidos;
     }

@@ -24,7 +24,15 @@
         <img th:src="@{'/Images/' + ${libro.imagenUrl}}" alt="Imagen del libro">
         <p><strong>Autor:</strong> <span th:text="${libro.autor}"></span></p>
         <p><strong>Descripción:</strong> <span th:text="${libro.descripcion}"></span></p>
-        <p><strong>Género:</strong> <span th:text="${libro.genero}"></span></p>
+        <p>
+            <strong>Géneros:</strong>
+        <div th:if="${errorGeneros == null}" th:each="libroGenero : ${generos}">
+            <span th:text="${libroGenero.genero.nombre} + ' '"></span>
+        </div>
+        <div th:if="${errorGeneros != null}" th:each="libroGenero : ${generos}">
+            <span th:text="${errorGeneros}"></span>
+        </div>
+        </p>
         <p><strong>Páginas:</strong> <span th:text="${libro.cantidadDePaginas}"></span></p>
     </div>
 
@@ -50,15 +58,14 @@
                 <div th:if="${usuarioLibro != null and usuarioLibro.estadoDeLectura == 'Leyendo'}">
                     <label for="paginasLeidas">Páginas leídas:</label>
                     <input type="number" name="cantidadDePaginasLeidas" id="paginasLeidas" min="0"
-                           th:value="${usuarioLibro.cantidadDePaginas}" />
+                           th:value="${usuarioLibro.cantidadDePaginas}"/>
                     <br>
                     <div class="progress-bar">
-                        <div class="progress" th:style="'width: ' + ${progreso} + '%;'" ></div>
+                        <div class="progress" th:style="'width: ' + ${progreso} + '%;'"></div>
                     </div>
                     <p th:text="'Progreso: ' + ${progreso} + '%'"></p>
                 </div>
                 <br>
-
 
 
                 <div th:if="${error != null}" style="color: red;">
@@ -68,24 +75,26 @@
 
                 <button type="submit">Guardar</button>
                 <br>
-                <p><strong>Tu estado de lectura es:</strong> <span th:if="${usuarioLibro != null and usuarioLibro.estadoDeLectura != null}" th:text="${usuarioLibro.estadoDeLectura}"></span></p>
+                <p><strong>Tu estado de lectura es:</strong> <span
+                        th:if="${usuarioLibro != null and usuarioLibro.estadoDeLectura != null}"
+                        th:text="${usuarioLibro.estadoDeLectura}"></span></p>
             </form>
         </div>
 
-        <div class="review-section">
+        <div class="resenia-section">
             <h2>Tu Reseña:</h2>
 
-            <p th:if="${usuarioLibro != null and usuarioLibro.resenia != null}"
-               th:text="${usuarioLibro.resenia}"></p>
-            <p th:if="${usuarioLibro == null or usuarioLibro.resenia == null}">
-                Aún no has escrito una reseña.
+            <p th:if="${resenia != null and resenia.descripcion != null}"
+               th:text="${resenia.descripcion}"></p>
+            <p th:if="${resenia == null or resenia.descripcion == null}">
+                Aún no has dado una reseña de este libro.
             </p>
             <br>
             <h3>Tu Puntuación:</h3>
 
-            <p th:if="${usuarioLibro != null and usuarioLibro.puntuacion != null}"
-               th:text="${usuarioLibro.puntuacion} + ' estrellas'"></p>
-            <p th:if="${usuarioLibro == null or usuarioLibro.puntuacion == null}">
+            <p th:if="${resenia != null and resenia.puntuacion != null}"
+               th:text="${resenia.puntuacion} + ' estrellas'"></p>
+            <p th:if="${resenia == null or resenia.puntuacion == null}">
                 Aún no has puntuado este libro.
             </p>
             <br>
@@ -94,14 +103,20 @@
         </div>
 
         <h2>Reseñas de otros usuarios</h2>
-        <ul>
-            <li th:each="resenia : ${reseniasDeOtrosUsuarios}" style="margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #ddd; background-color: #fff; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                <strong th:text="${resenia.usuario.nombre}"></strong> escribió:
-                <p th:text="${resenia.resenia}"></p>
-                <span>Puntuación: <span th:text="${resenia.puntuacion}"></span></span>
-            </li>
-        </ul>
-</div>
+        <div th:if="${reseniasDeOtrosUsuarios.isEmpty()}" class="alert alert-danger">
+            <p><span>No hay reseñas de otros usuarios.</span></p>
+        </div>
+        <div th:if="${!reseniasDeOtrosUsuarios.isEmpty()}">
+            <ul>
+                <li th:each="resenia : ${reseniasDeOtrosUsuarios}"
+                    style="margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #ddd; background-color: #fff; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <strong th:text="${resenia.usuario.nombre}"></strong> escribió:
+                    <p th:text="${resenia.descripcion}"></p>
+                    <span>Puntuación: <span th:text="${resenia.puntuacion}"></span></span>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 </body>
 </html>

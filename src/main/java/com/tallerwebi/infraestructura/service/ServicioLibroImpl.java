@@ -32,7 +32,7 @@ public class ServicioLibroImpl implements ServicioLibro {
         List<Libro> librosObtenidos = repositorioLibro.buscar(query);
 
         if (librosObtenidos.isEmpty())
-            throw new ListaVacia();
+            throw new ListaVacia("No se encontraron libros que coincidan con la busqueda");
 
         return new HashSet<>(librosObtenidos);
     }

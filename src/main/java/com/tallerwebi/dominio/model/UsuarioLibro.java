@@ -11,9 +11,11 @@ public class UsuarioLibro {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
     @ManyToOne
+    @JoinColumn(name = "libro_id")
     private Libro libro;
 
     private String estadoDeLectura;

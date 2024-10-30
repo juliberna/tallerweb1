@@ -1,15 +1,8 @@
 package com.tallerwebi.presentacion.controller;
 
-import com.tallerwebi.dominio.excepcion.LibroNoEncontrado;
-import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
-import com.tallerwebi.dominio.model.Libro;
-import com.tallerwebi.dominio.model.Usuario;
-import com.tallerwebi.dominio.model.UsuarioLibro;
-import com.tallerwebi.infraestructura.service.ServicioLibro;
-import com.tallerwebi.dominio.excepcion.ListaVacia;
-import com.tallerwebi.dominio.excepcion.QueryVacia;
-import com.tallerwebi.infraestructura.service.ServicioUsuario;
-import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
+import com.tallerwebi.dominio.excepcion.*;
+import com.tallerwebi.dominio.model.*;
+import com.tallerwebi.infraestructura.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -35,12 +28,18 @@ public class ControladorLibro {
     private ServicioLibro servicioLibro;
     private ServicioUsuario servicioUsuario;
     private ServicioUsuarioLibro servicioUsuarioLibro;
+    private ServicioLibroGenero servicioLibroGenero;
+    private ServicioResenia servicioResenia;
 
     @Autowired
-    public ControladorLibro(ServicioLibro servicioLibro, ServicioUsuario servicioUsuario, ServicioUsuarioLibro servicioUsuarioLibro) {
+    public ControladorLibro(ServicioLibro servicioLibro, ServicioUsuario servicioUsuario,
+                            ServicioUsuarioLibro servicioUsuarioLibro, ServicioLibroGenero servicioLibroGenero,
+                            ServicioResenia servicioResenia) {
         this.servicioLibro = servicioLibro;
         this.servicioUsuario = servicioUsuario;
         this.servicioUsuarioLibro = servicioUsuarioLibro;
+        this.servicioLibroGenero = servicioLibroGenero;
+        this.servicioResenia = servicioResenia;
     }
 
     @RequestMapping("/buscar")
@@ -55,7 +54,7 @@ public class ControladorLibro {
         } catch (QueryVacia e) {
             modelo.addAttribute("error", "El campo de busqueda esta vacio");
         } catch (ListaVacia e) {
-            modelo.addAttribute("error", "No se encontraron libros que coincidan con la busqueda");
+            modelo.addAttribute("error", e.getMessage());
         }
 
         modelo.addAttribute("query", query);
@@ -71,25 +70,36 @@ public class ControladorLibro {
             Long userId = (Long) session.getAttribute("USERID");
 
             Libro libro = servicioLibro.obtenerIdLibro(id);
+            model.addAttribute("libro", libro);
+
             UsuarioLibro usuarioLibro = servicioUsuarioLibro.obtenerUsuarioLibro(userId, id);
-            Double promedioDePuntuacion = servicioUsuarioLibro.calcularPromedioDePuntuacion(id);
-            List<UsuarioLibro> reseniasDeOtrosUsuarios = servicioUsuarioLibro.obtenerReseniaDeUsuarioLibro(userId, id);
+            model.addAttribute("usuarioLibro", usuarioLibro);
+
+            Double promedioDePuntuacion = servicioResenia.calcularPromedioPuntuacion(id);
+            model.addAttribute("promedioDePuntuacion", promedioDePuntuacion);
 
             double progreso = 0.0;
             if (usuarioLibro != null && usuarioLibro.getCantidadDePaginas() != null) {
                 progreso = servicioUsuarioLibro.calcularProgresoDeLectura(userId, id, usuarioLibro.getCantidadDePaginas());
             }
-
-            model.addAttribute("libro", libro);
-            model.addAttribute("usuarioLibro", usuarioLibro);
-            model.addAttribute("promedioDePuntuacion", promedioDePuntuacion);
-            model.addAttribute("reseniasDeOtrosUsuarios", reseniasDeOtrosUsuarios);
             model.addAttribute("progreso", progreso);
+
+            List<Resenia> reseniasDeOtrosUsuarios = servicioResenia.obtenerReseniasDeOtrosUsuarios(userId);
+            model.addAttribute("reseniasDeOtrosUsuarios", reseniasDeOtrosUsuarios);
+
+            Resenia resenia = servicioResenia.obtenerReseniaDelUsuario(userId, id);
+            model.addAttribute("resenia", resenia);
+
+            List<LibroGenero> generos = servicioLibroGenero.obtenerGeneros(libro);
+            model.addAttribute("generos", generos);
 
             return "infoLibro";
         } catch (LibroNoEncontrado e) {
             model.addAttribute("error", e.getMessage());
             return "errorLibroNoEncontrado";  // Redirige a una vista de error si el libro no se encuentra
+        } catch (ListaVacia e) {
+            model.addAttribute("errorGeneros", e.getMessage());
+            return "infoLibro";
         }
     }
 
@@ -145,11 +155,17 @@ public class ControladorLibro {
             HttpServletRequest request = attr.getRequest();
             HttpSession session = request.getSession();
             Long userId = (Long) session.getAttribute("USERID");
-            servicioUsuarioLibro.crearOActualizarUsuarioLibro(userId, id, "Leído", puntuacion, reseña);
+            Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
+            Libro libro = servicioLibro.obtenerIdLibro(id);
+            System.out.println("Libro: " + libro.getTitulo());
+            System.out.println("Usuario: " + usuario.getNombre());
+            servicioResenia.guardarResenia(usuario, libro, puntuacion, reseña);
             return "redirect:/libro/detalle/" + id;
         } catch (LibroNoEncontrado e) {
             model.addAttribute("error", e.getMessage());
             return "errorLibroNoEncontrado";  // Redirige a una vista de error si el libro no se encuentra
+        } catch (UsuarioInexistente e) {
+            return "redirect:/login";
         }
     }
 
@@ -169,10 +185,10 @@ public class ControladorLibro {
         } catch (UsuarioInexistente e) {
             return new ModelAndView("redirect:/login");
         } catch (ListaVacia e) {
-            model.addAttribute("error", "No tiene libros con este estado");
+            model.addAttribute("error", e.getMessage());
         }
 
-        model.addAttribute("categoriaActual", "Quiero Leer");
+        model.addAttribute("categoriaActual", "Quiero leer");
         return new ModelAndView("mostrar-libros", model);
     }
 
@@ -212,7 +228,7 @@ public class ControladorLibro {
         } catch (UsuarioInexistente e) {
             return new ModelAndView("redirect:/login");
         } catch (ListaVacia e) {
-            model.addAttribute("error", "No tiene libros con este estado");
+            model.addAttribute("error", e.getMessage());
             model.addAttribute("cantidadLibrosLeidos", 0);
         }
 

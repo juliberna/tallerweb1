@@ -96,7 +96,7 @@ public class ControladorDesafio {
         } catch (UsuarioInexistente e) {
             return new ModelAndView("redirect:/login");
         } catch (ListaVacia e) {
-            model.addAttribute("error", "Por ahora no tiene libros leidos este año");
+            model.addAttribute("error", e.getMessage());
             model.addAttribute("cantidadLibrosLeidos", 0);
         }
 

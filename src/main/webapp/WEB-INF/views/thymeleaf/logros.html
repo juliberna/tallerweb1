@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Logro del usuario ' + ${usuario.nombreUsuario}"></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Boostrap core css -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
+
+    <!-- custom style -->
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+
+    <!-- Path to jQuery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+
+    <!-- Path to Popper - it is for dropsdowns etc in bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+            integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+            crossorigin="anonymous"></script>
+
+    <!-- Path to bootsrap -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+            integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+
+<div class="container" style="max-width: 1100px;">
+    <h2 class="mb-4 mt-4" th:text="'Logros del usuario ' + ${usuario.nombreUsuario}"></h2>
+
+    <div th:if="${error} != null" class="alert alert-danger">
+        <p><span th:text="${error}"></span></p>
+    </div>
+
+    <div class="row" th:if="${error == null}">
+        <div class="col-md-4 mb-4" th:each="usuarioLogro : ${logros}">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <!-- Icono o insignia del logro -->
+                    <span class="badge bg-success rounded-circle p-3 mb-3">
+                        <i class="fa-solid fa-star"></i>
+                    </span>
+                    <h5 class="card-title" th:text="${usuarioLogro.logro.nombre}"></h5>
+                    <p class="card-text" th:text="${usuarioLogro.logro.descripcion}"></p>
+                    <span class="badge bg-success">Alcanzado</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="mb-4 mt-4" th:text="'Logros por completar'"></h2>
+
+    <div th:if="${completados} != null" class="alert alert-info">
+        <p><span th:text="${completados}"></span></p>
+    </div>
+
+    <div class="row" th:if="${completados == null}">
+        <div class="col-md-4 mb-4" th:each="logro : ${logrosPorCompletar}">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <span class="badge bg-secondary rounded-circle p-3 mb-3">
+                        <i class="fa-regular fa-star"></i>
+                    </span>
+                    <h5 class="card-title" th:text="${logro.nombre}"></h5>
+                    <p class="card-text" th:text="${logro.descripcion}"></p>
+                    <span class="badge bg-secondary">En progreso</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://kit.fontawesome.com/d23f047cd0.js" crossorigin="anonymous"></script>
+</body>
+</html>

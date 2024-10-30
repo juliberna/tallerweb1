@@ -60,23 +60,6 @@ public class RepositorioUsuarioLibroImpl implements RepositorioUsuarioLibro {
     }
 
     @Override
-    public List<UsuarioLibro> obtenerReseniasDeOtrosUsuarios(Long idUsuarioActual, Long idLibro) {
-        Session session = sessionFactory.getCurrentSession();
-
-        Criteria criteria = session.createCriteria(UsuarioLibro.class);
-
-        // Filtro por el libro específico
-        criteria.add(Restrictions.eq("libro.id", idLibro));
-
-        // Excluyo las reseñas del usuario actual
-        criteria.add(Restrictions.ne("usuario.id", idUsuarioActual));
-
-        // Retorno la lista de resultados (objetos UsuarioLibro)
-        return criteria.list();
-
-    }
-
-    @Override
     public List<UsuarioLibro> buscarLibrosLeidosPorAño(Integer anio, Usuario usuario) {
         Session session = sessionFactory.getCurrentSession();
 
@@ -94,5 +77,4 @@ public class RepositorioUsuarioLibroImpl implements RepositorioUsuarioLibro {
                 .add(Restrictions.between("fechaLeido", inicioAnio, finAnio))
                 .list();
     }
-
 }
