@@ -7,6 +7,8 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -39,13 +41,11 @@ public class RepositorioAmistadImpl implements RepositorioAmistad {
 
     @Override
     public Boolean guardar(Amistad amistad) {
-
         Session session = sessionFactory.getCurrentSession();
 
         Criteria criteria = session.createCriteria(Amistad.class);
         criteria.add(Restrictions.eq("usuario", amistad.getUsuario()));
         criteria.add(Restrictions.eq("amigo", amistad.getAmigo()));
-        criteria.add(Restrictions.eq("estado", amistad.getEstado()));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
         Amistad notificacionExistente = (Amistad) criteria.uniqueResult();
@@ -53,10 +53,52 @@ public class RepositorioAmistadImpl implements RepositorioAmistad {
         if (notificacionExistente == null) {
             session.saveOrUpdate(amistad);
             return true;
-        } else {
-            /* notificacionExistente.setEstado(amistad.getEstado());
-            session.update(notificacionExistente); */
-            return false;
+        }else {
+            notificacionExistente.setEstado(amistad.getEstado());
+            session.update(notificacionExistente);
+            return true;
         }
     }
+
+    @Override
+    public List<Amistad> listarAmigosPorUsuario(Long userId) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(Amistad.class);
+
+        criteria.add(Restrictions.or(
+                Restrictions.eq("usuario.id", userId),
+                Restrictions.eq("amigo.id", userId)
+        ));
+        criteria.add(Restrictions.eq("estado", "aceptada"));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
+        List<Amistad> amistades = criteria.list();
+
+        List<Amistad> amistadesFiltradas = new ArrayList<>();
+        for (Amistad amistad : amistades) {
+
+            if (amistad.getUsuario().getId().equals(userId)) {
+                Amistad amistadFiltrada = new Amistad();
+                amistadFiltrada.setAmigo(amistad.getAmigo());
+                amistadesFiltradas.add(amistadFiltrada);
+            }
+            else if (amistad.getAmigo().getId().equals(userId)) {
+                Amistad amistadFiltrada = new Amistad();
+                amistadFiltrada.setUsuario(amistad.getUsuario());
+                amistadesFiltradas.add(amistadFiltrada);
+            }
+        }
+
+        return amistadesFiltradas;
+    }
+
+    @Override
+    public Amistad buscarAmistadPorIdDeSolicitud(Long requestId) throws Exception {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(Amistad.class);
+        criteria.add(Restrictions.eq("id", requestId));
+        return (Amistad) criteria.uniqueResult();
+    }
+
+
 }

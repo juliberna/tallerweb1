@@ -30,6 +30,7 @@
 
 <main role="main" class="container mt-2 pt-5">
     <div class="row justify-content-center">
+        <!-- Div del perfil -->
         <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-header text-center text-white" style="background-color: #E18C78;">
@@ -90,6 +91,24 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-4" th:if="${mostrarListado}">
+            <div class="card shadow-sm">
+                <div class="card-header text-center text-white" style="background-color: #4CAF50;">
+                    <h4 style="color:#ffffff">Amigos</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item" th:each="amistad : ${listaAmigos}">
+                            <a th:href="@{/perfil/{id}(id=${amistad.amigo != null ? amistad.amigo.id : amistad.usuario.id})}"
+                               target="_blank"
+                               th:text="${amistad.amigo != null ? amistad.amigo.nombre : amistad.usuario.nombre}"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </main>
 

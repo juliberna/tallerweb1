@@ -1,5 +1,6 @@
 package com.tallerwebi.infraestructura.repository;
 import com.tallerwebi.dominio.model.Notificacion;
+import com.tallerwebi.dominio.model.TipoNotificacion;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,5 +30,17 @@ public class RepositorioNotificacionImpl implements RepositorioNotificacion {
     public void guardar(Notificacion notificacion) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(notificacion);
+    }
+
+    @Override
+    public void reemplazarMensajeNotificacion(Notificacion notificacion, Long notificationId, TipoNotificacion notificationTypeId) {
+        Session session = sessionFactory.getCurrentSession();
+        session.saveOrUpdate(notificacion);
+        Notificacion notificacionExistente = session.get(Notificacion.class, notificationId);
+
+        if (notificacionExistente != null) {
+            notificacionExistente.setTipo(notificationTypeId);
+            notificacionExistente.setMensaje(notificacion.getMensaje());
+        }
     }
 }

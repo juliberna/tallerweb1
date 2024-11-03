@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.infraestructura.service.ServicioAmistad;
 import com.tallerwebi.infraestructura.service.ServicioUsuario;
 import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
 import com.tallerwebi.presentacion.controller.ControladorPerfil;
@@ -14,8 +15,9 @@ import static org.mockito.Mockito.*;
 public class ControladorPerfilTest {
 
     ServicioUsuario servicioUsuario = mock(ServicioUsuario.class);
+    ServicioAmistad servicioAmistad = mock(ServicioAmistad.class);
     ServicioUsuarioLibro servicioUsuarioLibro = mock(ServicioUsuarioLibro.class);
-    ControladorPerfil controladorPerfil = new ControladorPerfil(servicioUsuario);
+    ControladorPerfil controladorPerfil = new ControladorPerfil(servicioUsuario, servicioAmistad);
 
     @Test
     public void siElIdDelUsuarioTienePerfilMostrarlo() throws Exception {

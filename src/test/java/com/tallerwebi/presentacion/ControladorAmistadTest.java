@@ -2,6 +2,7 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.infraestructura.service.ServicioAmistad;
 import com.tallerwebi.infraestructura.service.ServicioNotificacion;
+import com.tallerwebi.infraestructura.service.ServicioUsuarioNotificacion;
 import com.tallerwebi.presentacion.controller.ControladorAmistad;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ public class ControladorAmistadTest {
 
     private ServicioAmistad servicioAmistad;
     private ServicioNotificacion servicioNotificacion;
+    private ServicioUsuarioNotificacion servicioUsuarioNotificacion;
     private ControladorAmistad controladorAmistad;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
@@ -27,7 +29,8 @@ public class ControladorAmistadTest {
     public void setUp() {
         servicioAmistad = mock(ServicioAmistad.class);
         servicioNotificacion = mock(ServicioNotificacion.class);
-        controladorAmistad = new ControladorAmistad(servicioAmistad, servicioNotificacion);
+        servicioUsuarioNotificacion = mock((ServicioUsuarioNotificacion.class));
+        controladorAmistad = new ControladorAmistad(servicioAmistad, servicioNotificacion, servicioUsuarioNotificacion);
 
         requestMock = mock(HttpServletRequest.class);
         sessionMock = mock(HttpSession.class);
@@ -51,7 +54,7 @@ public class ControladorAmistadTest {
         String vista = controladorAmistad.enviarSolicitudAmistad(friendId);
 
         verify(servicioAmistad).enviarSolicitudDeAmistad(userId, friendId);
-        verify(servicioNotificacion).crearNotificacion(friendId, 2L, "Has recibido una solicitud de Amistad de " + username);
+        verify(servicioNotificacion).crearNotificacion(friendId, 2L, "Has recibido una solicitud de Amistad de " + username, 2L);
         assertThat(vista, equalTo("amigoAgregadoCorrectamente"));
     }
 
