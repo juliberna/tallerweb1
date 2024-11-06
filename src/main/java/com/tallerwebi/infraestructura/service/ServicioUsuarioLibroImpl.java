@@ -108,7 +108,13 @@ public class ServicioUsuarioLibroImpl implements ServicioUsuarioLibro {
             return 0.0;
         }
 
-        return (double) suma / cantidad;
+
+        double promedio = (double) suma / cantidad;
+
+
+        double promedioRedondeado = Math.round(promedio * 10.0) / 10.0;
+
+        return promedioRedondeado;
     }
 
     @Transactional
