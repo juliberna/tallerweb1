@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -57,7 +58,7 @@ public class ControladorAmistad {
 
 
     @RequestMapping(value = "/aceptar-solicitud/{requestId}", method = RequestMethod.POST)
-    public ResponseEntity<String> aceptarSolicitudAmistad(@PathVariable Long requestId) {
+    public ModelAndView aceptarSolicitudAmistad(@PathVariable Long requestId) {
         ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = attr.getRequest();
         HttpSession session = request.getSession();
@@ -71,19 +72,19 @@ public class ControladorAmistad {
             if (sent) {
                 servicioNotificacion.editarNombreNotificacion(requestId, "Has aceptado la solicitud de " + username, 5L);
                 servicioNotificacion.crearNotificacion(friendId, 5L, username + " ha aceptado tu solicitud de amistad", userId);
-                return ResponseEntity.noContent().build();
+                return new ModelAndView("redirect:/home");
 
             } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return new ModelAndView("redirect:/error");
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return new ModelAndView("redirect:/error");
         }
     }
 
     @RequestMapping(value = "/rechazar-solicitud/{requestId}", method = RequestMethod.POST)
-    public ResponseEntity<String> rechazarSolicitudAmistad(@PathVariable Long requestId) {
+    public ModelAndView rechazarSolicitudAmistad(@PathVariable Long requestId) {
         ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = attr.getRequest();
         HttpSession session = request.getSession();
@@ -102,13 +103,13 @@ public class ControladorAmistad {
             if (sent) {
                 servicioNotificacion.editarNombreNotificacion(requestId, "Has rechazado la solicitud de " + username, 5L);
                 servicioNotificacion.crearNotificacion(friendId, 5L, username + " ha rechazado tu solicitud de amistad", userId);
-                return ResponseEntity.noContent().build();
+                return new ModelAndView("redirect:/home");
             } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return new ModelAndView("redirect:/error");
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return new ModelAndView("redirect:/error");
         }
     }
 

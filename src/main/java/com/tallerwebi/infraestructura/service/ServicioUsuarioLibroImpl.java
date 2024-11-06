@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -108,6 +109,19 @@ public class ServicioUsuarioLibroImpl implements ServicioUsuarioLibro {
         }
 
         return (double) suma / cantidad;
+    }
+
+    @Transactional
+    @Override
+    public List<UsuarioLibro> obtenerTodosLosComentariosDeMisAmigos(Long userId) throws MessagingException {
+        try {
+            List<UsuarioLibro> comentariosDeMisAmigos = repositorioUsuarioLibro.obtenerTodosLosComentariosDeMisAmigos(userId);
+            System.out.println(comentariosDeMisAmigos + " UISUARO LIBRO LISTADO");
+            return comentariosDeMisAmigos;
+        } catch (Exception e) {
+            throw new MessagingException(e.getMessage());
+        }
+
     }
 
     @Override
