@@ -1,7 +1,7 @@
 package com.tallerwebi.dominio.model;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 public class Comentario {
@@ -21,10 +21,10 @@ public class Comentario {
     @JoinColumn(name = "user_id", nullable = false)
     private Usuario usuario;
 
-    private LocalDateTime fechaComentario;
+    private LocalDate fechaComentario;
 
     public Comentario() {
-        this.fechaComentario = LocalDateTime.now();
+        this.fechaComentario = LocalDate.now();
     }
 
     public Long getId() {
@@ -59,11 +59,11 @@ public class Comentario {
         this.usuario = usuario;
     }
 
-    public LocalDateTime getFechaComentario() {
+    public LocalDate getFechaComentario() {
         return fechaComentario;
     }
 
-    public void setFechaComentario(LocalDateTime fechaComentario) {
+    public void setFechaComentario(LocalDate fechaComentario) {
         this.fechaComentario = fechaComentario;
     }
 }

@@ -21,7 +21,7 @@ public class ServicioReseniaTest {
 
     private RepositorioResenia repositorioResenia = Mockito.mock(RepositorioResenia.class);
 
-    private ServicioReseniaImpl servicioResenia = new ServicioReseniaImpl(repositorioResenia);
+    private ServicioReseniaImpl servicioResenia = new ServicioReseniaImpl(repositorioResenia, null, null);
 
     @Test
     public void siElLibroTienePuntuacionesCalculaElPromedioCorrectamente() {

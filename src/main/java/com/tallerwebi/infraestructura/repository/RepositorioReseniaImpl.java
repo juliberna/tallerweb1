@@ -1,9 +1,7 @@
 package com.tallerwebi.infraestructura.repository;
 
 
-import com.tallerwebi.dominio.model.Libro;
-import com.tallerwebi.dominio.model.Resenia;
-import com.tallerwebi.dominio.model.Usuario;
+import com.tallerwebi.dominio.model.*;
 import com.tallerwebi.dominio.repository.RepositorioResenia;
 import org.hibernate.Criteria;
 import org.hibernate.Session;

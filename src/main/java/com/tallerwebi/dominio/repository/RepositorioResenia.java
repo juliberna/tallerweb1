@@ -1,8 +1,6 @@
 package com.tallerwebi.dominio.repository;
 
-import com.tallerwebi.dominio.model.Libro;
-import com.tallerwebi.dominio.model.Resenia;
-import com.tallerwebi.dominio.model.Usuario;
+import com.tallerwebi.dominio.model.*;
 
 import java.util.List;
 
@@ -20,4 +18,6 @@ public interface RepositorioResenia {
     Resenia obtenerReseniaDelUsuario(Long userId, Long idLibro);
 
     List<Resenia> obtenerTodasLasReseniasDelUsuario(Usuario usuario);
+
+
 }
