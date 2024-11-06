@@ -30,7 +30,7 @@ public class ServicioReseniaImpl implements ServicioResenia {
         Resenia reseniaExistente = repositorioResenia.obtenerReseniaDelUsuario(usuario.getId(), libro.getId());
         UsuarioLibro usuarioLibro = repositorioUsuarioLibro.encontrarUsuarioIdYLibroId(usuario.getId(), libro.getId());
 
-        if (reseniaExistente != null && usuarioLibro.getResenia() != null) {
+        if (reseniaExistente != null) {
             // Si ya existe una reseña, actualiza la descripcion y la puntuacion
             reseniaExistente.setDescripcion(descripcion);
             reseniaExistente.setPuntuacion(puntuacion);
