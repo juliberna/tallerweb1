@@ -23,13 +23,22 @@ public class ServicioReseniaImpl implements ServicioResenia {
 
     @Override
     public void guardarResenia(Usuario usuario, Libro libro, Integer puntuacion, String descripcion) {
-        Resenia resenia = new Resenia();
-        resenia.setUsuario(usuario);
-        resenia.setLibro(libro);
-        resenia.setPuntuacion(puntuacion);
-        resenia.setDescripcion(descripcion);
+        Resenia reseniaExistente = repositorioResenia.obtenerReseniaDelUsuario(usuario.getId(), libro.getId());
 
-        repositorioResenia.guardar(resenia);
+        if (reseniaExistente != null) {
+            // Si ya existe una reseña, actualiza la descripcion y la puntuacion
+            reseniaExistente.setDescripcion(descripcion);
+            reseniaExistente.setPuntuacion(puntuacion);
+            repositorioResenia.guardar(reseniaExistente);
+        } else {
+            // Si no existe una reseña, crea una nueva
+            Resenia resenia = new Resenia();
+            resenia.setUsuario(usuario);
+            resenia.setLibro(libro);
+            resenia.setPuntuacion(puntuacion);
+            resenia.setDescripcion(descripcion);
+            repositorioResenia.guardar(resenia);
+        }
     }
 
     @Override
