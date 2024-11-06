@@ -33,4 +33,19 @@ public class RepositorioComentarioImpl implements RepositorioComentario {
                 .add(Restrictions.eq("resenia.id", idResenia))
                 .list();
     }
+
+    @Override
+    public Comentario obtenerComentarioPorId(Long id) {
+        Session session = sessionFactory.getCurrentSession();
+
+        return (Comentario) session.createCriteria(Comentario.class)
+                .add(Restrictions.eq("id", id))
+                .uniqueResult();
+    }
+
+    @Override
+    public void eliminar(Comentario comentario) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(comentario);
+    }
 }

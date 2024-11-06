@@ -1,11 +1,13 @@
 package com.tallerwebi.infraestructura.service;
 
 import com.tallerwebi.dominio.excepcion.ListaVacia;
+import com.tallerwebi.dominio.excepcion.ReseniaInexistente;
 import com.tallerwebi.dominio.model.Comentario;
 import com.tallerwebi.dominio.model.Resenia;
 import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.dominio.repository.RepositorioComentario;
 import com.tallerwebi.dominio.repository.RepositorioResenia;
+import com.tallerwebi.dominio.repository.RepositorioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,17 +29,19 @@ public class ServicioComentarioImpl implements ServicioComentario {
     }
 
     @Override
-    public void guardarComentario(Long idResenia, Usuario usuario, String textoComentario) {
-        Resenia resenia = repositorioResenia.obtenerReseniaPorId(idResenia);
-        if (resenia != null) {
-            Comentario comentario = new Comentario();
-            comentario.setResenia(resenia);
-            comentario.setUsuario(usuario);
-            comentario.setTexto(textoComentario);
-            comentario.setFechaComentario(LocalDate.now());
+    public void guardarComentario(Usuario usuario, Resenia resenia, String textoComentario) throws ReseniaInexistente {
 
-            repositorioComentario.guardarComentario(comentario);
+        if (resenia == null) {
+            throw new ReseniaInexistente("La resenia no existe.");
         }
+
+        Comentario comentario = new Comentario();
+        comentario.setResenia(resenia);
+        comentario.setUsuario(usuario);
+        comentario.setTexto(textoComentario);
+
+        repositorioComentario.guardarComentario(comentario);
+
     }
 
     @Override
@@ -49,4 +53,23 @@ public class ServicioComentarioImpl implements ServicioComentario {
         }
         return comentarios;
     }
+
+    @Override
+    public Boolean esAutorDelComentario(Long id, Long userId) {
+        Comentario comentario = repositorioComentario.obtenerComentarioPorId(id);
+        return comentario.getUsuario().getId().equals(userId);
+    }
+
+    @Override
+    public void eliminar(Long id) {
+        Comentario comentario = repositorioComentario.obtenerComentarioPorId(id);
+        repositorioComentario.eliminar(comentario);
+    }
+
+    @Override
+    public Comentario obtenerComentarioPorId(Long id) {
+        Comentario comentario = repositorioComentario.obtenerComentarioPorId(id);
+        return comentario;
+    }
+
 }

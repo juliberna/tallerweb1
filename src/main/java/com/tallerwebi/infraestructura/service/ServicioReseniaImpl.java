@@ -112,7 +112,7 @@ public class ServicioReseniaImpl implements ServicioResenia {
         Usuario usuario = repositorioUsuario.buscarUsuarioPorId(idUsuario);
         Resenia resenia = repositorioResenia.obtenerReseniaPorId(idResenia);
 
-        LikeDislike reaccionExistente = repositorioLikeDislike.obtenerReaccionDelUsuario(idResenia, idUsuario);
+        LikeDislike reaccionExistente = repositorioLikeDislike.obtenerReaccionDelUsuario(idUsuario,idResenia);
 
         if (reaccionExistente != null) {
             System.out.println("Actualiza el like o dislike");
@@ -149,7 +149,7 @@ public class ServicioReseniaImpl implements ServicioResenia {
 
     @Override
     public LikeDislike obtenerReaccionUsuario(Long idResenia, Long userId) {
-        return repositorioLikeDislike.obtenerReaccionDelUsuario(idResenia, userId);
+        return repositorioLikeDislike.obtenerReaccionDelUsuario(userId,idResenia);
     }
 
     private void actualizarEliminarReaccion(Usuario usuario, Resenia resenia, LikeDislike reaccionExistente, boolean esLike) {

@@ -7,4 +7,8 @@ import java.util.List;
 public interface RepositorioComentario {
     void guardarComentario(Comentario comentario);
     List<Comentario> obtenerComentariosPorResenia(Long idResenia);
+
+    Comentario obtenerComentarioPorId(Long id);
+
+    void eliminar(Comentario comentario);
 }
