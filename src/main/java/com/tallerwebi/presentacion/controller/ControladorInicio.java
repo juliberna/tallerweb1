@@ -96,7 +96,13 @@ public class ControladorInicio {
             List<UsuarioLibro> librosLeidos = servicioUsuarioLibro.buscarLibrosLeidosPorAño(anioActual, usuario);
             Integer cantidadLibrosLeidos = librosLeidos.size();
             model.addAttribute("cantidadLibrosLeidos", cantidadLibrosLeidos);
-            Integer porcentajeLibrosLeidos = (int) Math.round((double) cantidadLibrosLeidos / (double) usuario.getMeta() * 100);
+
+            Integer porcentajeLibrosLeidos = 0;
+
+            if(usuario.getMeta() != null) {
+                porcentajeLibrosLeidos = (int) Math.round((double) cantidadLibrosLeidos / (double) usuario.getMeta() * 100);
+            }
+
             model.addAttribute("porcentajeLibrosLeidos", porcentajeLibrosLeidos);
             List<Resenia> reviews = servicioInicio.cargarTodasLasReviews();
             model.addAttribute("reviews", reviews);

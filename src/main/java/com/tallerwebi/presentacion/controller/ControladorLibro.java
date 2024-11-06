@@ -84,7 +84,7 @@ public class ControladorLibro {
             }
             model.addAttribute("progreso", progreso);
 
-            List<Resenia> reseniasDeOtrosUsuarios = servicioResenia.obtenerReseniasDeOtrosUsuarios(userId);
+            List<Resenia> reseniasDeOtrosUsuarios = servicioResenia.obtenerReseniasDeOtrosUsuarios(userId,id);
             model.addAttribute("reseniasDeOtrosUsuarios", reseniasDeOtrosUsuarios);
 
             Resenia resenia = servicioResenia.obtenerReseniaDelUsuario(userId, id);

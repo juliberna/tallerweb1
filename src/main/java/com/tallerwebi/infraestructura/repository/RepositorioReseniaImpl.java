@@ -39,11 +39,12 @@ public class RepositorioReseniaImpl implements RepositorioResenia {
     }
 
     @Override
-    public List<Resenia> obtenerReseniasDeOtrosUsuarios(Long userId) {
+    public List<Resenia> obtenerReseniasDeOtrosUsuarios(Long userId, Long idLibro) {
         Session session = sessionFactory.getCurrentSession();
 
         return session.createCriteria(Resenia.class)
                 .createAlias("usuario", "u")
+                .add(Restrictions.eq("libro.id", idLibro)) // Traer reseñas de ese libro especifico
                 .add(Restrictions.ne("u.id", userId))  // Excluir reseñas del usuario actual
                 .setMaxResults(4)  // Limitar a 4 resultados
                 .list();
