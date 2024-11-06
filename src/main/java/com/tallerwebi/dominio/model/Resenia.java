@@ -21,12 +21,6 @@ public class Resenia {
     // El texto de la reseña escrita por el usuario
     private String descripcion;
 
-    @Column(name = "likes_count")
-    private Integer likes = 0;
-
-    @Column(name = "dislikes_count")
-    private Integer dislikes = 0;
-
     @Column(name = "publication_date")
     private LocalDateTime fechaPublicacion;
 
@@ -37,6 +31,9 @@ public class Resenia {
     @ManyToOne
     @JoinColumn(name = "libro_id", nullable = false)
     private Libro libro;
+
+    @OneToMany(mappedBy = "resenia", cascade = CascadeType.ALL)
+    private List<LikeDislike> reacciones = new ArrayList<>();
 
     @OneToMany(mappedBy = "resenia", cascade = CascadeType.ALL)
     private List<Comentario> comentarios = new ArrayList<>();
@@ -69,22 +66,6 @@ public class Resenia {
         this.descripcion = descripcion;
     }
 
-    public Integer getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Integer likes) {
-        this.likes = likes;
-    }
-
-    public Integer getDislikes() {
-        return dislikes;
-    }
-
-    public void setDislikes(Integer dislikes) {
-        this.dislikes = dislikes;
-    }
-
     public LocalDateTime getFechaPublicacion() {
         return fechaPublicacion;
     }
@@ -107,6 +88,14 @@ public class Resenia {
 
     public void setLibro(Libro libro) {
         this.libro = libro;
+    }
+
+    public List<LikeDislike> getReacciones() {
+        return reacciones;
+    }
+
+    public void setReacciones(List<LikeDislike> reacciones) {
+        this.reacciones = reacciones;
     }
 
     public List<Comentario> getComentarios() {

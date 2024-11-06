@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="nombreUsuario + ' Desafio de libros'"></title>
+    <title>Desafio de libros</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Boostrap core css -->
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
@@ -98,7 +98,7 @@
         </div>
         <div class="col-12" th:if="${error} == null">
             <h5>
-                <strong>NICOLAS BON 2024 LIBROS LEIDOS</strong>
+                <strong th:text="${usuario.nombre.toUpperCase()} + ' 2024 LIBROS LEIDOS'"></strong>
             </h5>
             <div class="row">
                 <div class="col-md-3" th:each="usuarioLibro : ${libros}">
