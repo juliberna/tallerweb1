@@ -1,9 +1,6 @@
 package com.tallerwebi.infraestructura.service;
 
-import com.tallerwebi.dominio.model.Notificacion;
-import com.tallerwebi.dominio.model.TipoNotificacion;
-import com.tallerwebi.dominio.model.Usuario;
-import com.tallerwebi.dominio.model.UsuarioNotificacion;
+import com.tallerwebi.dominio.model.*;
 import com.tallerwebi.dominio.repository.RepositorioUsuario;
 import com.tallerwebi.infraestructura.repository.RepositorioNotificacion;
 import com.tallerwebi.infraestructura.repository.RepositorioTipoNotificacion;
@@ -31,7 +28,12 @@ public class ServicioNotificacionImpl implements ServicioNotificacion{
     }
 
     @Override
-    public void crearNotificacion(Long userId, Long tipoNotificacion, String mensaje) throws Exception {
+    public Notificacion obtenerNotificacionPorId(Long notificationId) {
+        return repositorioNotificacion.encontrarNotificacionPorId(notificationId);
+    }
+
+    @Override
+    public void crearNotificacion(Long userId, Long tipoNotificacion, String mensaje, Long friendId) throws Exception {
         try {
             Usuario usuario = repositorioUsuario.buscarUsuarioPorId(userId);
 
@@ -54,10 +56,29 @@ public class ServicioNotificacionImpl implements ServicioNotificacion{
             usuarioNotificacion.setNotificacion(notificacion);
             usuarioNotificacion.setLeida(false);
             usuarioNotificacion.setFechaRecibida(new Date());
+            usuarioNotificacion.setFriendId(friendId);
 
             repositorioUsuarioNotificacion.guardar(usuarioNotificacion);
         }catch (Exception error){
             throw new Exception(error.getMessage());
         }
     }
+
+    @Override
+    public void editarNombreNotificacion(Long notificationId, String message, Long notificationTypeId) throws Exception {
+        try {
+            TipoNotificacion notifyType = repositorioTipoNotificacion.encontrarTipoNotificacionPorId(notificationTypeId);
+
+            Notificacion notificacion = new Notificacion();
+
+            notificacion.setMensaje(message);
+            repositorioNotificacion.reemplazarMensajeNotificacion(notificacion, notificationId, notifyType);
+
+
+        }catch (Exception error){
+            throw new Exception(error.getMessage());
+        }
+    }
+
+
 }

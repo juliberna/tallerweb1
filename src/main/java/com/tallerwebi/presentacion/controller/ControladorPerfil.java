@@ -2,9 +2,8 @@ package com.tallerwebi.presentacion.controller;
 
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
-import com.tallerwebi.dominio.model.Libro;
-import com.tallerwebi.dominio.model.Usuario;
-import com.tallerwebi.dominio.model.UsuarioLibro;
+import com.tallerwebi.dominio.model.*;
+import com.tallerwebi.infraestructura.service.ServicioAmistad;
 import com.tallerwebi.infraestructura.service.ServicioLibro;
 import com.tallerwebi.infraestructura.service.ServicioUsuario;
 import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
@@ -13,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,12 +28,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class ControladorPerfil {
 
     private ServicioUsuario servicioUsuario;
+    private ServicioAmistad servicioAmistad;
 
     // Para que no de error el formato de las fechas cuando se edita el perfil
     @InitBinder
@@ -52,17 +55,31 @@ public class ControladorPerfil {
     }
 
     @Autowired
-    public ControladorPerfil(ServicioUsuario servicioUsuario) {
+    public ControladorPerfil(ServicioUsuario servicioUsuario, ServicioAmistad servicioAmistad) {
         this.servicioUsuario = servicioUsuario;
+        this.servicioAmistad = servicioAmistad;
     }
 
     @RequestMapping(value = "/perfil/{id}", method = RequestMethod.GET)
-    public ModelAndView mostrarPerfil(@PathVariable Long id) {
+    public ModelAndView mostrarPerfil( @PathVariable Long id) {
         ModelMap model = new ModelMap();
-
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = attr.getRequest();
+        HttpSession session = request.getSession();
+        Long idUsuario = (Long) session.getAttribute("USERID");
         try {
+
             Usuario usuario = servicioUsuario.buscarUsuarioPorId(id);
             model.addAttribute("usuario", usuario);
+
+            if (id.equals(idUsuario)) {
+                List<Amistad> listaAmigos = servicioAmistad.obtenerAmigos(idUsuario);
+                model.addAttribute("listaAmigos", listaAmigos);
+                model.addAttribute("mostrarListado", true);
+
+            } else {
+                model.addAttribute("mostrarListado", false);
+            }
 
         } catch (UsuarioInexistente e) {
             return new ModelAndView("redirect:/login");

@@ -22,6 +22,9 @@ public class UsuarioNotificacion {
     @Column(nullable = false)
     private Boolean leida;
 
+    @Column(nullable = false)
+    private Long friendId;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_recibida")
     private Date fechaRecibida;
@@ -34,6 +37,9 @@ public class UsuarioNotificacion {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public Long getFriendId() { return friendId; }
+    public void setFriendId(Long friendId) { this.friendId = friendId; }
 
     public Usuario getUsuario() {
         return usuario;

@@ -40,28 +40,20 @@ public class ServicioAmistadTest {
 
     @Test
     public void deberiaEnviarSolicitudDeAmistadCorrectamente() throws Exception {
-        Long id1 = 100L;
-        Usuario usuario1 = new Usuario();
-        usuario1.setId(id1);
-        usuario1.setEmail("usuario1@mail.com");
+        Long idUsuario = 100L;
+        Long idAmigo = 101L;
 
-        Long id2 = 101L;
-        Usuario usuario2 = new Usuario();
-        usuario2.setId(id2);
-        usuario2.setEmail("usuario2@mail.com");
+        Usuario usuario = new Usuario();
+        usuario.setId(idUsuario);
 
-        when(repositorioUsuario.buscarUsuarioPorId(id1)).thenReturn(usuario1);
-        when(repositorioUsuario.buscarUsuarioPorId(id2)).thenReturn(usuario2);
+        Usuario amigo = new Usuario();
+        amigo.setId(idAmigo);
 
-        Amistad solicitud = new Amistad();
-        solicitud.setUsuario(usuario1);
-        solicitud.setAmigo(usuario2);
-        solicitud.setFechaSolicitud(new Date());
-        solicitud.setEstado("pendiente");
-
+        when(repositorioUsuario.buscarUsuarioPorId(idUsuario)).thenReturn(usuario);
+        when(repositorioUsuario.buscarUsuarioPorId(idAmigo)).thenReturn(amigo);
         when(repositorioAmistad.guardar(any(Amistad.class))).thenReturn(true);
 
-        boolean resultado = servicioAmistad.enviarSolicitudDeAmistad(id1, id2);
+        boolean resultado = servicioAmistad.enviarSolicitudDeAmistad(idUsuario, idAmigo);
 
         assertTrue(resultado);
         verify(repositorioAmistad).guardar(any(Amistad.class));
@@ -69,56 +61,101 @@ public class ServicioAmistadTest {
 
     @Test
     public void deberiaLanzarExcepcionCuandoUsuarioNoExiste() throws Exception {
-        Long id1 = 100L;
-        Long id2 = 101L;
-        Usuario usuario2 = new Usuario();
-        usuario2.setId(id2);
-        usuario2.setEmail("usuario2@mail.com");
+        Long idUsuario = 100L;
+        Long idAmigo = 101L;
 
-        when(repositorioUsuario.buscarUsuarioPorId(id1)).thenReturn(null);
-        when(repositorioUsuario.buscarUsuarioPorId(id2)).thenReturn(usuario2);
+        when(repositorioUsuario.buscarUsuarioPorId(idUsuario)).thenReturn(null);
 
         thrown.expect(Exception.class);
         thrown.expectMessage("Usuario o amigo no encontrado");
 
-        servicioAmistad.enviarSolicitudDeAmistad(id1, id2);
+        servicioAmistad.enviarSolicitudDeAmistad(idUsuario, idAmigo);
 
         verify(repositorioAmistad, never()).guardar(any(Amistad.class));
     }
 
     @Test
     public void deberiaLanzarExcepcionCuandoAmigoNoExiste() throws Exception {
-        Long id1 = 100L;
-        Usuario usuario1 = new Usuario();
-        usuario1.setId(id1);
-        usuario1.setEmail("usuario1@mail.com");
+        Long idUsuario = 100L;
+        Long idAmigo = 101L;
 
-        Long id2 = 101L;
+        Usuario usuario = new Usuario();
+        usuario.setId(idUsuario);
 
-        when(repositorioUsuario.buscarUsuarioPorId(id1)).thenReturn(usuario1);
-        when(repositorioUsuario.buscarUsuarioPorId(id2)).thenReturn(null);
+        when(repositorioUsuario.buscarUsuarioPorId(idUsuario)).thenReturn(usuario);
+        when(repositorioUsuario.buscarUsuarioPorId(idAmigo)).thenReturn(null);
 
         thrown.expect(Exception.class);
         thrown.expectMessage("Usuario o amigo no encontrado");
 
-        servicioAmistad.enviarSolicitudDeAmistad(id1, id2);
+        servicioAmistad.enviarSolicitudDeAmistad(idUsuario, idAmigo);
 
         verify(repositorioAmistad, never()).guardar(any(Amistad.class));
     }
 
     @Test
-    public void deberiaLanzarExcepcionCuandoAmbosUsuariosNoExisten() throws Exception {
-        Long id1 = 100L;
-        Long id2 = 101L;
+    public void deberiaAceptarSolicitudDeAmistadCorrectamente() throws Exception {
+        Long idUsuario = 100L;
+        Long idAmigo = 101L;
+        Long idSolicitud = 1L;
 
-        when(repositorioUsuario.buscarUsuarioPorId(id1)).thenReturn(null);
-        when(repositorioUsuario.buscarUsuarioPorId(id2)).thenReturn(null);
+        Usuario usuario = new Usuario();
+        usuario.setId(idUsuario);
+
+        Amistad amistad = new Amistad();
+        amistad.setUsuario(usuario);
+        amistad.setEstado("pendiente");
+
+        when(repositorioUsuario.buscarUsuarioPorId(idUsuario)).thenReturn(usuario);
+        when(repositorioAmistad.encontrarAmistadPorUsuarios(idAmigo, idUsuario)).thenReturn(amistad);
+        when(repositorioAmistad.guardar(amistad)).thenReturn(true);
+
+        boolean resultado = servicioAmistad.aceptarSolicitudDeAmistad(idUsuario, idAmigo, idSolicitud);
+
+        assertTrue(resultado);
+        verify(repositorioAmistad).guardar(amistad);
+    }
+
+    @Test
+    public void deberiaLanzarExcepcionCuandoSolicitudDeAmistadNoExiste() throws Exception {
+        Long idUsuario = 100L;
+        Long idAmigo = 101L;
+        Long idSolicitud = 1L;
+
+        Usuario usuario = new Usuario();
+        usuario.setId(idUsuario);
+
+        when(repositorioUsuario.buscarUsuarioPorId(idUsuario)).thenReturn(usuario);
+        when(repositorioAmistad.encontrarAmistadPorUsuarios(idAmigo, idUsuario)).thenReturn(null);
 
         thrown.expect(Exception.class);
-        thrown.expectMessage("Usuario o amigo no encontrado");
+        thrown.expectMessage("Solicitud de amistad no encontrada");
 
-        servicioAmistad.enviarSolicitudDeAmistad(id1, id2);
+        servicioAmistad.aceptarSolicitudDeAmistad(idUsuario, idAmigo, idSolicitud);
 
         verify(repositorioAmistad, never()).guardar(any(Amistad.class));
+    }
+
+    @Test
+    public void deberiaRechazarSolicitudDeAmistadCorrectamente() throws Exception {
+        Long idUsuario = 100L;
+        Long idAmigo = 101L;
+        Long idSolicitud = 1L;
+
+        Usuario usuario = new Usuario();
+        usuario.setId(idUsuario);
+
+        Amistad amistad = new Amistad();
+        amistad.setUsuario(usuario);
+        amistad.setEstado("pendiente");
+
+        when(repositorioUsuario.buscarUsuarioPorId(idUsuario)).thenReturn(usuario);
+        when(repositorioAmistad.encontrarAmistadPorUsuarios(idAmigo, idUsuario)).thenReturn(amistad);
+        when(repositorioAmistad.guardar(amistad)).thenReturn(true);
+
+        boolean resultado = servicioAmistad.rechazarSolicitudDeAmistad(idUsuario, idAmigo, idSolicitud);
+
+        assertTrue(resultado);
+        verify(repositorioAmistad).guardar(amistad);
     }
 }

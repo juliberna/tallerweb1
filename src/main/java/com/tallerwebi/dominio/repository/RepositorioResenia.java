@@ -11,7 +11,7 @@ public interface RepositorioResenia {
 
     Resenia obtenerReseniaPorId(Long id);
 
-    List<Resenia> obtenerReseniasDeOtrosUsuarios(Long userId);
+    List<Resenia> obtenerReseniasDeOtrosUsuarios(Long userId,Long idLibro);
 
     List<Resenia> obtenerReseniasDelLibro(Long idLibro);
 

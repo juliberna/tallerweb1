@@ -6,4 +6,6 @@ import java.util.List;
 public interface RepositorioUsuarioNotificacion {
     List<UsuarioNotificacion> listarNotificacionesPorUsuario(Long usuarioId);
     void guardar(UsuarioNotificacion usuarioNotificacion);
+
+    Long obtenerIdAmigo(Long friendId, Long requestId);
 }

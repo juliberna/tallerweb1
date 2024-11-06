@@ -6,8 +6,10 @@ import com.tallerwebi.dominio.model.LikeDislike;
 import com.tallerwebi.dominio.model.Resenia;
 import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.dominio.repository.RepositorioLikeDislike;
+import com.tallerwebi.dominio.model.UsuarioLibro;
 import com.tallerwebi.dominio.repository.RepositorioResenia;
 import com.tallerwebi.dominio.repository.RepositorioUsuario;
+import com.tallerwebi.dominio.repository.RepositorioUsuarioLibro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,25 +22,49 @@ import java.util.List;
 public class ServicioReseniaImpl implements ServicioResenia {
 
     private RepositorioResenia repositorioResenia;
+    private RepositorioUsuarioLibro repositorioUsuarioLibro;
     private RepositorioUsuario repositorioUsuario;
     private RepositorioLikeDislike repositorioLikeDislike;
 
     @Autowired
-    public ServicioReseniaImpl(RepositorioResenia repositorioResenia, RepositorioUsuario repositorioUsuario, RepositorioLikeDislike repositorioLikeDislike) {
+    public ServicioReseniaImpl(RepositorioResenia repositorioResenia,RepositorioUsuarioLibro repositorioUsuarioLibro, RepositorioUsuario repositorioUsuario, RepositorioLikeDislike repositorioLikeDislike) {
         this.repositorioResenia = repositorioResenia;
+        this.repositorioUsuarioLibro = repositorioUsuarioLibro;
         this.repositorioUsuario = repositorioUsuario;
         this.repositorioLikeDislike = repositorioLikeDislike;
     }
 
     @Override
     public void guardarResenia(Usuario usuario, Libro libro, Integer puntuacion, String descripcion) {
-        Resenia resenia = new Resenia();
-        resenia.setUsuario(usuario);
-        resenia.setLibro(libro);
-        resenia.setPuntuacion(puntuacion);
-        resenia.setDescripcion(descripcion);
+        Resenia reseniaExistente = repositorioResenia.obtenerReseniaDelUsuario(usuario.getId(), libro.getId());
+        UsuarioLibro usuarioLibro = repositorioUsuarioLibro.encontrarUsuarioIdYLibroId(usuario.getId(), libro.getId());
 
-        repositorioResenia.guardar(resenia);
+        if (reseniaExistente != null) {
+            // Si ya existe una reseña, actualiza la descripcion y la puntuacion
+            reseniaExistente.setDescripcion(descripcion);
+            reseniaExistente.setPuntuacion(puntuacion);
+
+            // Settear la resenia y la puntuacion en el UsuarioLibro
+            usuarioLibro.setResenia(descripcion);
+            usuarioLibro.setPuntuacion(puntuacion);
+
+            repositorioResenia.guardar(reseniaExistente);
+            repositorioUsuarioLibro.guardar(usuarioLibro);
+        } else {
+            // Si no existe una reseña, crea una nueva
+            Resenia resenia = new Resenia();
+            resenia.setUsuario(usuario);
+            resenia.setLibro(libro);
+            resenia.setPuntuacion(puntuacion);
+            resenia.setDescripcion(descripcion);
+
+            // Settear la resenia y la puntuacion en el UsuarioLibro
+            usuarioLibro.setResenia(descripcion);
+            usuarioLibro.setPuntuacion(puntuacion);
+
+            repositorioResenia.guardar(resenia);
+            repositorioUsuarioLibro.guardar(usuarioLibro);
+        }
     }
 
     @Override
@@ -52,8 +78,8 @@ public class ServicioReseniaImpl implements ServicioResenia {
     }
 
     @Override
-    public List<Resenia> obtenerReseniasDeOtrosUsuarios(Long userId) {
-        List<Resenia> resenias = repositorioResenia.obtenerReseniasDeOtrosUsuarios(userId);
+    public List<Resenia> obtenerReseniasDeOtrosUsuarios(Long userId,Long idLibro) {
+        List<Resenia> resenias = repositorioResenia.obtenerReseniasDeOtrosUsuarios(userId,idLibro);
         return resenias;
     }
 

@@ -61,7 +61,7 @@ public class ServicioNotificacionTest {
         when(repositorioUsuario.buscarUsuarioPorId(userId)).thenReturn(usuario);
         when(repositorioTipoNotificacion.encontrarTipoNotificacionPorId(tipoNotificacionId)).thenReturn(tipoNotificacion);
 
-        servicioNotificacion.crearNotificacion(userId, tipoNotificacionId, mensaje);
+        servicioNotificacion.crearNotificacion(userId, tipoNotificacionId, mensaje, 3L);
 
         verify(repositorioNotificacion, times(1)).guardar(any(Notificacion.class));
         verify(repositorioUsuarioNotificacion, times(1)).guardar(any(UsuarioNotificacion.class));
@@ -78,7 +78,7 @@ public class ServicioNotificacionTest {
         thrown.expect(Exception.class);
         thrown.expectMessage("No existe usuario con ID " + userId);
 
-        servicioNotificacion.crearNotificacion(userId, tipoNotificacionId, mensaje);
+        servicioNotificacion.crearNotificacion(userId, tipoNotificacionId, mensaje, 3L);
 
         verify(repositorioNotificacion, never()).guardar(any(Notificacion.class));
         verify(repositorioUsuarioNotificacion, never()).guardar(any(UsuarioNotificacion.class));
@@ -98,7 +98,7 @@ public class ServicioNotificacionTest {
         thrown.expect(Exception.class);
         thrown.expectMessage("No se encontró tipo de notificación con el ID " + tipoNotificacionId);
 
-        servicioNotificacion.crearNotificacion(userId, tipoNotificacionId, mensaje);
+        servicioNotificacion.crearNotificacion(userId, tipoNotificacionId, mensaje, 3L);
 
         verify(repositorioNotificacion, never()).guardar(any(Notificacion.class));
         verify(repositorioUsuarioNotificacion, never()).guardar(any(UsuarioNotificacion.class));

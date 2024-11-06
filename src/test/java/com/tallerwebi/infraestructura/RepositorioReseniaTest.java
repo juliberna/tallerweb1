@@ -103,7 +103,7 @@ public class RepositorioReseniaTest {
 
         Long usuarioActual = usuario.getId();
 
-        List<Resenia> reseniasDeOtrosUsuarios = repositorioResenia.obtenerReseniasDeOtrosUsuarios(usuarioActual);
+        List<Resenia> reseniasDeOtrosUsuarios = repositorioResenia.obtenerReseniasDeOtrosUsuarios(usuarioActual, libro.getId());
 
         assertThat(reseniasDeOtrosUsuarios,is(not(empty())));
         assertThat(reseniasDeOtrosUsuarios.size(),is(2));

@@ -9,11 +9,10 @@ import com.tallerwebi.dominio.model.Usuario;
 import java.util.List;
 
 public interface ServicioResenia {
-    void guardarResenia(Usuario usuario, Libro libro, Integer puntuacion, String descripcion);
+    void guardarResenia(Usuario usuario, Libro libro,Integer puntuacion,String descripcion);
+    List<Resenia> obtenerReseniasDeOtrosUsuarios(Long userId,Long idLibro);
 
     Resenia obtenerReseniaPorId(Long id) throws ReseniaInexistente;
-
-    List<Resenia> obtenerReseniasDeOtrosUsuarios(Long userId);
 
     Double calcularPromedioPuntuacion(Long idLibro);
 
