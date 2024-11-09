@@ -89,9 +89,6 @@ public class RepositorioUsuarioLibroImpl implements RepositorioUsuarioLibro {
     }
 
 
-
-
-
     @Override
     public List<UsuarioLibro> buscarLibrosLeidosPorAño(Integer anio, Usuario usuario) {
         Session session = sessionFactory.getCurrentSession();
@@ -106,8 +103,19 @@ public class RepositorioUsuarioLibroImpl implements RepositorioUsuarioLibro {
         // devuelve los libros que fueron leídos durante ese año.
         return session.createCriteria(UsuarioLibro.class)
                 .add(Restrictions.eq("usuario", usuario))
-                .add(Restrictions.eq("estadoDeLectura", "Leido"))
+                .add(Restrictions.eq("usuario", usuario))
                 .add(Restrictions.between("fechaLeido", inicioAnio, finAnio))
                 .list();
+    }
+
+    @Override
+    public Integer buscarCantLibrosLeidosEntrePlazos(Usuario usuario, LocalDate fechaInicio, LocalDate fechaFinalizacion) {
+        Session session = sessionFactory.getCurrentSession();
+
+        return session.createCriteria(UsuarioLibro.class)
+                .add(Restrictions.eq("usuario", usuario))
+                .add(Restrictions.eq("usuario", usuario))
+                .add(Restrictions.between("fechaLeido", fechaInicio, fechaFinalizacion))
+                .list().size();
     }
 }

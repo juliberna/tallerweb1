@@ -8,13 +8,10 @@ public class Logro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nombre;
-    private String descripcion;
-
-    @Enumerated(EnumType.STRING)
-    private TipoLogro tipo;
-
-    private Integer objetivo; // Objetivo de libros
+    private Integer objetivoLibros; // Objetivo de libros
+    private Boolean esPredefinido;
 
     public Long getId() {
         return id;
@@ -32,27 +29,19 @@ public class Logro {
         this.nombre = nombre;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public Integer getObjetivoLibros() {
+        return objetivoLibros;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setObjetivoLibros(Integer objetivoLibros) {
+        this.objetivoLibros = objetivoLibros;
     }
 
-    public TipoLogro getTipo() {
-        return tipo;
+    public Boolean getEsPredefinido() {
+        return esPredefinido;
     }
 
-    public void setTipo(TipoLogro tipo) {
-        this.tipo = tipo;
-    }
-
-    public Integer getObjetivo() {
-        return objetivo;
-    }
-
-    public void setObjetivo(Integer objetivo) {
-        this.objetivo = objetivo;
+    public void setEsPredefinido(Boolean esPredefinido) {
+        this.esPredefinido = esPredefinido;
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface RepositorioUsuarioLogro {
     void guardar(UsuarioLogro usuario);
-    UsuarioLogro buscarUsuarioLogro(Usuario usuario, Logro logro);
+    UsuarioLogro buscarUsuarioLogro(Long userId, Long logroId);
     List<UsuarioLogro> obtenerLogrosPorUsuario(Usuario usuario);
-    List<UsuarioLogro> obtenerTodos();
+    void borrar(UsuarioLogro usuarioLogro);
 }

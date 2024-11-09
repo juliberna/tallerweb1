@@ -27,6 +27,8 @@ public class Usuario {
     @Column(name = "imagen_url")
     private String imagenUrl;
     private String biografia;
+    // Campo para verificar los logros
+    private Boolean logrosAsignados = false;
 
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
@@ -167,6 +169,14 @@ public class Usuario {
 
     public void setBiografia(String biografia) {
         this.biografia = biografia;
+    }
+
+    public Boolean getLogrosAsignados() {
+        return logrosAsignados;
+    }
+
+    public void setLogrosAsignados(Boolean logrosAsignados) {
+        this.logrosAsignados = logrosAsignados;
     }
 
     //    public List<Genero> getGeneros() {
