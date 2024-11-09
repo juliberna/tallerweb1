@@ -45,7 +45,7 @@
                     <figure class="d-flex">
                         <div class="col-xs-5 col-md-3 portada">
                             <a th:href="@{/libro/detalle/{id}(id=${libro.id})}">
-                                <img th:src="@{'Images/' + ${libro.imagenUrl}" alt="Imagen del libro" width="150" height="auto">
+                                <img th:src="@{'/Images/' + ${libro.imagenUrl}}" alt="Imagen del libro" width="150" height="auto">
                             </a>
                         </div>
                         <div class="col-xs-7 col-md-9 info">

@@ -26,11 +26,15 @@ public class ServicioUsuarioLogroImpl implements ServicioUsuarioLogro {
 
     private RepositorioUsuarioLibro repositorioUsuarioLibro;
 
+    private ServicioNotificacion servicioNotificacion;
+
     @Autowired
-    public ServicioUsuarioLogroImpl(RepositorioUsuarioLogro repositorioUsuarioLogro, RepositorioLogro repositorioLogro, RepositorioUsuarioLibro repositorioUsuarioLibro) {
+    public ServicioUsuarioLogroImpl(RepositorioUsuarioLogro repositorioUsuarioLogro, RepositorioLogro repositorioLogro,
+                                    RepositorioUsuarioLibro repositorioUsuarioLibro, ServicioNotificacion servicioNotificacion) {
         this.repositorioUsuarioLogro = repositorioUsuarioLogro;
         this.repositorioLogro = repositorioLogro;
         this.repositorioUsuarioLibro = repositorioUsuarioLibro;
+        this.servicioNotificacion = servicioNotificacion;
     }
 
     @Override
@@ -69,6 +73,16 @@ public class ServicioUsuarioLogroImpl implements ServicioUsuarioLogro {
 
         if (verificarProgreso(usuarioLogro)) {
             usuarioLogro.setEstadoLogro("COMPLETADO");
+
+            Long userId = usuarioLogro.getUsuario().getId();
+            Long tipoNotificacion = 3L;
+            String mensaje = "¡Felicidades! Has completado el logro: " + usuarioLogro.getLogro().getNombre();
+
+            try {
+                servicioNotificacion.crearNotificacion(userId, tipoNotificacion, mensaje, userId);
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
+            }
         }
         repositorioUsuarioLogro.guardar(usuarioLogro);
     }
