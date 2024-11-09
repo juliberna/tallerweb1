@@ -19,7 +19,7 @@
 <h1 th:text="${libro.titulo}"></h1>
 <div class="container">
     <div class="book-info">
-        <img th:src="${libro.imagenUrl}" alt="Imagen del libro">
+        <img th:src="@{'/Images/' + ${libro.imagenUrl}}" alt="Imagen del libro">
         <p><strong>Autor:</strong> <span th:text="${libro.autor}"></span></p>
         <p><strong>Descripción:</strong> <span th:text="${libro.descripcion}"></span></p>
         <p>
