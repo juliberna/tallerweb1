@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -65,25 +64,33 @@ public class ServicioUsuarioLogroImpl implements ServicioUsuarioLogro {
     }
 
     private void actualizarEstadoLogro(UsuarioLogro usuarioLogro) {
+
+        Long userId = usuarioLogro.getUsuario().getId();
+
+        Long tipoNotificacion = 3L;
+
         // Verifica que el plazo de tiempo no se haya terminado
-        // Si se termino, el logro queda en estado NO_COMPLETADO
+        // Si se termino, el logro queda en estado NO_COMPLETADO y crea el mensaje de que no se completo
         if (plazoVencido(usuarioLogro)) {
             usuarioLogro.setEstadoLogro("NO_COMPLETADO");
-        }
-
-        if (verificarProgreso(usuarioLogro)) {
-            usuarioLogro.setEstadoLogro("COMPLETADO");
-
-            Long userId = usuarioLogro.getUsuario().getId();
-            Long tipoNotificacion = 3L;
-            String mensaje = "¡Felicidades! Has completado el logro: " + usuarioLogro.getLogro().getNombre();
-
+            String mensaje = "No se ha completado el logro: '" + usuarioLogro.getLogro().getNombre() + "' en el plazo establecido";
             try {
                 servicioNotificacion.crearNotificacion(userId, tipoNotificacion, mensaje, userId);
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
             }
         }
+
+        if (verificarProgreso(usuarioLogro)) {
+            usuarioLogro.setEstadoLogro("COMPLETADO");
+            String mensaje = "¡Felicidades! Has completado el logro: " + usuarioLogro.getLogro().getNombre();
+            try {
+                servicioNotificacion.crearNotificacion(userId, tipoNotificacion, mensaje, userId);
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+
         repositorioUsuarioLogro.guardar(usuarioLogro);
     }
 

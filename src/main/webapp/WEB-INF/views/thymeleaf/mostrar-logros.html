@@ -77,9 +77,10 @@
                     <p th:if="${usuarioLogro.estadoLogro == 'COMPLETADO'}" class="text-success">
                         ¡Logro Completado!
                     </p>
-                    <p th:if="${usuarioLogro.estadoLogro == 'NO_COMPLETADO'}" class="text-danger">
-                        No Completado
-                    </p>
+                    <div th:if="${usuarioLogro.estadoLogro == 'NO_COMPLETADO'}" class="text-danger">
+                        <p th:text="'Plazo de dias: ' + ${usuarioLogro.plazoDias}"></p>
+                        <strong>No Completado</strong>
+                    </div>
                 </div>
             </div>
 
