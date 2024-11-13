@@ -120,7 +120,7 @@ public class ControladorLibroTest {
         String vista = controladorLibro.cambiarEstadoDeLectura(new ModelMap(), libroId, nuevoEstado, cantidadDePaginas, new RedirectAttributesModelMap());
 
         // Then
-        assertThat(vista, equalTo("redirect:/libro/resena/" + libroId + "?usuarioId=" + userId));
+        assertThat(vista, equalTo("redirect:/libro/detalle/" + libroId + "?usuarioId=" + userId));
     }
 
     @Test
