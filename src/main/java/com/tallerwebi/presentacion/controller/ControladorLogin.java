@@ -3,6 +3,8 @@ package com.tallerwebi.presentacion.controller;
 import com.tallerwebi.infraestructura.service.ServicioLogin;
 import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import com.tallerwebi.infraestructura.service.ServicioLogro;
+import com.tallerwebi.infraestructura.service.ServicioUsuarioLogro;
 import com.tallerwebi.presentacion.DatosLogin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,10 +22,14 @@ import java.time.LocalDate;
 public class ControladorLogin {
 
     private ServicioLogin servicioLogin;
+    private ServicioLogro servicioLogro;
+    private ServicioUsuarioLogro servicioUsuarioLogro;
 
     @Autowired
-    public ControladorLogin(ServicioLogin servicioLogin) {
+    public ControladorLogin(ServicioLogin servicioLogin, ServicioLogro servicioLogro, ServicioUsuarioLogro servicioUsuarioLogro) {
         this.servicioLogin = servicioLogin;
+        this.servicioLogro = servicioLogro;
+        this.servicioUsuarioLogro = servicioUsuarioLogro;
     }
 
     @RequestMapping("/login")
@@ -45,6 +51,12 @@ public class ControladorLogin {
             request.getSession().setAttribute("USERNAME", usuarioBuscado.getNombre());
             request.getSession().setAttribute("USERNICKNAME", usuarioBuscado.getNombreUsuario());
             request.getSession().setAttribute("ANIOACTUAL", LocalDate.now().getYear());
+
+            //Inicializa los logros predefinidos del usuario cuando inicia sesion
+            servicioLogro.verificarYAsignarLogrosPredefinidos(usuarioBuscado);
+
+            //Actualiza los logros cuando inicia sesion
+            servicioUsuarioLogro.actualizarEstadoLogros(usuarioBuscado);
 
             System.out.println(usuarioBuscado.getTokenRecuperacion() + " token recuperacion");
             return new ModelAndView("redirect:/home");

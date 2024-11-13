@@ -8,7 +8,9 @@ import com.tallerwebi.dominio.model.UsuarioLogro;
 import java.util.List;
 
 public interface ServicioUsuarioLogro {
-    List<UsuarioLogro> obtenerLogrosPorUsuario(Usuario usuario) throws ListaVacia;
-    void verificarYAsignarLogros(Usuario usuario) throws ListaVacia;
-    List<Logro> obtenerLogrosPorCompletar(Usuario usuario);
+    void guardarLogroPersonalizado(Usuario usuario, String nombre,Integer objetivoLibros, Integer plazoDias);
+    void actualizarEstadoLogros(Usuario usuario);
+    List<UsuarioLogro> obtenerLogrosDelUsuario(Usuario usuario) throws ListaVacia;
+
+    Boolean eliminarLogro(Long userId, Long logroId);
 }

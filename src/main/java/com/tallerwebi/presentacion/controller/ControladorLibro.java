@@ -30,16 +30,18 @@ public class ControladorLibro {
     private ServicioUsuarioLibro servicioUsuarioLibro;
     private ServicioLibroGenero servicioLibroGenero;
     private ServicioResenia servicioResenia;
+    private ServicioUsuarioLogro servicioUsuarioLogro;
 
     @Autowired
     public ControladorLibro(ServicioLibro servicioLibro, ServicioUsuario servicioUsuario,
                             ServicioUsuarioLibro servicioUsuarioLibro, ServicioLibroGenero servicioLibroGenero,
-                            ServicioResenia servicioResenia) {
+                            ServicioResenia servicioResenia, ServicioUsuarioLogro servicioUsuarioLogro) {
         this.servicioLibro = servicioLibro;
         this.servicioUsuario = servicioUsuario;
         this.servicioUsuarioLibro = servicioUsuarioLibro;
         this.servicioLibroGenero = servicioLibroGenero;
         this.servicioResenia = servicioResenia;
+        this.servicioUsuarioLogro = servicioUsuarioLogro;
     }
 
     @RequestMapping("/buscar")
@@ -112,10 +114,12 @@ public class ControladorLibro {
         Long userId = (Long) session.getAttribute("USERID");
         try {
             Libro libro = servicioLibro.obtenerIdLibro(id);
+            Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
             // Actualizar o crear la relación entre usuario y libro con el nuevo estado de lectura
             servicioUsuarioLibro.crearOActualizarUsuarioLibro(userId, id, status, null, null);
 
             if (status.equals("Leído")) {
+                servicioUsuarioLogro.actualizarEstadoLogros(usuario);
                 return "redirect:/libro/resena/" + id + "?usuarioId=" + userId;
             }
 

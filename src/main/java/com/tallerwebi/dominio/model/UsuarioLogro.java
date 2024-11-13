@@ -1,7 +1,8 @@
 package com.tallerwebi.dominio.model;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "usuario_logro")
@@ -19,10 +20,15 @@ public class UsuarioLogro {
     @JoinColumn(name = "logro_id")
     private Logro logro;
 
-    private LocalDateTime fecha;
+    private String estadoLogro; //EN_PROGRESO, COMPLETADO, NO_COMPLETADO
+
+    private LocalDate fechaCreacion;
+
+    private Integer plazoDias;
 
     public UsuarioLogro() {
-        fecha = LocalDateTime.now();
+        fechaCreacion = LocalDate.now();
+        estadoLogro = "EN_PROGRESO";
     }
 
     public Long getId() {
@@ -49,11 +55,35 @@ public class UsuarioLogro {
         this.logro = logro;
     }
 
-    public LocalDateTime getFecha() {
-        return fecha;
+    public String getEstadoLogro() {
+        return estadoLogro;
     }
 
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
+    public void setEstadoLogro(String estadoLogro) {
+        this.estadoLogro = estadoLogro;
+    }
+
+    public LocalDate getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(LocalDate fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public Integer getPlazoDias() {
+        return plazoDias;
+    }
+
+    public void setPlazoDias(Integer plazoDias) {
+        this.plazoDias = plazoDias;
+    }
+
+    public long getDiasRestantes() {
+        if (this.plazoDias != null) {
+            LocalDate fechaLimite = fechaCreacion.plusDays(plazoDias);
+            return ChronoUnit.DAYS.between(LocalDate.now(), fechaLimite);
+        }
+        return -1; // Si no tiene plazo, no se calcula
     }
 }

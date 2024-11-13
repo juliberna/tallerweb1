@@ -29,12 +29,12 @@ public class RepositorioUsuarioLogroImpl implements RepositorioUsuarioLogro {
     }
 
     @Override
-    public UsuarioLogro buscarUsuarioLogro(Usuario usuario, Logro logro) {
+    public UsuarioLogro buscarUsuarioLogro(Long userId, Long logroId) {
         Session session = sessionFactory.getCurrentSession();
 
         return (UsuarioLogro) session.createCriteria(UsuarioLogro.class)
-                .add(Restrictions.eq("usuario", usuario))
-                .add(Restrictions.eq("logro", logro))
+                .add(Restrictions.eq("usuario.id", userId))
+                .add(Restrictions.eq("logro.id", logroId))
                 .uniqueResult();
     }
 
@@ -47,8 +47,10 @@ public class RepositorioUsuarioLogroImpl implements RepositorioUsuarioLogro {
     }
 
     @Override
-    public List<UsuarioLogro> obtenerTodos() {
+    public void borrar(UsuarioLogro usuarioLogro) {
         Session session = sessionFactory.getCurrentSession();
-        return session.createCriteria(UsuarioLogro.class).list();
+        session.delete(usuarioLogro);
     }
+
+
 }
