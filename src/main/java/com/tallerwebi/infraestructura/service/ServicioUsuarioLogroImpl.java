@@ -67,6 +67,7 @@ public class ServicioUsuarioLogroImpl implements ServicioUsuarioLogro {
 
         Long userId = usuarioLogro.getUsuario().getId();
 
+        // Esto puede dar error, depende del id que se haya creado de 'estado logro' en la tabla tipo_notificacion
         Long tipoNotificacion = 3L;
 
         // Verifica que el plazo de tiempo no se haya terminado
