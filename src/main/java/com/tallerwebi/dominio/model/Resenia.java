@@ -32,14 +32,12 @@ public class Resenia {
     @JoinColumn(name = "libro_id", nullable = false)
     private Libro libro;
 
-    @OneToMany(mappedBy = "resenia", cascade = CascadeType.ALL)
-    private List<LikeDislike> reacciones = new ArrayList<>();
-
-    @OneToMany(mappedBy = "resenia", cascade = CascadeType.ALL)
-    private List<Comentario> comentarios = new ArrayList<>();
+    @OneToMany(mappedBy = "resenia", fetch = FetchType.EAGER)
+    private List<LikeDislike> reacciones;
 
     public Resenia() {
         this.fechaPublicacion = LocalDateTime.now();
+        this.reacciones = new ArrayList<>();
     }
 
     public Long getId() {
@@ -96,13 +94,5 @@ public class Resenia {
 
     public void setReacciones(List<LikeDislike> reacciones) {
         this.reacciones = reacciones;
-    }
-
-    public List<Comentario> getComentarios() {
-        return comentarios;
-    }
-
-    public void setComentarios(List<Comentario> comentarios) {
-        this.comentarios = comentarios;
     }
 }

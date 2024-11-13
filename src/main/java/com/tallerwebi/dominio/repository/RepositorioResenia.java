@@ -20,4 +20,5 @@ public interface RepositorioResenia {
     List<Resenia> obtenerTodasLasReseniasDelUsuario(Usuario usuario);
 
 
+    List<Resenia> obtenerReseniasMasReacciones();
 }

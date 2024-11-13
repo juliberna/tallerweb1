@@ -2,14 +2,11 @@ package com.tallerwebi.presentacion.controller;
 
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.ReseniaInexistente;
-import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.model.Comentario;
 import com.tallerwebi.dominio.model.LikeDislike;
 import com.tallerwebi.dominio.model.Resenia;
-import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.infraestructura.service.ServicioComentario;
 import com.tallerwebi.infraestructura.service.ServicioResenia;
-import com.tallerwebi.infraestructura.service.ServicioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -39,6 +37,7 @@ public class ControladorResenia {
 
         try {
             Resenia resenia = servicioResenia.obtenerReseniaPorId(id);
+            System.out.println("Resenia obtenida: " + resenia.getDescripcion());  // Asegúrate de que la reseña está siendo obtenida correctamente
             model.addAttribute("resenia", resenia);
 
             LikeDislike reaccion = servicioResenia.obtenerReaccionUsuario(id, userId);
@@ -49,6 +48,11 @@ public class ControladorResenia {
 
             Integer cantDislikes = servicioResenia.obtenerCantidadDislikes(id);
             model.addAttribute("cantDislikes", cantDislikes);
+
+            List<Resenia> reseniasMasReacciones = servicioResenia.obtenerReseniasMasReacciones();
+            for (Resenia r : reseniasMasReacciones) {
+                System.out.println("Resenia: " + r.getDescripcion());
+            }
 
             List<Comentario> comentarios = servicioComentario.obtenerComentariosPorResenia(id);
             model.addAttribute("comentarios", comentarios);
@@ -87,6 +91,26 @@ public class ControladorResenia {
             model.addAttribute("errorResenia", e.getMessage());
         }
         return new ModelAndView("redirect:/resenias/" + id, model);
+    }
+
+    @RequestMapping(value = "/explorar", method = RequestMethod.GET)
+    public ModelAndView explorarResenias(HttpServletRequest request,
+                                         @RequestParam(required = false) String filtro,
+                                         @RequestParam(required = false) String valor) {
+        ModelMap model = new ModelMap();
+        Long userId = (Long) request.getSession().getAttribute("USERID");
+
+        List<Resenia> resenias;
+
+        if (filtro != null && !filtro.isEmpty() && valor != null && !valor.isEmpty()) {
+            // Aca iria el metodo con los filtros
+            resenias = new ArrayList<>();
+        } else {
+            resenias = servicioResenia.obtenerReseniasMasReacciones();
+        }
+
+        model.addAttribute("resenias", resenias);
+        return new ModelAndView("mostrar-resenias", model);
     }
 
 }

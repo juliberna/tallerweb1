@@ -25,4 +25,6 @@ public interface ServicioResenia {
     Integer obtenerCantidadDislikes(Long idResenia);
 
     LikeDislike obtenerReaccionUsuario(Long idResenia, Long userId);
+
+    List<Resenia> obtenerReseniasMasReacciones();
 }

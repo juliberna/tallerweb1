@@ -6,10 +6,14 @@ import com.tallerwebi.dominio.repository.RepositorioResenia;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -25,9 +29,9 @@ public class RepositorioReseniaImpl implements RepositorioResenia {
     @Override
     public Resenia obtenerReseniaPorId(Long id) {
         Session session = sessionFactory.getCurrentSession();
-        Criteria resenia = session.createCriteria(Resenia.class);
-        resenia.add(Restrictions.eq("id", id));
-        return (Resenia) resenia.uniqueResult();
+        Criteria criteria = session.createCriteria(Resenia.class);
+        criteria.add(Restrictions.eq("id", id));
+        return (Resenia) criteria.uniqueResult();
     }
 
     @Override
@@ -77,5 +81,46 @@ public class RepositorioReseniaImpl implements RepositorioResenia {
         return session.createCriteria(Resenia.class)
                 .add(Restrictions.eq("usuario", usuario))
                 .list();
+    }
+
+    @Override
+    public List<Resenia> obtenerReseniasMasReacciones() {
+        Session session = sessionFactory.getCurrentSession();
+
+        Criteria criteria = session.createCriteria(Resenia.class, "resenia");
+
+        // Crear un alias para la relación de reacciones
+        criteria.createAlias("reacciones", "reaccion", JoinType.LEFT_OUTER_JOIN);
+
+        // Proyección para contar las reacciones por cada reseña
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.groupProperty("id"), "reseniaId")
+                .add(Projections.count("reaccion.id"), "cantReacciones")); // Contar reacciones
+
+        // Ordenar por cant de reacciones
+        criteria.addOrder(Order.desc("cantReacciones"));
+
+        // Limita los resultados
+        criteria.setMaxResults(8);
+
+        // Ejecutar la consulta
+        List<Object[]> resultados = criteria.list();
+
+        // Sin esto no funciona
+        // Criteria no devuelve las entidades completas -> lista de Object[], donde cada Object[]
+        // contiene el id de la reseña y el conteo de reacciones
+        List<Resenia> reseniasConMasReacciones = new ArrayList<>();
+
+        // Se obtiene primero solo el id de las reseñas y luego las reseñas completas a partir de esos id
+        for (Object[] fila : resultados) {
+            // ID de la reseña
+            Long reseniaId = (Long) fila[0];
+
+            // Obtener la reseña completa por su ID
+            Resenia resenia = session.get(Resenia.class, reseniaId);
+            reseniasConMasReacciones.add(resenia);
+        }
+
+        return reseniasConMasReacciones;
     }
 }

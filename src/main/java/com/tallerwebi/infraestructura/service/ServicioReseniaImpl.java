@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -116,7 +115,7 @@ public class ServicioReseniaImpl implements ServicioResenia {
 
         if (reaccionExistente != null) {
             System.out.println("Actualiza el like o dislike");
-            actualizarEliminarReaccion(usuario, resenia, reaccionExistente, esLike);
+            actualizarEliminarReaccion(resenia, reaccionExistente, esLike);
         } else {
             System.out.println("Crea una nueva reaccion");
             crearNuevaReaccion(resenia, usuario, esLike);
@@ -152,14 +151,27 @@ public class ServicioReseniaImpl implements ServicioResenia {
         return repositorioLikeDislike.obtenerReaccionDelUsuario(userId,idResenia);
     }
 
-    private void actualizarEliminarReaccion(Usuario usuario, Resenia resenia, LikeDislike reaccionExistente, boolean esLike) {
+    @Override
+    public List<Resenia> obtenerReseniasMasReacciones() {
+        List<Resenia> resenias = repositorioResenia.obtenerReseniasMasReacciones();
+
+        if(resenias.isEmpty()) {
+            System.out.println("No hay resenias aun!");
+        }
+
+        return resenias;
+    }
+
+    private void actualizarEliminarReaccion(Resenia resenia, LikeDislike reaccionExistente, boolean esLike) {
 
         if (reaccionExistente.getEsLike() == esLike) {
             System.out.println("Elimina la reaccion de la bdd");
+            resenia.getReacciones().remove(reaccionExistente);
             repositorioLikeDislike.eliminar(reaccionExistente); // Elimina la reaccion si es igual a la existente
         } else {
             System.out.println("Cambia el like o dislike en la bdd");
             reaccionExistente.setEsLike(esLike); // Cambia de like a dislike, o viceversa
+            resenia.getReacciones().add(reaccionExistente);
             repositorioLikeDislike.guardar(reaccionExistente);
         }
 
@@ -170,8 +182,9 @@ public class ServicioReseniaImpl implements ServicioResenia {
         nuevaReaccion.setUsuario(usuario);
         nuevaReaccion.setResenia(resenia);
         nuevaReaccion.setEsLike(esLike);
-        repositorioLikeDislike.guardar(nuevaReaccion);
 
+        resenia.getReacciones().add(nuevaReaccion);
+        repositorioLikeDislike.guardar(nuevaReaccion);
     }
 
 
