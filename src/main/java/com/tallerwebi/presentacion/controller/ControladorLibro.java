@@ -64,7 +64,7 @@ public class ControladorLibro {
     }
 
     @RequestMapping(value = "/detalle/{id}", method = RequestMethod.GET)
-    public String detalleLibro(ModelMap model, @PathVariable Long id) {
+    public String detalleLibro(ModelMap model, @PathVariable Long id) throws UsuarioInexistente {
         try {
             ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
             HttpServletRequest request = attr.getRequest();
@@ -86,8 +86,18 @@ public class ControladorLibro {
             }
             model.addAttribute("progreso", progreso);
 
-            List<Resenia> reseniasDeOtrosUsuarios = servicioResenia.obtenerReseniasDeOtrosUsuarios(userId,id);
-            model.addAttribute("reseniasDeOtrosUsuarios", reseniasDeOtrosUsuarios);
+            Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
+            if (!usuario.getPlan().getPuedeLeerOtrasResenias()) {
+
+                model.addAttribute("reseniasDeOtrosUsuarios", null);
+                model.addAttribute("mensajeDeRestriccion", "Estas en el plan " + usuario.getPlan().getNombre() + " actualiza tu plan a PLATA u ORO para ver reseñas de otros usuarios.");
+            } else {
+                List<Resenia> reseniasDeOtrosUsuarios = servicioResenia.obtenerReseniasDeOtrosUsuarios(userId, id);
+                model.addAttribute("reseniasDeOtrosUsuarios", reseniasDeOtrosUsuarios);
+            }
+
+            System.out.println("ID DEL PLAN " + usuario.getPlan().getId());
+            System.out.println("PUEDE LEER OTRAS RESEÑAS?  " + usuario.getPlan().getPuedeLeerOtrasResenias());
 
             Resenia resenia = servicioResenia.obtenerReseniaDelUsuario(userId, id);
             model.addAttribute("resenia", resenia);
@@ -239,5 +249,6 @@ public class ControladorLibro {
         model.addAttribute("categoriaActual", estadoDeLectura);
         return new ModelAndView("mostrar-libros", model);
     }
+
 
 }

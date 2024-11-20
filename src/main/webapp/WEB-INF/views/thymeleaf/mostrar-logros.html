@@ -30,12 +30,20 @@
 <div class="container mt-5">
     <h1 class="text-center mb-4">Mis Logros</h1>
 
+    <div th:if="${mensajeDeRestriccion}" class="alert alert-warning" role="alert">
+        <p th:text="${mensajeDeRestriccion}"></p>
+        <br>
+        <a th:href="@{/planes/mostrar}" style="color: #2d7b78; font-size: 0.9rem;">Tus planes</a>
+    </div>
+
     <div th:if="${mensaje}" class="alert alert-success" role="alert">
         <p th:text="${mensaje}"></p>
     </div>
 
     <!-- Botón para abrir el modal de agregar logro -->
-    <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#agregarLogroModal">Agregar Logro Personalizado</button>
+    <div th:if="${mensajeDeRestriccion == null}">
+        <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#agregarLogroModal">Agregar Logro Personalizado</button>
+    </div>
 
     <!-- Mostrar logros -->
     <div class="row">

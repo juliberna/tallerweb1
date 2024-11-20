@@ -45,6 +45,10 @@ public class ControladorDesafio {
             if (!validarMetaUsuario(usuario))
                 return new ModelAndView("redirect:/home");
 
+            if(!usuario.getPlan().getPuedeElegirMetaDeLectura())
+                model.addAttribute("restriccionMeta", "Estas en el plan " + usuario.getPlan().getNombre() + " actualiza tu plan a PLATA u ORO para ver tu desafío de lectura y la de la comunidad.");
+
+
             model.addAttribute("usuario", usuario);
 
             List<Usuario> comunidadUsuarios = servicioUsuario.obtenerUsuariosDesafio(userId);

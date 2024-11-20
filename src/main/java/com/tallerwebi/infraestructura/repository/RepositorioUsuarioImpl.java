@@ -51,7 +51,7 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
-    public void guardar(String email, String password, String nombreUsuario, String nombre, LocalDate fechaNacimiento) {
+    public void guardar(String email, String password, String nombreUsuario, String nombre, LocalDate fechaNacimiento, Plan plan) {
         Session session = sessionFactory.getCurrentSession();
         Usuario usuario = new Usuario();
 
@@ -62,6 +62,7 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
         usuario.setFechaNacimiento(fechaNacimiento);
         usuario.setRol("Usuario");
         usuario.setActivo(true);
+        usuario.setPlan(plan);
 
         session.save(usuario);
     }

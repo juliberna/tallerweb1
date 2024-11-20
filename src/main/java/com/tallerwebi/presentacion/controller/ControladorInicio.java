@@ -72,6 +72,11 @@ public class ControladorInicio {
             Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
             model.addAttribute("usuario", usuario);
 
+            if (!usuario.getPlan().getPuedeObtenerRecomendaciones()) {
+                model.addAttribute("mensajePlanRecos", "Estas en el plan " + usuario.getPlan().getNombre() + " actualiza tu plan a ORO para obtener recomendaciones personalizadas.");
+            }
+
+
             List<UsuarioGenero> list = servicioUsuarioGenero.obtenerGenerosDeUsuario(userId);
 
             if (!list.isEmpty()) {
@@ -94,6 +99,7 @@ public class ControladorInicio {
                 }
 
                 model.addAttribute("librosRecomendados", librosRecomendados);
+
 
             } else {
                 List<Libro> dosLibrosRandom = servicioLibro.obtenerDosLibrosRandom();
@@ -120,6 +126,11 @@ public class ControladorInicio {
 
             model.addAttribute("comentariosPorPublicacion", comentariosPorPublicacion);
 
+            if(!usuario.getPlan().getPuedeVerForo()){
+                model.addAttribute("mensajePlan", "Estas en el plan " + usuario.getPlan().getNombre() + " actualiza tu plan a ORO para participar en foros.");
+                model.addAttribute("mensajePlan2", "Estas en el plan " + usuario.getPlan().getNombre() + " actualiza tu plan a ORO para ver las publicaciones de tus amigos.");
+                model.addAttribute("mensajePlan3", "Estas en el plan " + usuario.getPlan().getNombre() + " actualiza tu plan a ORO para ver la actividad de tus amigos.");
+            }
 
 
             List<UsuarioNotificacion> notificacionesUsuario = servicioUsuarioNotificacion.listarNotificacionesPorUsuario(userId);
@@ -157,7 +168,6 @@ public class ControladorInicio {
         } catch (MessagingException e) {
             throw new RuntimeException(e.getMessage());
         }
-
         return "home";
     }
 
