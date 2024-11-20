@@ -122,7 +122,6 @@ public class ServicioUsuarioLibroImpl implements ServicioUsuarioLibro {
     public List<UsuarioLibro> obtenerTodosLosComentariosDeMisAmigos(Long userId) throws MessagingException {
         try {
             List<UsuarioLibro> comentariosDeMisAmigos = repositorioUsuarioLibro.obtenerTodosLosComentariosDeMisAmigos(userId);
-            System.out.println(comentariosDeMisAmigos + " UISUARO LIBRO LISTADO");
             return comentariosDeMisAmigos;
         } catch (Exception e) {
             throw new MessagingException(e.getMessage());

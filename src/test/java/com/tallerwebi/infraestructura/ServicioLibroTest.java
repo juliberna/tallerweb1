@@ -19,6 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 public class ServicioLibroTest {
@@ -90,6 +91,29 @@ public class ServicioLibroTest {
         //then
         Mockito.verify(repositorioLibro).actualizarLibro(libroMock);
     }
+
+    @Test
+    public void deberiaRetornarDosLibrosRandom() {
+        //given
+        Libro libro1 = new Libro();
+        libro1.setId(1L);
+        libro1.setTitulo("Libro 1");
+
+        Libro libro2 = new Libro();
+        libro2.setId(2L);
+        libro2.setTitulo("Libro 2");
+
+        List<Libro> librosMock = List.of(libro1, libro2);
+        when(repositorioLibro.buscarDosLibrosRandom()).thenReturn(librosMock);
+
+        List<Libro> librosObtenidos = servicioLibro.obtenerDosLibrosRandom();
+
+        assertThat(librosObtenidos, notNullValue());
+        assertThat(librosObtenidos.size(), equalTo(2));
+        assertThat(librosObtenidos, equalTo(librosMock));
+        Mockito.verify(repositorioLibro, times(1)).buscarDosLibrosRandom();
+    }
+
 
 
     private void givenExistenLibros() {

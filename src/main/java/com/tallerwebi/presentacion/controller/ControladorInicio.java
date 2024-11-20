@@ -19,10 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -35,11 +32,24 @@ public class ControladorInicio {
     private final ServicioNotificacion servicioNotificacion;
     private final ServicioPublicacion servicioPublicacion;
     private final ServicioUsuarioNotificacion servicioUsuarioNotificacion;
-
     private final ServicioComentarioPublicacion servicioComentarioPublicacion;
+    private final ServicioUsuarioGenero servicioUsuarioGenero;
+    private final ServicioLibroGenero servicioLibroGenero;
+    private final ServicioLibro servicioLibro;
 
     @Autowired
-    public ControladorInicio(ServicioInicio servicioInicio, ServicioUsuario servicioUsuario, ServicioUsuarioLibro servicioUsuarioLibro, ServicioUsuarioNotificacion servicioUsuarioNotificacion, ServicioNotificacion servicioNotificacion, ServicioPublicacion servicioPublicacion, ServicioPublicacion publicacion, ServicioComentarioPublicacion servicioComentarioPublicacion, ServicioComentarioPublicacion comentarioPublicacion) {
+    public ControladorInicio(ServicioInicio servicioInicio,
+                             ServicioUsuario servicioUsuario,
+                             ServicioUsuarioLibro servicioUsuarioLibro,
+                             ServicioUsuarioNotificacion servicioUsuarioNotificacion,
+                             ServicioNotificacion servicioNotificacion,
+                             ServicioPublicacion servicioPublicacion,
+                             ServicioPublicacion publicacion,
+                             ServicioComentarioPublicacion servicioComentarioPublicacion,
+                             ServicioComentarioPublicacion comentarioPublicacion,
+                             ServicioUsuarioGenero servicioUsuarioGenero,
+                             ServicioLibroGenero servicioLibroGenero,
+                             ServicioLibro servicioLibro) {
         this.servicioInicio = servicioInicio;
         this.servicioNotificacion = servicioNotificacion;
         this.servicioUsuario = servicioUsuario;
@@ -47,6 +57,9 @@ public class ControladorInicio {
         this.servicioUsuarioNotificacion = servicioUsuarioNotificacion;
         this.servicioPublicacion = servicioPublicacion;
         this.servicioComentarioPublicacion = servicioComentarioPublicacion;
+        this.servicioUsuarioGenero = servicioUsuarioGenero;
+        this.servicioLibroGenero = servicioLibroGenero;
+        this.servicioLibro = servicioLibro;
     }
 
     @GetMapping("/home")
@@ -58,6 +71,34 @@ public class ControladorInicio {
         try {
             Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
             model.addAttribute("usuario", usuario);
+
+            List<UsuarioGenero> list = servicioUsuarioGenero.obtenerGenerosDeUsuario(userId);
+
+            if (!list.isEmpty()) {
+                Random random = new Random();
+                int randomIndex = random.nextInt(list.size());
+
+                UsuarioGenero randomGenero = list.get(randomIndex);
+                List<LibroGenero> libroPorGenero = servicioLibroGenero.obtenerLibroPorGenero(randomGenero.getGenero().getId());
+
+                List<Libro> librosRecomendados = new ArrayList<>();
+                int maxLibros = 2;
+
+                for (LibroGenero libroGenero : libroPorGenero) {
+                    if (librosRecomendados.size() >= maxLibros) {
+                        break;
+                    }
+
+                    Libro libro = libroGenero.getLibro();
+                    librosRecomendados.add(libro);
+                }
+
+                model.addAttribute("librosRecomendados", librosRecomendados);
+
+            } else {
+                List<Libro> dosLibrosRandom = servicioLibro.obtenerDosLibrosRandom();
+                model.addAttribute("librosRecomendados", dosLibrosRandom);
+            }
 
             List<UsuarioLibro> listadoComments = servicioUsuarioLibro.obtenerTodosLosComentariosDeMisAmigos(userId);
 

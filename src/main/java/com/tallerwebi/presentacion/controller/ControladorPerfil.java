@@ -1,12 +1,10 @@
 package com.tallerwebi.presentacion.controller;
 
 import com.tallerwebi.dominio.excepcion.ListaVacia;
+import com.tallerwebi.dominio.excepcion.QueryVacia;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.model.*;
-import com.tallerwebi.infraestructura.service.ServicioAmistad;
-import com.tallerwebi.infraestructura.service.ServicioLibro;
-import com.tallerwebi.infraestructura.service.ServicioUsuario;
-import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
+import com.tallerwebi.infraestructura.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -30,11 +28,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 @Controller
 public class ControladorPerfil {
 
     private ServicioUsuario servicioUsuario;
+    private ServicioUsuarioGenero servicioUsuarioGenero;
     private ServicioAmistad servicioAmistad;
 
     // Para que no de error el formato de las fechas cuando se edita el perfil
@@ -55,8 +56,9 @@ public class ControladorPerfil {
     }
 
     @Autowired
-    public ControladorPerfil(ServicioUsuario servicioUsuario, ServicioAmistad servicioAmistad) {
+    public ControladorPerfil(ServicioUsuario servicioUsuario, ServicioAmistad servicioAmistad, ServicioUsuarioGenero servicioUsuarioGenero) {
         this.servicioUsuario = servicioUsuario;
+        this.servicioUsuarioGenero = servicioUsuarioGenero;
         this.servicioAmistad = servicioAmistad;
     }
 
@@ -72,17 +74,17 @@ public class ControladorPerfil {
             Usuario usuario = servicioUsuario.buscarUsuarioPorId(id);
             model.addAttribute("usuario", usuario);
 
-            if (id.equals(idUsuario)) {
-                List<Amistad> listaAmigos = servicioAmistad.obtenerAmigos(idUsuario);
-                model.addAttribute("listaAmigos", listaAmigos);
-                model.addAttribute("mostrarListado", true);
 
-            } else {
-                model.addAttribute("mostrarListado", false);
+
+            if (!id.equals(idUsuario)) {
+                String friends = servicioAmistad.verificacionDeAmistad(idUsuario, id);
+                model.addAttribute("isFriend", friends);
             }
 
         } catch (UsuarioInexistente e) {
             return new ModelAndView("redirect:/login");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         return new ModelAndView("perfil", model);
@@ -100,6 +102,28 @@ public class ControladorPerfil {
         } catch (UsuarioInexistente e) {
             return new ModelAndView("redirect:/login");
         }
+    }
+
+
+    @RequestMapping("/buscar-usuarios")
+    public ModelAndView buscarUsuarios(@RequestParam("query") String query) {
+        ModelMap modelo = new ModelMap();
+
+        Set<Usuario> usuariosObtenidos = null;
+
+        try {
+            usuariosObtenidos = servicioUsuario.buscarUsuariosPorQuery(query);
+            modelo.addAttribute("listadoUsuarios", usuariosObtenidos);
+        } catch (QueryVacia e) {
+            modelo.addAttribute("error", "El campo de busqueda esta vacio");
+        } catch (ListaVacia e) {
+            modelo.addAttribute("error", e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        modelo.addAttribute("query", query);
+        return new ModelAndView("resultado_busqueda_usuarios", modelo);
     }
 
     @RequestMapping(value = "/editarPerfil", method = RequestMethod.POST, consumes = "multipart/form-data")

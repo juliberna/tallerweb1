@@ -61,18 +61,80 @@ public class RepositorioAmistadImpl implements RepositorioAmistad {
     }
 
     @Override
+    public String verificacionDeAmistad(Long usuarioId, Long amigoId) {
+        Session session = sessionFactory.getCurrentSession();
+
+        Criteria criteria1 = session.createCriteria(Amistad.class);
+        criteria1.add(Restrictions.eq("usuario.id", usuarioId));
+        criteria1.add(Restrictions.eq("amigo.id", amigoId));
+        criteria1.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        Amistad amistad1 = (Amistad) criteria1.uniqueResult();
+
+        if (amistad1 != null && amistad1.getEstado().equals("pendiente")) {
+            return "Pendiente";
+        } else if (amistad1 != null && amistad1.getEstado().equals("aceptada")) {
+            return "Amigos";
+        }
+
+        Criteria criteria2 = session.createCriteria(Amistad.class);
+        criteria2.add(Restrictions.eq("usuario.id", amigoId));
+        criteria2.add(Restrictions.eq("amigo.id", usuarioId));
+        criteria2.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        Amistad amistad2 = (Amistad) criteria2.uniqueResult();
+
+        if (amistad2 != null && amistad2.getEstado().equals("pendiente")) {
+            return "Pendiente";
+        } else if (amistad2 != null && amistad2.getEstado().equals("aceptada")) {
+            return "Amigos";
+        }
+        return "NoAmigos";
+    }
+
+    @Override
+    public Boolean eliminarAmistad(Long idUsuario, Long idAmigo) {
+        Session session = sessionFactory.getCurrentSession();
+
+        Criteria criteria1 = session.createCriteria(Amistad.class);
+        criteria1.add(Restrictions.eq("usuario.id", idUsuario));
+        criteria1.add(Restrictions.eq("amigo.id", idAmigo));
+        criteria1.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        Amistad amistad1 = (Amistad) criteria1.uniqueResult();
+
+        if (amistad1 != null) {
+            session.delete(amistad1);
+        }
+
+        Criteria criteria2 = session.createCriteria(Amistad.class);
+        criteria2.add(Restrictions.eq("usuario.id", idAmigo));
+        criteria2.add(Restrictions.eq("amigo.id", idUsuario));
+        criteria2.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        Amistad amistad2 = (Amistad) criteria2.uniqueResult();
+
+        if (amistad2 != null) {
+            session.delete(amistad2);
+        }
+
+        return true;
+    }
+
+
+    @Override
     public List<Amistad> listarAmigosPorUsuario(Long userId) {
         Session session = sessionFactory.getCurrentSession();
+
         Criteria criteria = session.createCriteria(Amistad.class);
 
         criteria.add(Restrictions.or(
                 Restrictions.eq("usuario.id", userId),
                 Restrictions.eq("amigo.id", userId)
         ));
+
         criteria.add(Restrictions.eq("estado", "aceptada"));
+
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
         List<Amistad> amistades = criteria.list();
+
 
         List<Amistad> amistadesFiltradas = new ArrayList<>();
         for (Amistad amistad : amistades) {
@@ -88,7 +150,6 @@ public class RepositorioAmistadImpl implements RepositorioAmistad {
                 amistadesFiltradas.add(amistadFiltrada);
             }
         }
-
         return amistadesFiltradas;
     }
 

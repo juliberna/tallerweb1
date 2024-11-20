@@ -148,36 +148,22 @@
 
     <section class="recommendations">
         <h2>Recomendaciones</h2>
-        <div class="book-recommendation">
-            <img th:src="@{../../../resources/core/Images/default-portrait4.jpg}" alt="Portada del libro"
-                 class="book-cover">
+
+        <div th:each="libro : ${librosRecomendados}" class="book-recommendation">
+            <img th:src="${libro.getImagenUrl()}" alt="Portada del libro" class="book-cover">
+
             <div class="book-details">
-                <h3>Título del libro 1</h3>
-                <p>Autor del libro 1</p>
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam sequi et, officia quas inventore
-                    doloremque expedita? Assumenda maxime dolores, laudantium voluptatem laboriosam ipsam eius
-                    expedita.</p>
-                <button class="want-to-read">Quiero leerlo</button>
+                <form th:action="@{/libro/detalle/{id}(id=${libro.getId()})}" method="get">
+                    <h3 th:text="${libro.getTitulo()}">Título del libro</h3>
+                    <p th:text="${libro.getAutor()}">Autor del libro</p>
+                    <p th:text="${libro.getDescripcion()}">Descripción del libro</p>
+                    <button class="want-to-read">Ir al libro</button>
+                </form>
+
             </div>
         </div>
-
-        <div class="book-recommendation">
-            <img th:src="@{../../../resources/core/Images/default-portrait2.jpg}" alt="Portada del libro"
-                 class="book-cover">
-            <div class="book-details">
-                <h3>Título del libro 2</h3>
-                <p>Autor del libro 2</p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur quis ad quo delectus inventore
-                    amet rem cumque eaque nostrum id vero aliquid, ratione asperiores, suscipit sunt unde voluptatem
-                    hic. Ipsum nesciunt saepe placeat facilis nemo culpa quod, hic suscipit dolores eius rerum ad
-                    obcaecati sunt magni, nobis, illo quidem cum!
-                </p>
-                <button class="want-to-read">Quiero leerlo</button>
-            </div>
-        </div>
-
-        <button class="change-suggestions">Cambiar sugerencias</button>
     </section>
+
 
     <section class="container my-5 comments">
         <div class="row mb-4">
@@ -231,7 +217,7 @@
         </div>
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
-                <form th:action="@{/publicaciones/crear}" method="post">
+                <form th:action="@{/publicaciones/crear}" accept-charset="UTF-8" method="post">
                     <div class="form-group mb-3">
                         <textarea class="form-control" name="contenido" id="contenido" rows="4" placeholder="¿Qué estás pensando?" required></textarea>
                     </div>
@@ -268,7 +254,7 @@
 
                         <p class="card-text" th:text="${publicacion.getMensaje()}">Este es el contenido del mensaje</p>
 
-                        <form th:action="@{/publicaciones/crear/comentario/{id}(id=${publicacion.getId()})}" method="post" class="mt-3">
+                        <form th:action="@{/publicaciones/crear/comentario/{id}(id=${publicacion.getId()})}" accept-charset="UTF-8" method="post" class="mt-3">
                             <input type="hidden" name="publicacionId" th:value="${publicacion.getId()}"/>
                             <div class="form-group">
                                 <textarea class="form-control" name="comentario" rows="2" placeholder="Escribe un comentario..."></textarea>

@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface RepositorioLibroGenero {
     List<LibroGenero> obtenerLibroGeneros();
+    List<LibroGenero> obtenerLibroPorGenero(Long generoId);
     List<LibroGenero> obtenerGeneros(Libro libro);
 }

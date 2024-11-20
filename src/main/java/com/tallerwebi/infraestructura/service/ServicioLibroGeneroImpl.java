@@ -1,6 +1,5 @@
 package com.tallerwebi.infraestructura.service;
 
-import com.tallerwebi.dominio.excepcion.LibroNoEncontrado;
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.model.Libro;
 import com.tallerwebi.dominio.model.LibroGenero;
@@ -20,6 +19,12 @@ public class ServicioLibroGeneroImpl implements ServicioLibroGenero {
     @Autowired
     public ServicioLibroGeneroImpl(RepositorioLibroGenero repositorioLibroGenero) {
         this.repositorioLibroGenero = repositorioLibroGenero;
+    }
+
+    @Override
+    public List<LibroGenero> obtenerLibroPorGenero(Long generoId) {
+        List<LibroGenero> listaLibroPorGenero = repositorioLibroGenero.obtenerLibroPorGenero(generoId);
+        return listaLibroPorGenero;
     }
 
     @Override

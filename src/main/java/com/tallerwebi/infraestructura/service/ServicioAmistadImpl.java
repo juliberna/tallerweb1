@@ -34,11 +34,33 @@ public class ServicioAmistadImpl implements ServicioAmistad {
             } else {
                 Amistad solicitud = new Amistad();
                 solicitud.setUsuario(usuario);
+                solicitud.setEstado("pendiente");
                 solicitud.setAmigo(friend);
                 solicitud.setFechaSolicitud(new Date());
-                solicitud.setEstado("pendiente");
-                System.out.println(" HASTA ACA LLEGO");
                 Boolean saved = repositorioAmistad.guardar(solicitud);
+                if (saved) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+        } catch (Exception error){
+            throw new Exception(error.getMessage());
+        }
+    }
+
+    @Override
+    public boolean eliminarSolicitudAmistad(Long userId, Long friendId) throws Exception {
+        Usuario usuario = repositorioUsuario.buscarUsuarioPorId(userId);
+        Usuario friend = repositorioUsuario.buscarUsuarioPorId(friendId);
+        try {
+
+            if (usuario == null || friend == null) {
+                throw new Exception("Usuario o amigo no encontrado");
+
+            } else {
+                Boolean saved = repositorioAmistad.eliminarAmistad(userId, friendId);
                 if (saved) {
                     return true;
                 } else {
@@ -103,6 +125,25 @@ public class ServicioAmistadImpl implements ServicioAmistad {
     @Override
     public List<Amistad> obtenerAmigos(Long userId) {
         return repositorioAmistad.listarAmigosPorUsuario(userId);
+    }
+
+    @Override
+    public String verificacionDeAmistad(Long userId, Long friendId) throws Exception {
+        Usuario usuario = repositorioUsuario.buscarUsuarioPorId(userId);
+        Usuario friend = repositorioUsuario.buscarUsuarioPorId(friendId);
+        try {
+
+            if (usuario == null || friend == null) {
+                throw new Exception("Usuario o amigo no encontrado");
+
+            } else {
+                String friends = repositorioAmistad.verificacionDeAmistad(userId, friendId);
+                return friends;
+            }
+
+        } catch (Exception error){
+            throw new Exception(error.getMessage());
+        }
     }
 
 
