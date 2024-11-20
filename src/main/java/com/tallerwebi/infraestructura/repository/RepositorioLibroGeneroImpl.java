@@ -4,8 +4,10 @@ import com.tallerwebi.dominio.model.Genero;
 import com.tallerwebi.dominio.model.Libro;
 import com.tallerwebi.dominio.model.LibroGenero;
 import com.tallerwebi.dominio.repository.RepositorioLibroGenero;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -26,6 +28,14 @@ public class RepositorioLibroGeneroImpl implements RepositorioLibroGenero {
     public List<LibroGenero> obtenerLibroGeneros() {
         Session session = sessionFactory.getCurrentSession();
         return session.createCriteria(LibroGenero.class).list();
+    }
+
+    @Override
+    public List<LibroGenero> obtenerLibroPorGenero(Long generoId) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(LibroGenero.class);
+        criteria.add(Restrictions.eq("genero.id", generoId));
+        return criteria.list();
     }
 
     @Override

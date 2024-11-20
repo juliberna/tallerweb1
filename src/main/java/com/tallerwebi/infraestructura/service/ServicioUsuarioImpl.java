@@ -1,14 +1,19 @@
 package com.tallerwebi.infraestructura.service;
 
+import com.tallerwebi.dominio.excepcion.ListaVacia;
+import com.tallerwebi.dominio.excepcion.QueryVacia;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.model.Libro;
 import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.dominio.repository.RepositorioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -19,6 +24,19 @@ public class ServicioUsuarioImpl implements ServicioUsuario {
     @Autowired
     public ServicioUsuarioImpl(RepositorioUsuario repositorioUsuario) {
         this.repositorioUsuario = repositorioUsuario;
+    }
+
+    @Override
+    public Set<Usuario> buscarUsuariosPorQuery(String query) throws Exception {
+        if (query.isEmpty())
+            throw new QueryVacia();
+
+        List<Usuario> usuariosObtenidos = repositorioUsuario.buscarUsuariosPorQuery(query);
+
+        if (usuariosObtenidos.isEmpty())
+            throw new ListaVacia("No se encontraron libros que coincidan con la busqueda");
+
+        return new HashSet<>(usuariosObtenidos);
     }
 
     @Override

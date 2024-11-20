@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.tallerwebi.dominio.repository.RepositorioUsuario;
+
+import java.util.List;
+
 @Service
 @Transactional
 public class ServicioUsuarioGeneroImpl implements ServicioUsuarioGenero {
@@ -32,14 +35,19 @@ public class ServicioUsuarioGeneroImpl implements ServicioUsuarioGenero {
     }
 
     @Override
+    public List<UsuarioGenero> obtenerGenerosDeUsuario(Long usuarioId) {
+
+        List<UsuarioGenero> list = repositorioUsuarioGenero.obtenerGenerosDeUsuario(usuarioId);
+        return list;
+    }
+
+    @Override
     public void crearOActualizarUsuarioGenero(Long usuarioId, Long generoId) {
         UsuarioGenero usuarioGenero = repositorioUsuarioGenero.encontrarUsuarioIdYGeneroId(usuarioId, generoId);
 
         if (usuarioGenero == null) {
-            // Si no existe, creo una nueva relación
             usuarioGenero = new UsuarioGenero();
 
-            // Obtengo las entidades Usuario y Libro
             Usuario usuario = repositorioUsuario.buscarUsuarioPorId(usuarioId);
             Genero genero = repositorioGenero.buscarGeneroPorId(generoId);
 
@@ -47,12 +55,10 @@ public class ServicioUsuarioGeneroImpl implements ServicioUsuarioGenero {
                 throw new IllegalArgumentException("Usuario o Genero no encontrado.");
             }
 
-            // Asigno las entidades a UsuarioLibro
             usuarioGenero.setUsuario(usuario);
             usuarioGenero.setGenero(genero);
         }
 
-        // Guardo o actualizo la relación en la base de datos
         guardarUsuarioGenero(usuarioGenero);
     }
 

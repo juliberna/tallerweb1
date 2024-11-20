@@ -13,19 +13,29 @@
             </div>
         </div>
     </div>
-    <nav class="navbar navbar-expand-lg navbar-dark ftco-navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-dark ftco-navbar-light" style="height: 90px;">
         <div class="container">
             <div class="collapse navbar-collapse" id="ftco-nav">
                 <a class="navbar-brand" th:href="@{/home}">Spring</a>
-                <form th:action="@{/libro/buscar}" method="get" class="searchform order-lg-last">
-                    <div class="form-group d-flex">
-                        <input type="text" class="form-control pl-3" placeholder="Buscar libros" name="query">
-                        <button type="submit" placeholder="" class="form-control search"><span
-                                class="fa fa-search"></span></button>
-                    </div>
-                </form>
+                <div>
+                    <form th:action="@{/libro/buscar}" accept-charset="UTF-8" method="get" class="searchform order-lg-last">
+                        <div class="form-group d-flex">
+                            <input type="text" class="form-control pl-3" placeholder="Buscar libros" name="query">
+                            <button type="submit" placeholder="" class="form-control search"><span
+                                    class="fa fa-search"></span></button>
+                        </div>
+                    </form>
+                    <form th:action="@{/buscar-usuarios}" accept-charset="UTF-8" method="get" class="searchform order-lg-last">
+                        <div class="form-group d-flex">
+                            <input type="text" class="form-control pl-3" placeholder="Buscar personas" name="query">
+                            <button type="submit" placeholder="" class="form-control search"><span
+                                    class="fa fa-search"></span></button>
+                        </div>
+                    </form>
+                </div>
                 <ul class="navbar-nav m-auto">
                     <li class="nav-item"><a th:href="@{/home}" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a th:href="@{/listado-amigos}" class="nav-link">Amigos</a></li>
                     <li class="nav-item"><a th:href="@{/libro/misLibros}" class="nav-link">Mis libros</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown"

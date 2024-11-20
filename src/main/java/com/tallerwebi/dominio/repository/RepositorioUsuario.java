@@ -11,6 +11,8 @@ import java.util.List;
 public interface RepositorioUsuario {
 
     Usuario buscarUsuario(String email, String password);
+    List<Usuario> buscarUsuariosPorQuery(String query);
+
     void guardar(String email, String password, String nombreUsuario, String nombre, LocalDate fechaNacimiento);
     void modificar(Usuario usuario);
     Usuario buscar(String email);

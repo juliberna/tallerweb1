@@ -7,11 +7,15 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.OrderBy;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class RepositorioLibroImpl implements RepositorioLibro {
@@ -26,7 +30,6 @@ public class RepositorioLibroImpl implements RepositorioLibro {
     @Override
     public List<Libro> buscar(String query) {
         Session session = sessionFactory.getCurrentSession();
-        //TODO agregar busqueda por genero
         return session.createCriteria(Libro.class)
                 .add(Restrictions.disjunction()
                         .add(Restrictions.ilike("titulo", query, MatchMode.ANYWHERE))
@@ -41,6 +44,23 @@ public class RepositorioLibroImpl implements RepositorioLibro {
         libro.add(Restrictions.eq("id", id));
         return (Libro) libro.uniqueResult();
     }
+
+
+    @Override
+    public List<Libro> buscarDosLibrosRandom() {
+        Session session = sessionFactory.getCurrentSession();
+
+        Criteria criteria = session.createCriteria(Libro.class);
+        List<Libro> allBooks = criteria.list();
+
+        Collections.shuffle(allBooks);
+
+        return allBooks.stream().limit(2).collect(Collectors.toList());
+    }
+
+
+
+
 
     @Override
     public void actualizarLibro(Libro libro) {

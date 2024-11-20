@@ -47,6 +47,13 @@ public class ServicioLibroImpl implements ServicioLibro {
     }
 
     @Override
+    public List<Libro> obtenerDosLibrosRandom() {
+        List<Libro> listaoDeLibros = repositorioLibro.buscarDosLibrosRandom();
+
+        return listaoDeLibros;
+    }
+
+    @Override
     public void actualizarLibro(Libro libro) {
         repositorioLibro.actualizarLibro(libro);
     }
