@@ -64,9 +64,6 @@
     </div>
 </div>
 
-
-
-
 <section>
 
 <div class="container">
@@ -112,7 +109,7 @@
                     <!-- Barra de progreso -->
                     <div class="progress my-1" style="height: 8px; width: 70px;">
                         <div class="progress-bar bg-success" role="progressbar"
-                             th:style="'width: ' + (${cantidadLibrosLeidos} / ${usuario.meta} * 100) + '%;'">
+                             th:style="'width: ' + (${cantidadLibrosLeidos != null and usuario.meta != null} ? (${cantidadLibrosLeidos} / ${usuario.meta} * 100) : 0) + '%;'">
                         </div>
                     </div>
 
@@ -149,8 +146,18 @@
     <section class="recommendations">
         <h2>Recomendaciones</h2>
 
+        <div th:if="${mensajePlanRecos != null}">
+            <div class="alert alert-warning" style="background-color: #f8d7da;color: #721c24;border: 2px solid #f5c6cb; padding: 10px 15px; font-size: 1rem; border-radius: 8px;">
+                <p><span th:text="${mensajePlanRecos}"></span></p>
+                <br>
+                <a th:href="@{/planes/mostrar}" style="color: #2d7b78; font-size: 0.9rem;">Tus planes</a>
+            </div>
+        </div>
+
+
+        <div th:if="${mensajePlanRecos == null}">
         <div th:each="libro : ${librosRecomendados}" class="book-recommendation">
-            <img th:src="${libro.getImagenUrl()}" alt="Portada del libro" class="book-cover">
+            <img th:src="@{'/Images/' + ${libro.getImagenUrl()}}" alt="Portada del libro" class="book-cover">
 
             <div class="book-details">
                 <form th:action="@{/libro/detalle/{id}(id=${libro.getId()})}" method="get">
@@ -162,6 +169,7 @@
 
             </div>
         </div>
+        </div>
     </section>
 
 
@@ -172,6 +180,15 @@
             </div>
         </div>
 
+        <div th:if="${mensajePlan3}">
+            <div class="alert alert-warning" style="background-color: #f8d7da;color: #721c24;border: 2px solid #f5c6cb; padding: 10px 15px; font-size: 1rem; border-radius: 8px;">
+                <p><span th:text="${mensajePlan3}"></span></p>
+                <br>
+                <a th:href="@{/planes/mostrar}" style="color: #2d7b78; font-size: 0.9rem;">Tus planes</a>
+            </div>
+        </div>
+
+        <div th:if="${mensajePlan == null}">
         <div th:each="review : ${comentariosDeAmigos}" class="row mb-4">
             <div class="col-12">
                 <div class="card shadow-sm border-0">
@@ -207,6 +224,7 @@
                 </div>
             </div>
         </div>
+        </div>
     </section>
 
     <section class="container my-5">
@@ -215,7 +233,18 @@
                 <h2 class="text-primary border-bottom pb-2">Crear publicación</h2>
             </div>
         </div>
-        <div class="card shadow-sm border-0 mb-4">
+
+        <div th:if="${mensajePlan}">
+            <div class="alert alert-warning" style="background-color: #f8d7da;color: #721c24;border: 2px solid #f5c6cb; padding: 10px 15px; font-size: 1rem; border-radius: 8px;">
+                <p><span th:text="${mensajePlan}"></span></p>
+                <br>
+                <a th:href="@{/planes/mostrar}" style="color: #2d7b78; font-size: 0.9rem;">Tus planes</a>
+            </div>
+        </div>
+
+
+        <div th:if="${mensajePlan == null}">
+        <div  class="card shadow-sm border-0 mb-4">
             <div class="card-body">
                 <form th:action="@{/publicaciones/crear}" accept-charset="UTF-8" method="post">
                     <div class="form-group mb-3">
@@ -227,7 +256,7 @@
                 </form>
             </div>
         </div>
-
+        </div>
 
         <div class="row mb-4">
             <div class="col">
@@ -235,6 +264,15 @@
             </div>
         </div>
 
+        <div th:if="${mensajePlan2}">
+            <div class="alert alert-warning" style="background-color: #f8d7da;color: #721c24;border: 2px solid #f5c6cb; padding: 10px 15px; font-size: 1rem; border-radius: 8px;">
+                <p><span th:text="${mensajePlan2}"></span></p>
+                <br>
+                <a th:href="@{/planes/mostrar}" style="color: #2d7b78; font-size: 0.9rem;">Tus planes</a>
+            </div>
+        </div>
+
+        <div th:if="${mensajePlan2 == null}">
         <div th:each="publicacion : ${listadoAmigosPublicaciones}" class="row mb-4">
             <div class="col-12">
                 <div class="card shadow-sm border-0">
@@ -285,14 +323,12 @@
                 </div>
             </div>
         </div>
-
-
-
+        </div>
     </section>
 
-
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</section>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

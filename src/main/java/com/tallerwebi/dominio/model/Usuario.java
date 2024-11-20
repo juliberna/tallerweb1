@@ -2,10 +2,7 @@ package com.tallerwebi.dominio.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "usuario")
@@ -29,11 +26,17 @@ public class Usuario {
     private String biografia;
     // Campo para verificar los logros
     private Boolean logrosAsignados = false;
+    private Date fecha_plan_adquirido;
+    private Date fecha_plan_venc;
+
 
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<UsuarioNotificacion> notificaciones;
 
+    @ManyToOne
+    @JoinColumn(name = "plan_id")
+    private Plan plan;
 
 //    @ManyToMany
 //    @JoinTable(
@@ -50,6 +53,22 @@ public class Usuario {
 //            inverseJoinColumns = @JoinColumn(name = "autor_id")
 //    )
 //    private List<Autor> autoresFavoritos = new ArrayList<>();
+
+public Date getFecha_plan_adquirido() {
+    return fecha_plan_adquirido;
+}
+
+    public void setFecha_plan_adquirido(Date fecha_plan_adquirido) {
+        this.fecha_plan_adquirido = fecha_plan_adquirido;
+    }
+
+    public Date getFecha_plan_venc() {
+        return fecha_plan_venc;
+    }
+
+    public void setFecha_plan_venc(Date fecha_plan_venc) {
+        this.fecha_plan_venc = fecha_plan_venc;
+    }
 
     public Long getId() {
         return id;
@@ -177,6 +196,14 @@ public class Usuario {
 
     public void setLogrosAsignados(Boolean logrosAsignados) {
         this.logrosAsignados = logrosAsignados;
+    }
+
+    public Plan getPlan() {
+        return plan;
+    }
+
+    public void setPlan(Plan plan) {
+        this.plan = plan;
     }
 
     //    public List<Genero> getGeneros() {

@@ -10,8 +10,9 @@
     <div class="navbar-container2">
         <h1 class="navbar-title2">Spring</h1>
         <ul class="navbar-links2">
-            <li><a href="/spring/home">Home</a></li>
-            <li><a th:href="@{/libro/misLibros}">My Books</a></li>
+            <li><a href="/spring/home">Inicio</a></li>
+            <li><a th:href="@{/libro/misLibros}">Mis Libros</a></li>
+            <li><a th:href="@{/planes/mostrar}">Mis Planes</a></li>
         </ul>
     </div>
 </nav>
@@ -101,10 +102,18 @@
         </div>
 
         <h2>Reseñas de otros usuarios</h2>
-        <div th:if="${reseniasDeOtrosUsuarios.isEmpty()}" class="alert alert-danger">
-            <p><span>No hay reseñas de otros usuarios.</span></p>
+
+
+        <div th:if="${mensajeDeRestriccion}">
+            <div class="alert alert-warning" style="background-color: #f8d7da;color: #721c24;border: 2px solid #f5c6cb; padding: 10px 15px; font-size: 1rem; border-radius: 8px; font-weight: bold">
+                <p><span th:text="${mensajeDeRestriccion}"></span></p>
+                <br>
+                <a th:href="@{/planes/mostrar}" style="color: #2d7b78; font-size: 0.9rem;">Tus planes</a>
+            </div>
         </div>
-        <div th:if="${!reseniasDeOtrosUsuarios.isEmpty()}">
+
+        <!-- Mostrar reseñas de otros usuarios si no están restringidas -->
+        <div th:if="${reseniasDeOtrosUsuarios != null && !reseniasDeOtrosUsuarios.isEmpty()}">
             <ul>
                 <li th:each="resenia : ${reseniasDeOtrosUsuarios}"
                     style="margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #ddd; background-color: #fff; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
@@ -113,6 +122,13 @@
                     <span>Puntuación: <span th:text="${resenia.puntuacion}"></span></span>
                 </li>
             </ul>
+        </div>
+
+        <!-- Si no hay reseñas de otros usuarios, mostrar un mensaje informativo -->
+        <div th:if="${reseniasDeOtrosUsuarios != null && reseniasDeOtrosUsuarios.isEmpty()}">
+            <div class="alert alert-danger">
+                <p><span>No hay reseñas de otros usuarios.</span></p>
+            </div>
         </div>
     </div>
 </div>

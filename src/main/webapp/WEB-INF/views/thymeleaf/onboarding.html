@@ -38,7 +38,6 @@
 
                         <div class="d-grid">
                             <button type="submit" class="btn btn-success btn-block">Guardar y Continuar</button>
-                            <button type="button" class="btn btn-secondary btn-block" th:onclick="'location.href=\'/onboarding/mostrarOnboarding/' + ${userId} + '/2\' '">Saltar a Paso 2</button>
                         </div>
                     </form>
                 </div>
@@ -63,8 +62,6 @@
 
                         <div class="d-grid">
                             <button type="submit" class="btn btn-success btn-block">Guardar y Continuar</button>
-                            <button type="button" class="btn btn-secondary btn-block" th:onclick="'location.href=\'/onboarding/paso1?userId=' + ${userId} + '\' '">Volver</button>
-                            <button type="button" class="btn btn-secondary btn-block" th:onclick="'location.href=\'/onboarding/paso3?userId=' + ${userId} + '\' '">Saltar a Paso 3</button>
                         </div>
                     </form>
                 </div>
@@ -87,8 +84,6 @@
 
                         <div class="d-grid">
                             <button type="submit" class="btn btn-success btn-block">Finalizar</button>
-                            <button type="button" class="btn btn-secondary btn-block" th:onclick="'location.href=\'/onboarding/paso2?userId=' + ${userId} + '\' '">Volver</button>
-                            <button type="button" class="btn btn-secondary btn-block" th:onclick="'location.href=\'/home\' '">Saltar</button>
                         </div>
                     </form>
                 </div>
