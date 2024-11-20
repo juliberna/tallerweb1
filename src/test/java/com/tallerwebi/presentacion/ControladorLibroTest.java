@@ -84,7 +84,7 @@ public class ControladorLibroTest {
     }
 
     @Test
-    public void siElLibroExisteDevuelveDetalleLibro() throws LibroNoEncontrado {
+    public void siElLibroExisteDevuelveDetalleLibro() throws LibroNoEncontrado, UsuarioInexistente {
         Long userId = 70L;
 
         when(requestMock.getSession()).thenReturn(sessionMock);

@@ -41,8 +41,14 @@ public class ControladorLogro {
             Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
             model.addAttribute("usuario", usuario);
 
-            List<UsuarioLogro> logrosUsuario = servicioUsuarioLogro.obtenerLogrosDelUsuario(usuario);
-            model.addAttribute("logrosUsuario", logrosUsuario);
+            if(!usuario.getPlan().getPuedeObtenerLogros()){
+                model.addAttribute("logrosUsuario", null);
+                model.addAttribute("mensajeDeRestriccion", "Estas en el plan " + usuario.getPlan().getNombre() + " actualiza tu plan a ORO para obtener logros.");
+            } else {
+                List<UsuarioLogro> logrosUsuario = servicioUsuarioLogro.obtenerLogrosDelUsuario(usuario);
+                model.addAttribute("logrosUsuario", logrosUsuario);
+            }
+
         } catch (UsuarioInexistente e) {
             return new ModelAndView("redirect:/login");
         } catch (ListaVacia e) {

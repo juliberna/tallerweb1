@@ -1,5 +1,7 @@
 package com.tallerwebi.infraestructura.service;
 
+import com.tallerwebi.dominio.model.Plan;
+import com.tallerwebi.dominio.repository.RepositorioPlan;
 import com.tallerwebi.dominio.repository.RepositorioUsuario;
 import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
@@ -14,10 +16,12 @@ import java.time.LocalDate;
 public class ServicioLoginImpl implements ServicioLogin {
 
     private RepositorioUsuario repositorioUsuario;
+    private RepositorioPlan repositorioPlan;
 
     @Autowired
-    public ServicioLoginImpl(RepositorioUsuario repositorioUsuario){
+    public ServicioLoginImpl(RepositorioUsuario repositorioUsuario, RepositorioPlan repositorioPlan) {
         this.repositorioUsuario = repositorioUsuario;
+        this.repositorioPlan = repositorioPlan;
     }
 
     @Override
@@ -27,17 +31,17 @@ public class ServicioLoginImpl implements ServicioLogin {
 
     @Override
     public void registrar(String email, String password, String nombreUsuario, String nombre, LocalDate fechaNacimiento) throws UsuarioExistente, IllegalArgumentException {
-        // Verificar si el email ya está en uso
+        Plan plan = repositorioPlan.buscarPlanPorId(1L);
         if (repositorioUsuario.buscarPorEmail(email) != null) {
-            throw new UsuarioExistente("El email ya está en uso."); // Lanza una excepción con el mensaje correspondiente
-        }
-        // Verificar si el nombre de usuario ya está en uso
-        if (repositorioUsuario.buscarPorNombreUsuario(nombreUsuario) != null) {
-            throw new UsuarioExistente("El nombre de usuario ya está en uso."); // Lanza una excepción con el mensaje correspondiente
+            throw new UsuarioExistente("El email ya está en uso.");
         }
 
-        // Si las validaciones pasan, guardar el nuevo usuario
-        repositorioUsuario.guardar(email, password, nombreUsuario, nombre, fechaNacimiento);
+        if (repositorioUsuario.buscarPorNombreUsuario(nombreUsuario) != null) {
+            throw new UsuarioExistente("El nombre de usuario ya está en uso.");
+        }
+
+
+        repositorioUsuario.guardar(email, password, nombreUsuario, nombre, fechaNacimiento, plan);
     }
 
     @Override
