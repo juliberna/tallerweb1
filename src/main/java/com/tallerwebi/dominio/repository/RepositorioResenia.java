@@ -21,4 +21,10 @@ public interface RepositorioResenia {
 
 
     List<Resenia> obtenerReseniasMasReacciones();
+
+    List<Resenia> obtenerReseniasPorTituloLibro(String valor);
+
+    List<Resenia> obtenerReseniasPorUsuario(String valor);
+
+    List<Resenia> obtenerReseniasPorAutorLibro(String valor);
 }

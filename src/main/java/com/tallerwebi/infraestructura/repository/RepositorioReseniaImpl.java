@@ -6,6 +6,7 @@ import com.tallerwebi.dominio.repository.RepositorioResenia;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -122,5 +123,37 @@ public class RepositorioReseniaImpl implements RepositorioResenia {
         }
 
         return reseniasConMasReacciones;
+    }
+
+    @Override
+    public List<Resenia> obtenerReseniasPorTituloLibro(String valor) {
+        Session session = sessionFactory.getCurrentSession();
+
+        return session.createCriteria(Resenia.class)
+                .createAlias("libro", "l")
+                .add(Restrictions.ilike("l.titulo", valor, MatchMode.ANYWHERE))
+                .list();
+    }
+
+    @Override
+    public List<Resenia> obtenerReseniasPorUsuario(String valor) {
+        Session session = sessionFactory.getCurrentSession();
+
+        return session.createCriteria(Resenia.class)
+                .createAlias("usuario", "u")
+                .add(Restrictions.disjunction()
+                        .add(Restrictions.ilike("u.nombre", valor, MatchMode.ANYWHERE))
+                        .add(Restrictions.ilike("u.nombreUsuario", valor, MatchMode.ANYWHERE)))
+                .list();
+    }
+
+    @Override
+    public List<Resenia> obtenerReseniasPorAutorLibro(String valor) {
+        Session session = sessionFactory.getCurrentSession();
+
+        return session.createCriteria(Resenia.class)
+                .createAlias("libro", "l")
+                .add(Restrictions.ilike("l.autor", valor, MatchMode.ANYWHERE))
+                .list();
     }
 }

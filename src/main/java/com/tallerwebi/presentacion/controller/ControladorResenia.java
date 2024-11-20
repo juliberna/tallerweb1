@@ -96,21 +96,58 @@ public class ControladorResenia {
     @RequestMapping(value = "/explorar", method = RequestMethod.GET)
     public ModelAndView explorarResenias(HttpServletRequest request,
                                          @RequestParam(required = false) String filtro,
-                                         @RequestParam(required = false) String valor) {
+                                         @RequestParam(required = false) String valor,
+                                         @RequestParam(required = false) String orden) {
         ModelMap model = new ModelMap();
         Long userId = (Long) request.getSession().getAttribute("USERID");
 
         List<Resenia> resenias;
-
         if (filtro != null && !filtro.isEmpty() && valor != null && !valor.isEmpty()) {
             // Aca iria el metodo con los filtros
-            resenias = new ArrayList<>();
+            try {
+                resenias = obtenerReseniasConFiltro(filtro,valor);
+                model.addAttribute("filtroSeleccionado", filtro);
+                model.addAttribute("valorFiltro", valor);
+            } catch (ListaVacia e) {
+                model.addAttribute("errorFiltros",e.getMessage());
+                resenias = new ArrayList<>();
+            }
         } else {
-            resenias = servicioResenia.obtenerReseniasMasReacciones();
+            try {
+                resenias = servicioResenia.obtenerReseniasMasReacciones();
+            } catch (ListaVacia e) {
+                model.addAttribute("errorResenia", e.getMessage());
+                resenias = new ArrayList<>();
+            }
+        }
+
+        if (orden != null && !orden.isEmpty()) {
+            resenias = servicioResenia.ordenarResenias(resenias, orden);
         }
 
         model.addAttribute("resenias", resenias);
+
+
         return new ModelAndView("mostrar-resenias", model);
+    }
+
+    private List<Resenia> obtenerReseniasConFiltro(String filtro, String valor) throws ListaVacia {
+        List<Resenia> resenias;
+        switch (filtro) {
+            case "libro":
+                resenias = servicioResenia.obtenerReseniasPorTituloLibro(valor);
+                break;
+            case "autorResenia":
+                resenias = servicioResenia.obtenerReseniasPorUsuario(valor);
+                break;
+            case "autorLibro":
+                resenias = servicioResenia.obtenerReseniasPorAutorLibro(valor);
+                break;
+            default:
+                resenias = servicioResenia.obtenerReseniasMasReacciones();
+                break;
+        }
+        return resenias;
     }
 
 }

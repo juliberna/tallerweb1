@@ -1,5 +1,6 @@
 package com.tallerwebi.infraestructura.service;
 
+import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.ReseniaInexistente;
 import com.tallerwebi.dominio.model.Libro;
 import com.tallerwebi.dominio.model.LikeDislike;
@@ -152,13 +153,50 @@ public class ServicioReseniaImpl implements ServicioResenia {
     }
 
     @Override
-    public List<Resenia> obtenerReseniasMasReacciones() {
+    public List<Resenia> obtenerReseniasMasReacciones() throws ListaVacia {
         List<Resenia> resenias = repositorioResenia.obtenerReseniasMasReacciones();
 
         if(resenias.isEmpty()) {
-            System.out.println("No hay resenias aun!");
+            throw new ListaVacia("No hay reseñas aún!");
         }
 
+        return resenias;
+    }
+
+    @Override
+    public List<Resenia> obtenerReseniasPorTituloLibro(String valor) throws ListaVacia {
+        List<Resenia> resenias = repositorioResenia.obtenerReseniasPorTituloLibro(valor);
+        if(resenias.isEmpty()) {
+            throw new ListaVacia("No hay reseñas de ese libro");
+        }
+        return resenias;
+    }
+
+    @Override
+    public List<Resenia> obtenerReseniasPorUsuario(String valor) throws ListaVacia {
+        List<Resenia> resenias = repositorioResenia.obtenerReseniasPorUsuario(valor);
+        if(resenias.isEmpty()) {
+            throw new ListaVacia("No hay reseñas de ese usuario");
+        }
+        return resenias;
+    }
+
+    @Override
+    public List<Resenia> obtenerReseniasPorAutorLibro(String valor) throws ListaVacia {
+        List<Resenia> resenias = repositorioResenia.obtenerReseniasPorAutorLibro(valor);
+        if(resenias.isEmpty()) {
+            throw new ListaVacia("No hay reseñas de ese autor");
+        }
+        return resenias;
+    }
+
+    @Override
+    public List<Resenia> ordenarResenias(List<Resenia> resenias, String orden) {
+        if (orden.equals("masPuntuacion")) {
+            resenias.sort((r1, r2) -> Integer.compare(r2.getPuntuacion(), r1.getPuntuacion()));
+        } else if (orden.equals("menosPuntuacion")) {
+            resenias.sort((r1, r2) -> Integer.compare(r1.getPuntuacion(), r2.getPuntuacion()));
+        }
         return resenias;
     }
 

@@ -1,5 +1,6 @@
 package com.tallerwebi.infraestructura.service;
 
+import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.ReseniaInexistente;
 import com.tallerwebi.dominio.model.Libro;
 import com.tallerwebi.dominio.model.LikeDislike;
@@ -26,5 +27,13 @@ public interface ServicioResenia {
 
     LikeDislike obtenerReaccionUsuario(Long idResenia, Long userId);
 
-    List<Resenia> obtenerReseniasMasReacciones();
+    List<Resenia> obtenerReseniasMasReacciones() throws ListaVacia;
+
+    List<Resenia> obtenerReseniasPorTituloLibro(String valor) throws ListaVacia;
+
+    List<Resenia> obtenerReseniasPorUsuario(String valor) throws ListaVacia;
+
+    List<Resenia> obtenerReseniasPorAutorLibro(String valor) throws ListaVacia;
+
+    List<Resenia> ordenarResenias(List<Resenia> resenias, String orden);
 }
