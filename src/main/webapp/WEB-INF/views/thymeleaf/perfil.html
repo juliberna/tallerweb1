@@ -82,33 +82,25 @@
                                     Perfil</a>
                             </div>
                             <div th:if="${usuario.id} != ${#httpSession.getAttribute('USERID')}">
-                                <form th:action="@{/solicitud-amistad/{id}(id=${usuario.id})}" method="post"
+                                <form th:action="@{/solicitud-amistad/{id}(id=${usuario.id})}" th:if="${isFriend == 'NoAmigos'}"method="post"
                                       accept-charset="UTF-8">
                                     <button type="submit" class="btn btn-primary">Enviar solicitud de amistad</button>
                                 </form>
+                                <span th:if="${isFriend == 'Pendiente'}" class="btn btn-success text-white" disabled>Solicitud de amistad pendiente</span>
+
+                                <form th:action="@{/solicitud-amistad/eliminar-amistad/{friendId}(friendId=${usuario.id})}"
+                                      method="post"
+                                      th:if="${isFriend == 'Amigos'}"
+                                      accept-charset="UTF-8"
+                                      class="d-inline-block">
+                                    <button type="submit" class="btn btn-danger">Eliminar amistad</button>
+                                </form>
+                                <span th:if="${isFriend == 'Amigos'}" class="btn btn-success text-white" disabled>¡Ya son amigos!</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4" th:if="${mostrarListado}">
-                <div class="card shadow-sm">
-                    <div class="card-header text-center text-white" style="background-color: #4CAF50;">
-                        <h4 style="color:#ffffff">Amigos</h4>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-group">
-                            <li class="list-group-item" th:each="amistad : ${listaAmigos}">
-                                <a th:href="@{/perfil/{id}(id=${amistad.amigo != null ? amistad.amigo.id : amistad.usuario.id})}"
-                                   target="_blank"
-                                   th:text="${amistad.amigo != null ? amistad.amigo.nombre : amistad.usuario.nombre}"></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-
         </div>
     </main>
 

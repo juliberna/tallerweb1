@@ -6,6 +6,7 @@ import com.tallerwebi.dominio.model.Usuario;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,16 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
                 .add(Restrictions.eq("email", email))
                 .add(Restrictions.eq("password", password))
                 .uniqueResult();
+    }
+
+    @Override
+    public List<Usuario> buscarUsuariosPorQuery(String query) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.createCriteria(Usuario.class)
+                .add(Restrictions.disjunction()
+                        .add(Restrictions.ilike("nombreUsuario", query, MatchMode.ANYWHERE))
+                        .add(Restrictions.ilike("nombre", query, MatchMode.ANYWHERE)))
+                .list();
     }
 
     @Override

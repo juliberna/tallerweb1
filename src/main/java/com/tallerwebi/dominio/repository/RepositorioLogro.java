@@ -7,5 +7,6 @@ import java.util.List;
 public interface RepositorioLogro {
     void guardar(Logro logro);
     Logro buscarPorId(Long id);
-    List<Logro> obtenerTodos();
+    List<Logro> obtenerLogrosPredefinidos();
+    void borrar(Logro logro);
 }

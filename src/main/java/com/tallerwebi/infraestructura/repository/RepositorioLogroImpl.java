@@ -35,8 +35,19 @@ public class RepositorioLogroImpl implements RepositorioLogro {
     }
 
     @Override
-    public List<Logro> obtenerTodos() {
+    public List<Logro> obtenerLogrosPredefinidos() {
         Session session = sessionFactory.getCurrentSession();
-        return session.createCriteria(Logro.class).list();
+
+        return session.createCriteria(Logro.class)
+                .add(Restrictions.eq("esPredefinido", true))
+                .list();
     }
+
+    @Override
+    public void borrar(Logro logro) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(logro);
+    }
+
+
 }
