@@ -1,5 +1,6 @@
 package com.tallerwebi.infraestructura.service;
 
+import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.ReseniaInexistente;
 import com.tallerwebi.dominio.model.Libro;
 import com.tallerwebi.dominio.model.LikeDislike;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -116,7 +116,7 @@ public class ServicioReseniaImpl implements ServicioResenia {
 
         if (reaccionExistente != null) {
             System.out.println("Actualiza el like o dislike");
-            actualizarEliminarReaccion(usuario, resenia, reaccionExistente, esLike);
+            actualizarEliminarReaccion(resenia, reaccionExistente, esLike);
         } else {
             System.out.println("Crea una nueva reaccion");
             crearNuevaReaccion(resenia, usuario, esLike);
@@ -152,14 +152,64 @@ public class ServicioReseniaImpl implements ServicioResenia {
         return repositorioLikeDislike.obtenerReaccionDelUsuario(userId,idResenia);
     }
 
-    private void actualizarEliminarReaccion(Usuario usuario, Resenia resenia, LikeDislike reaccionExistente, boolean esLike) {
+    @Override
+    public List<Resenia> obtenerReseniasMasReacciones() throws ListaVacia {
+        List<Resenia> resenias = repositorioResenia.obtenerReseniasMasReacciones();
+
+        if(resenias.isEmpty()) {
+            throw new ListaVacia("No hay reseñas aún!");
+        }
+
+        return resenias;
+    }
+
+    @Override
+    public List<Resenia> obtenerReseniasPorTituloLibro(String valor) throws ListaVacia {
+        List<Resenia> resenias = repositorioResenia.obtenerReseniasPorTituloLibro(valor);
+        if(resenias.isEmpty()) {
+            throw new ListaVacia("No hay reseñas de ese libro");
+        }
+        return resenias;
+    }
+
+    @Override
+    public List<Resenia> obtenerReseniasPorUsuario(String valor) throws ListaVacia {
+        List<Resenia> resenias = repositorioResenia.obtenerReseniasPorUsuario(valor);
+        if(resenias.isEmpty()) {
+            throw new ListaVacia("No hay reseñas de ese usuario");
+        }
+        return resenias;
+    }
+
+    @Override
+    public List<Resenia> obtenerReseniasPorAutorLibro(String valor) throws ListaVacia {
+        List<Resenia> resenias = repositorioResenia.obtenerReseniasPorAutorLibro(valor);
+        if(resenias.isEmpty()) {
+            throw new ListaVacia("No hay reseñas de ese autor");
+        }
+        return resenias;
+    }
+
+    @Override
+    public List<Resenia> ordenarResenias(List<Resenia> resenias, String orden) {
+        if (orden.equals("masPuntuacion")) {
+            resenias.sort((r1, r2) -> Integer.compare(r2.getPuntuacion(), r1.getPuntuacion()));
+        } else if (orden.equals("menosPuntuacion")) {
+            resenias.sort((r1, r2) -> Integer.compare(r1.getPuntuacion(), r2.getPuntuacion()));
+        }
+        return resenias;
+    }
+
+    private void actualizarEliminarReaccion(Resenia resenia, LikeDislike reaccionExistente, boolean esLike) {
 
         if (reaccionExistente.getEsLike() == esLike) {
             System.out.println("Elimina la reaccion de la bdd");
+            resenia.getReacciones().remove(reaccionExistente);
             repositorioLikeDislike.eliminar(reaccionExistente); // Elimina la reaccion si es igual a la existente
         } else {
             System.out.println("Cambia el like o dislike en la bdd");
             reaccionExistente.setEsLike(esLike); // Cambia de like a dislike, o viceversa
+            resenia.getReacciones().add(reaccionExistente);
             repositorioLikeDislike.guardar(reaccionExistente);
         }
 
@@ -170,8 +220,9 @@ public class ServicioReseniaImpl implements ServicioResenia {
         nuevaReaccion.setUsuario(usuario);
         nuevaReaccion.setResenia(resenia);
         nuevaReaccion.setEsLike(esLike);
-        repositorioLikeDislike.guardar(nuevaReaccion);
 
+        resenia.getReacciones().add(nuevaReaccion);
+        repositorioLikeDislike.guardar(nuevaReaccion);
     }
 
 
