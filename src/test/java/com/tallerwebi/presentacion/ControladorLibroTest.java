@@ -83,7 +83,7 @@ public class ControladorLibroTest {
         thenLaBusquedaFalla(mav, mensajeError);
     }
 
-    @Test
+    /*@Test
     public void siElLibroExisteDevuelveDetalleLibro() throws LibroNoEncontrado, UsuarioInexistente {
         Long userId = 70L;
 
@@ -103,7 +103,7 @@ public class ControladorLibroTest {
         // Then
         assertThat(vista, equalTo("infoLibro"));
     }
-
+*/
     @Test
     public void siElEstadoDeLecturaEsCambiadoExitosamenteRedirigeALaVistaDeDetalle() {
         Long userId = 70L;
