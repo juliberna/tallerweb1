@@ -104,6 +104,14 @@
 
 <br>
 
+<!-- Mensaje de estado del pago -->
+<div class="container">
+  <p th:if="${mensajeEstadoPago != null}"
+     th:text="${mensajeEstadoPago}"
+     style="font-size: 18px; color: darkblue; font-weight: bold; text-align: center;">
+  </p>
+</div>
+
 <div class="container">
   <p style="font-size: 18px; color: darkred;"
      th:if="${usuario.plan.nombre != 'BRONCE'}">
@@ -133,12 +141,13 @@
     </ul>
     <br>
     <p>GRATIS</p>
-    <form method="post" th:action="@{/planes/actualizarPlan/1}">
+    <form method="post" th:action="@{/planes/actualizarPlan/1}" onsubmit="return confirmarCompra('Plan Bronce')">
       <input type="hidden" name="plan" value="bronce">
       <button type="submit" class="btn-comprar"
               th:text="${session.planAdquirido == 1 ? 'Adquirido' : 'Comprar'}"
               th:disabled="${session.planAdquirido == 1}"
-              th:classappend="${session.planAdquirido == 1 ? 'btn-adquirido' : ''}"></button>
+              th:classappend="${session.planAdquirido == 1 ? 'btn-adquirido' : ''}">
+      </button>
     </form>
   </div>
 
@@ -159,7 +168,7 @@
     </ul>
     <br>
     <p>$2000 ARS X MES</p>
-    <form method="post" th:action="@{/planes/actualizarPlan/2}">
+    <form method="post" th:action="@{/planes/pagar/2}" onsubmit="return confirmarCompra('Plan Plata')">
       <input type="hidden" name="plan" value="bronce">
       <button type="submit" class="btn-comprar"
               th:text="${session.planAdquirido == 2 ? 'Adquirido' : 'Comprar'}"
@@ -181,7 +190,7 @@
       <li>Ve actividad y comenta en foros</li>
     </ul>
     <p>$3000 ARS X MES</p>
-    <form method="post" th:action="@{/planes/actualizarPlan/3}">
+    <form method="post" th:action="@{/planes/pagar/3}" onsubmit="return confirmarCompra('Plan Oro')">
       <input type="hidden" name="plan" value="oro">
       <button type="submit" class="btn-comprar"
               th:text="${session.planAdquirido == 3 ? 'Adquirido' : 'Comprar'}"
@@ -192,6 +201,10 @@
 </div>
 
 
-
+<script>
+  function confirmarCompra(plan) {
+    return confirm(`¿Estás seguro de que deseas adquirir el ${plan}?`);
+  }
+</script>
 </body>
 </html>

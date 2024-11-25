@@ -1,13 +1,18 @@
 package com.tallerwebi.presentacion.controller;
 
+import com.mercadopago.exceptions.MPApiException;
+import com.mercadopago.exceptions.MPException;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.model.Usuario;
+import com.tallerwebi.infraestructura.service.ServicioMercadoPago;
 import com.tallerwebi.infraestructura.service.ServicioPlan;
 import com.tallerwebi.infraestructura.service.ServicioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -18,11 +23,13 @@ public class ControladorPlanes {
 
     private ServicioPlan servicioPlan;
     private ServicioUsuario servicioUsuario;
+    private ServicioMercadoPago servicioMercadoPago;
 
     @Autowired
-    public ControladorPlanes(ServicioPlan servicioPlan, ServicioUsuario servicioUsuario) {
+    public ControladorPlanes(ServicioPlan servicioPlan, ServicioUsuario servicioUsuario, ServicioMercadoPago servicioMercadoPago) {
         this.servicioPlan = servicioPlan;
         this.servicioUsuario = servicioUsuario;
+        this.servicioMercadoPago = servicioMercadoPago;
     }
 
 
@@ -43,13 +50,18 @@ public class ControladorPlanes {
     }
 
     @RequestMapping(value = "/actualizarPlan/{planId}" , method = RequestMethod.POST)
-    public String actualizarPlan(HttpServletRequest request, @PathVariable Long planId, ModelMap model) {
+    public String actualizarPlan(HttpServletRequest request, @PathVariable Long planId, ModelMap model, RedirectAttributes redirectAttributes) {
         HttpSession session = request.getSession();
         Long userId = (Long) session.getAttribute("USERID");
 
         try {
             Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
 
+            // Verifica si hay un mensaje de estado del pago en la sesión y lo pasa a los atributos de redirección
+            if (session.getAttribute("mensajeEstadoPago") != null) {
+                String mensajeEstadoPago = (String) session.getAttribute("mensajeEstadoPago");
+                redirectAttributes.addFlashAttribute("mensajeEstadoPago", mensajeEstadoPago);
+            }
 
             servicioPlan.actualizarPlanDelUsuario(planId, userId);
             session.setAttribute("planAdquirido", planId);
@@ -68,5 +80,25 @@ public class ControladorPlanes {
         }
 
         //return "planes";
+    }
+
+    // Se debe pasar el id del plan
+    @PostMapping("/pagar/{planId}")
+    public String pagarPlan(@PathVariable Long planId,Model model) {
+        try {
+            String linkDePago = servicioMercadoPago.crearPreferencia(planId);
+            model.addAttribute("linkDePago", linkDePago);
+            System.out.println("Link de pago: " + linkDePago);
+            return "redireccionarPago"; // Vista para confirmar y redirigir
+        } catch (MPException | MPApiException e) {
+            e.printStackTrace();
+            return "error";
+        }
+    }
+
+    @GetMapping("/confirmarActualizar/{planId}")
+    public String confirmarActualizarPlan(@PathVariable Long planId, Model model) {
+        model.addAttribute("planId", planId);
+        return "confirmarActualizarPlan";
     }
 }

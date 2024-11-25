@@ -62,6 +62,16 @@ public class ServicioPlanImpl implements ServicioPlan {
         }
     }
 
+    @Override
+    public Plan buscarPlanPorId(Long idPlan) {
+        Plan plan = repositorioPlan.buscarPlanPorId(idPlan);
+
+        if(plan == null) {
+            throw new PlanNoEncontrado("No se encontro el plan con el ID: " + idPlan);
+        }
+        return plan;
+    }
+
 
     private Date calcularFechaVencimiento(Plan plan) {
         Calendar calendar = Calendar.getInstance();
