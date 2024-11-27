@@ -33,7 +33,7 @@ public class ControladorPlanes {
     private ServicioMercadoPago servicioMercadoPago;
 
     @Autowired
-    public ControladorPlanes(ServicioPlan servicioPlan, ServicioUsuario servicioUsuario, ServicioUsuarioPlan servicioUsuarioPlan, ServicioValidacionPlan servicioValidacionPlan) {
+    public ControladorPlanes(ServicioPlan servicioPlan, ServicioUsuario servicioUsuario, ServicioUsuarioPlan servicioUsuarioPlan, ServicioValidacionPlan servicioValidacionPlan,ServicioMercadoPago servicioMercadoPago) {
         this.servicioPlan = servicioPlan;
         this.servicioUsuario = servicioUsuario;
         this.servicioMercadoPago = servicioMercadoPago;
@@ -111,6 +111,9 @@ public class ControladorPlanes {
             model.addAttribute("usuario", usuarioPlan);
             model.addAttribute("validacionDias", validacionDias);
             model.addAttribute("usuarioplan", usuarioPlan);
+
+            Boolean irAMercadopago = servicioUsuarioPlan.validarMercadopago(userId, planId);
+            model.addAttribute("irAMercadopago", irAMercadopago);
 
             return new ModelAndView("detalleActualizacionPlan");
 

@@ -32,7 +32,9 @@ public class ServicioMercadoPagoImpl implements ServicioMercadoPago {
     @Override
     public String crearPreferencia(Long idPlan) throws MPException, MPApiException {
         // Aca busco el plan por el id
+        System.out.println(idPlan);
         Plan plan = servicioPlan.buscarPlanPorId(idPlan);
+        System.out.println("Plan: " + plan.getNombre());
 
         if(plan == null) {
             throw new MPException("Plan no encontrado");

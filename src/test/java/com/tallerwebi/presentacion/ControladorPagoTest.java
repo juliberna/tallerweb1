@@ -2,6 +2,7 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.infraestructura.service.ServicioPlan;
+import com.tallerwebi.infraestructura.service.ServicioUsuarioPlan;
 import com.tallerwebi.presentacion.controller.ControladorPago;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ public class ControladorPagoTest {
     private RedirectAttributes redirectAttributes;
 
     @Mock
-    private ServicioPlan servicioPlan;
+    private ServicioUsuarioPlan servicioUsuarioPlan;
 
     @InjectMocks
     private ControladorPago controladorPago;
@@ -45,7 +46,7 @@ public class ControladorPagoTest {
         when(session.getAttribute("USERID")).thenReturn(userId);
 
         // Configuración del mock del servicioPlan
-        doNothing().when(servicioPlan).actualizarPlanDelUsuario(Long.parseLong(externalReference), userId);
+        doNothing().when(servicioUsuarioPlan).actualizarPlanDelUsuarioPlan(userId,Long.parseLong(externalReference));
 
         // Metodo principal
         String viewName = controladorPago.pagoExitoso(paymentId, status, externalReference, redirectAttributes, session);
@@ -56,7 +57,7 @@ public class ControladorPagoTest {
         );
 
         // Verificar que el servicio de plan haya sido llamado para actualizar el plan del usuario
-        verify(servicioPlan, times(1)).actualizarPlanDelUsuario(Long.parseLong(externalReference), userId);
+        verify(servicioUsuarioPlan, times(1)).actualizarPlanDelUsuarioPlan(userId,Long.parseLong(externalReference));
 
         // Verificar que el plan adquirido haya sido almacenado en la sesión
         verify(session, times(1)).setAttribute("planAdquirido", Long.parseLong(externalReference));

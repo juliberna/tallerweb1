@@ -2,6 +2,7 @@ package com.tallerwebi.presentacion.controller;
 
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.infraestructura.service.ServicioPlan;
+import com.tallerwebi.infraestructura.service.ServicioUsuarioPlan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +16,11 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/pago")
 public class ControladorPago {
 
-    private ServicioPlan servicioPlan;
+    private ServicioUsuarioPlan servicioUsuarioPlan;
 
     @Autowired
-    public ControladorPago(ServicioPlan servicioPlan) {
-        this.servicioPlan = servicioPlan;
+    public ControladorPago(ServicioUsuarioPlan servicioUsuarioPlan) {
+        this.servicioUsuarioPlan = servicioUsuarioPlan;
     }
 
     @GetMapping("/exito")
@@ -37,7 +38,7 @@ public class ControladorPago {
         // Llamada directa al servicio que actualiza el plan
         try {
             Long userId = (Long) session.getAttribute("USERID");
-            servicioPlan.actualizarPlanDelUsuario(planId, userId);
+            servicioUsuarioPlan.actualizarPlanDelUsuarioPlan(userId, planId);
             session.setAttribute("planAdquirido", planId);
         } catch (UsuarioInexistente e) {
             return "redirect:/login";

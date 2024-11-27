@@ -32,7 +32,7 @@ public class ServicioMercadoPagoTest {
         mockPlan = new Plan();
         mockPlan.setId(1L);
         mockPlan.setNombre("Plan Básico");
-        mockPlan.setPrecio(1000);
+        mockPlan.setPrecio(1000D);
 
         // Configurar el servicio plan para que devuelva el plan simulado
         when(servicioPlan.buscarPlanPorId(1L)).thenReturn(mockPlan);

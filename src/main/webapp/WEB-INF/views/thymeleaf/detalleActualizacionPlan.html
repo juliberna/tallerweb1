@@ -155,10 +155,13 @@
         <a th:href="@{/planes/mostrar}" class="btn btn-danger btn-lg">Cancelar cambio</a>
 
         <!-- Botón de Confirmación -->
-        <form th:action="@{/planes/actualizarPlan/{id}(id=${plan.id})}" method="post">
+        <form th:if="${irAMercadopago}" th:action="@{/planes/pagar/{id}(id=${plan.id})}" method="post">
             <button type="submit" class="btn btn-primary btn-lg">Confirmar cambio</button>
         </form>
 
+        <form th:if="${!irAMercadopago}" th:action="@{/planes/actualizarPlan/{id}(id=${plan.id})}" method="post">
+            <button type="submit" class="btn btn-primary btn-lg">Confirmar cambio</button>
+        </form>
 
 
     </div>
