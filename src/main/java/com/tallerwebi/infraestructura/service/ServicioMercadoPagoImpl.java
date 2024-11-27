@@ -42,6 +42,7 @@ public class ServicioMercadoPagoImpl implements ServicioMercadoPago {
         MercadoPagoConfig.setAccessToken("APP_USR-1161986002564820-112507-a3751c8d816ca6e05db73ad7ff938d68-2115199025");
 
         // Si el plan tiene precio uso ese, sino es 0
+        // Aca se calcularia la logica para aplicar el descuento al precio
         BigDecimal precioPlan = (plan.getPrecio() != null) ? new BigDecimal(plan.getPrecio()) : BigDecimal.ZERO;
 
         // Crear el item (producto/plan que se está comprando)

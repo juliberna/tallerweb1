@@ -1,103 +1,104 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <!-- Boostrap core css -->
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Boostrap core css -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
 
-  <!-- custom style -->
-  <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <!-- custom style -->
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
 
-  <!-- Path to jQuery -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-          integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-          crossorigin="anonymous"></script>
+    <!-- Path to jQuery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
 
-  <!-- Path to Popper - it is for dropsdowns etc in bootstrap -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
-          integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
-          crossorigin="anonymous"></script>
+    <!-- Path to Popper - it is for dropsdowns etc in bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+            integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+            crossorigin="anonymous"></script>
 
-  <!-- Path to bootsrap -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
-          integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
-          crossorigin="anonymous"></script>
+    <!-- Path to bootsrap -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+            integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+            crossorigin="anonymous"></script>
 
-  <style>
-    /* Contenedor de grilla */
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
+    <style>
+        /* Contenedor de grilla */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
 
-    /* Estilo de la tarjeta */
-    .plan-card {
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 15px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      background-color: #fff;
-      text-align: center;
-    }
+        /* Estilo de la tarjeta */
+        .plan-card {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            text-align: center;
+        }
 
-    /* Títulos */
-    /* Colores de los títulos */
-    .plan-card.bronce h3 {
-      color: #8B4513;
-      font-weight: bold; /* Marrón para el plan Bronce */
-    }
+        /* Títulos */
+        /* Colores de los títulos */
+        .plan-card.bronce h3 {
+            color: #8B4513;
+            font-weight: bold; /* Marrón para el plan Bronce */
+        }
 
-    .plan-card.plata h3 {
-      color: #8a8a8a;
-      font-weight: bold; /* Plateado para el plan Plata */
-    }
+        .plan-card.plata h3 {
+            color: #8a8a8a;
+            font-weight: bold; /* Plateado para el plan Plata */
+        }
 
-    .plan-card.oro h3 {
-      color: #DAA520;
-      font-weight: bold; /* Dorado para el plan Oro */
-    }
+        .plan-card.oro h3 {
+            color: #DAA520;
+            font-weight: bold; /* Dorado para el plan Oro */
+        }
 
-    p{
-      font-weight: bold;
-    }
-    /* Botón de compra */
-    .btn-comprar {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #2d7b78; /* Color similar a Goodreads */
-      color: #fff;
-      text-decoration: none;
-      font-size: 16px;
-      border-radius: 20px;
-      border: 2px solid transparent;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
+        p {
+            font-weight: bold;
+        }
 
-    .btn-comprar:hover {
-      background-color: #fff;
-      color: #2d7b78;
-      border-color: #2d7b78;
-      cursor: pointer;
-    }
+        /* Botón de compra */
+        .btn-comprar {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #2d7b78; /* Color similar a Goodreads */
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 20px;
+            border: 2px solid transparent;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
 
-    .plan-card ul {
-      list-style-type: circle;
-    }
+        .btn-comprar:hover {
+            background-color: #fff;
+            color: #2d7b78;
+            border-color: #2d7b78;
+            cursor: pointer;
+        }
 
-    .btn-adquirido {
-      background-color: #28a745;
-      color: #fff;
-      border-color: #28a745;
-      font-weight: bold;
-      cursor: default;
-    }
+        .plan-card ul {
+            list-style-type: circle;
+        }
 
-  </style>
-  <title>Tus planes</title>
+        .btn-adquirido {
+            background-color: #28a745;
+            color: #fff;
+            border-color: #28a745;
+            font-weight: bold;
+            cursor: default;
+        }
+
+    </style>
+    <title>Tus planes</title>
 </head>
 <body>
 <div th:insert="navbar :: navbar"></div>
@@ -106,105 +107,152 @@
 
 <!-- Mensaje de estado del pago -->
 <div class="container">
-  <p th:if="${mensajeEstadoPago != null}"
-     th:text="${mensajeEstadoPago}"
-     style="font-size: 18px; color: darkblue; font-weight: bold; text-align: center;">
-  </p>
+    <p th:if="${mensajeEstadoPago != null}"
+       th:text="${mensajeEstadoPago}"
+       style="font-size: 18px; color: darkblue; font-weight: bold; text-align: center;">
+    </p>
 </div>
 
 <div class="container">
-  <p style="font-size: 18px; color: darkred;"
-     th:if="${usuario.plan.nombre != 'BRONCE'}">
-    Tu plan vence el:
-    <span th:text="${#dates.format(fechaPlanVenc, 'dd/MM/yyyy')}"
-          style="color: darkred; font-weight: bold;">
+    <p style="font-size: 18px; color: darkred;"
+       th:if="${usuario.plan.nombre != 'BRONCE'}">
+        Tu plan vence el:
+        <span th:text="${#dates.format(fechaPlanVenc, 'dd/MM/yyyy')}"
+              style="color: darkred; font-weight: bold;">
     </span>
-  </p>
+    </p>
 </div>
 
 <div class="grid-container">
-  <div class="plan-card bronce">
-    <h3>PLAN BRONCE</h3>
-    <p>Beneficios</p>
-    <ul>
-      <li>Lee los libros que quieras</li>
-      <li>Escribe reseñas</li>
-    </ul>
-    <br>
-    <p>Adquiere otros planes para:</p>
-    <ul>
-      <li>Desbloquear logros</li>
-      <li>Ver reseñas de otros usuarios</li>
-      <li>Obtener recomendaciones</li>
-      <li>Elegir tu desafío de lectura</li>
-      <li>Y más...!</li>
-    </ul>
-    <br>
-    <p>GRATIS</p>
-    <form method="post" th:action="@{/planes/actualizarPlan/1}" onsubmit="return confirmarCompra('Plan Bronce')">
-      <input type="hidden" name="plan" value="bronce">
-      <button type="submit" class="btn-comprar"
-              th:text="${session.planAdquirido == 1 ? 'Adquirido' : 'Comprar'}"
-              th:disabled="${session.planAdquirido == 1}"
-              th:classappend="${session.planAdquirido == 1 ? 'btn-adquirido' : ''}">
-      </button>
-    </form>
-  </div>
+    <div class="plan-card bronce">
+        <h3>PLAN BRONCE</h3>
+        <p>Beneficios</p>
+        <ul>
+            <li>Lee los libros que quieras</li>
+            <li>Escribe reseñas</li>
+        </ul>
+        <br>
+        <p>Adquiere otros planes para:</p>
+        <ul>
+            <li>Desbloquear logros</li>
+            <li>Ver reseñas de otros usuarios</li>
+            <li>Obtener recomendaciones</li>
+            <li>Elegir tu desafío de lectura</li>
+            <li>Y más...!</li>
+        </ul>
+        <br>
+        <p>GRATIS</p>
 
-  <div class="plan-card plata">
-    <h3>PLAN PLATA</h3>
-    <p>Beneficios</p>
-    <ul>
-      <li>Lee los libros que quieras</li>
-      <li>Escribe reseñas</li>
-      <li>Elige tu desafío de lectura</li>
-      <li>Lee las reseñas de otros usuarios</li>
-      <li>Obtiene recomendaciones</li>
-    </ul>
-    <p>Adquiere el plan ORO para:</p>
-    <ul>
-      <li>Desbloquear logros</li>
-      <li>Ver actividad y comentar en foros</li>
-    </ul>
-    <br>
-    <p>$2000 ARS X MES</p>
-    <form method="post" th:action="@{/planes/pagar/2}" onsubmit="return confirmarCompra('Plan Plata')">
-      <input type="hidden" name="plan" value="bronce">
-      <button type="submit" class="btn-comprar"
-              th:text="${session.planAdquirido == 2 ? 'Adquirido' : 'Comprar'}"
-              th:disabled="${session.planAdquirido == 2}"
-              th:classappend="${session.planAdquirido == 2 ? 'btn-adquirido' : ''}"></button>
-    </form>
-  </div>
+        <button type="submit" class="btn-comprar"
+                th:text="${session.planAdquirido == 1 ? 'Adquirido' : 'Comprar'}"
+                th:disabled="${session.planAdquirido == 1}"
+                th:classappend="${session.planAdquirido == 1 ? 'btn-adquirido' : ''}"
+                data-toggle="modal"
+                data-target="#modalConfirmarPago"
+                data-plan-nombre="PLAN BRONCE"
+                data-plan-precio="Gratis"
+                data-plan-url="/spring/planes/actualizarPlan/1">
+        </button>
+    </div>
 
-  <div class="plan-card oro">
-    <h3>PLAN ORO</h3>
-    <p>Beneficios</p>
-    <ul>
-      <li>Lee los libros que quieras</li>
-      <li>Escribe reseñas</li>
-      <li>Elige tu desafío de lectura</li>
-      <li>Lee las reseñas de otros usuarios</li>
-      <li>Obtiene recomendaciones</li>
-      <li>Obtiene logros</li>
-      <li>Ve actividad y comenta en foros</li>
-    </ul>
-    <p>$3000 ARS X MES</p>
-    <form method="post" th:action="@{/planes/pagar/3}" onsubmit="return confirmarCompra('Plan Oro')">
-      <input type="hidden" name="plan" value="oro">
-      <button type="submit" class="btn-comprar"
-              th:text="${session.planAdquirido == 3 ? 'Adquirido' : 'Comprar'}"
-              th:disabled="${session.planAdquirido == 3}"
-              th:classappend="${session.planAdquirido == 3 ? 'btn-adquirido' : ''}"></button>
-    </form>
-  </div>
+    <div class="plan-card plata">
+        <h3>PLAN PLATA</h3>
+        <p>Beneficios</p>
+        <ul>
+            <li>Lee los libros que quieras</li>
+            <li>Escribe reseñas</li>
+            <li>Elige tu desafío de lectura</li>
+            <li>Lee las reseñas de otros usuarios</li>
+            <li>Obtiene recomendaciones</li>
+        </ul>
+        <p>Adquiere el plan ORO para:</p>
+        <ul>
+            <li>Desbloquear logros</li>
+            <li>Ver actividad y comentar en foros</li>
+        </ul>
+        <br>
+        <p>$2000 ARS X MES</p>
+
+        <button type="submit" class="btn-comprar"
+                th:text="${session.planAdquirido == 2 ? 'Adquirido' : 'Comprar'}"
+                th:disabled="${session.planAdquirido == 2}"
+                th:classappend="${session.planAdquirido == 2 ? 'btn-adquirido' : ''}"
+                data-toggle="modal"
+                data-target="#modalConfirmarPago"
+                data-plan-nombre="PLAN PLATA"
+                data-plan-precio="$2000 ARS X MES"
+                data-plan-url="/spring/planes/pagar/2">
+        </button>
+    </div>
+
+    <div class="plan-card oro">
+        <h3>PLAN ORO</h3>
+        <p>Beneficios</p>
+        <ul>
+            <li>Lee los libros que quieras</li>
+            <li>Escribe reseñas</li>
+            <li>Elige tu desafío de lectura</li>
+            <li>Lee las reseñas de otros usuarios</li>
+            <li>Obtiene recomendaciones</li>
+            <li>Obtiene logros</li>
+            <li>Ve actividad y comenta en foros</li>
+        </ul>
+        <p>$3000 ARS X MES</p>
+
+        <button type="submit" class="btn-comprar"
+                th:text="${session.planAdquirido == 3 ? 'Adquirido' : 'Comprar'}"
+                th:disabled="${session.planAdquirido == 3}"
+                th:classappend="${session.planAdquirido == 3 ? 'btn-adquirido' : ''}"
+                data-toggle="modal"
+                data-target="#modalConfirmarPago"
+                data-plan-nombre="PLAN ORO"
+                data-plan-precio="$5000 ARS X MES"
+                data-plan-url="/spring/planes/pagar/3">
+        </button>
+    </div>
+
+    <!-- Modal de confirmación para confirmar compra plan plata -->
+    <div class="modal fade" id="modalConfirmarPago" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Confirmar Pago</h5>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas adquirir este plan?</p>
+                    <p id="modalPlanNombre"></p>
+                    <p id="modalPlanPrecio"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <form id="modalForm" method="post">
+                        <input type="hidden" name="plan" id="modalHiddenPlan">
+                        <button type="submit" class="btn btn-primary">Confirmar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 <script>
-  function confirmarCompra(plan) {
-    return confirm(`¿Estás seguro de que deseas adquirir el ${plan}?`);
-  }
+    $('#modalConfirmarPago').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget); // Botón que abrió el modal
+        const planNombre = button.data('plan-nombre');
+        const planPrecio = button.data('plan-precio');
+        const planUrl = button.data('plan-url');
+
+        // Actualizar contenido dinámico del modal
+        const modal = $(this);
+        modal.find('#modalPlanNombre').text(planNombre);
+        modal.find('#modalPlanPrecio').text(`Precio: ${planPrecio}`);
+
+        // Configurar el formulario con la URL y datos correctos
+        const modalForm = modal.find('#modalForm');
+        modalForm.attr('action', planUrl); // Configurar la URL del formulario
+    });
 </script>
 </body>
 </html>

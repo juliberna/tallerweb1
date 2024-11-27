@@ -33,7 +33,6 @@ public class ControladorPlanes {
     }
 
 
-
     @RequestMapping("/mostrar")
     public String mostrar(ModelMap model, HttpServletRequest request) throws UsuarioInexistente {
         HttpSession session = request.getSession();
@@ -49,19 +48,13 @@ public class ControladorPlanes {
         return "planes";
     }
 
-    @RequestMapping(value = "/actualizarPlan/{planId}" , method = RequestMethod.POST)
+    @RequestMapping(value = "/actualizarPlan/{planId}", method = RequestMethod.POST)
     public String actualizarPlan(HttpServletRequest request, @PathVariable Long planId, ModelMap model, RedirectAttributes redirectAttributes) {
         HttpSession session = request.getSession();
         Long userId = (Long) session.getAttribute("USERID");
 
         try {
             Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
-
-            // Verifica si hay un mensaje de estado del pago en la sesión y lo pasa a los atributos de redirección
-            if (session.getAttribute("mensajeEstadoPago") != null) {
-                String mensajeEstadoPago = (String) session.getAttribute("mensajeEstadoPago");
-                redirectAttributes.addFlashAttribute("mensajeEstadoPago", mensajeEstadoPago);
-            }
 
             servicioPlan.actualizarPlanDelUsuario(planId, userId);
             session.setAttribute("planAdquirido", planId);
@@ -84,7 +77,7 @@ public class ControladorPlanes {
 
     // Se debe pasar el id del plan
     @PostMapping("/pagar/{planId}")
-    public String pagarPlan(@PathVariable Long planId,Model model) {
+    public String pagarPlan(@PathVariable Long planId, Model model) {
         try {
             String linkDePago = servicioMercadoPago.crearPreferencia(planId);
             model.addAttribute("linkDePago", linkDePago);

@@ -1,5 +1,7 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.infraestructura.service.ServicioPlan;
 import com.tallerwebi.presentacion.controller.ControladorPago;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class ControladorPagoTest {
 
@@ -21,6 +22,9 @@ public class ControladorPagoTest {
 
     @Mock
     private RedirectAttributes redirectAttributes;
+
+    @Mock
+    private ServicioPlan servicioPlan;
 
     @InjectMocks
     private ControladorPago controladorPago;
@@ -31,18 +35,34 @@ public class ControladorPagoTest {
     }
 
     @Test
-    void testPagoExitoso() {
-        // Datos simulados de la solicitud
+    void testPagoExitoso() throws UsuarioInexistente {
         String paymentId = "12345";
         String status = "approved";
-        String externalReference = "1";  // ID del plan
+        String externalReference = "1"; // ID del plan
+        Long userId = 10L;
 
-        // Ejecutar el controlador
-        String viewName = controladorPago.pagoExitoso(paymentId, status, externalReference, session);
+        // Configuración del mock de la sesión
+        when(session.getAttribute("USERID")).thenReturn(userId);
 
-        // Verificar el comportamiento
-        verify(session, times(1)).setAttribute("mensajeEstadoPago", "Pago exitoso. ID de pago: 12345, Estado: approved");
-        assertEquals("redirect:/planes/confirmarActualizar/1", viewName);
+        // Configuración del mock del servicioPlan
+        doNothing().when(servicioPlan).actualizarPlanDelUsuario(Long.parseLong(externalReference), userId);
+
+        // Metodo principal
+        String viewName = controladorPago.pagoExitoso(paymentId, status, externalReference, redirectAttributes, session);
+
+        // Verificar que el mensaje de estado de pago se haya agregado correctamente
+        verify(redirectAttributes, times(1)).addFlashAttribute(
+                "mensajeEstadoPago", "FELICIDADES!! SE HA REALIZADO CORRECTAMENTE EL PAGO DEL PLAN"
+        );
+
+        // Verificar que el servicio de plan haya sido llamado para actualizar el plan del usuario
+        verify(servicioPlan, times(1)).actualizarPlanDelUsuario(Long.parseLong(externalReference), userId);
+
+        // Verificar que el plan adquirido haya sido almacenado en la sesión
+        verify(session, times(1)).setAttribute("planAdquirido", Long.parseLong(externalReference));
+
+        // Verificar la redirección
+        assertEquals("redirect:/planes/mostrar", viewName);
     }
 
     @Test
@@ -56,7 +76,7 @@ public class ControladorPagoTest {
         String viewName = controladorPago.pagoError(paymentId, status, externalReference, redirectAttributes);
 
         // Verificar el comportamiento
-        verify(redirectAttributes, times(1)).addFlashAttribute("mensajeEstadoPago", "Error en el pago. ID de pago: 12345, Estado: error");
+        verify(redirectAttributes, times(1)).addFlashAttribute("mensajeEstadoPago", "OCURRIO UN ERROR EN EL PAGO DEL PLAN!!");
         assertEquals("redirect:/planes/mostrar", viewName);
     }
 
@@ -71,7 +91,7 @@ public class ControladorPagoTest {
         String viewName = controladorPago.pagoPendiente(paymentId, status, externalReference, redirectAttributes);
 
         // Verificar el comportamiento
-        verify(redirectAttributes, times(1)).addFlashAttribute("mensajeEstadoPago", "Pago pendiente. ID de pago: 12345, Estado: pending");
+        verify(redirectAttributes, times(1)).addFlashAttribute("mensajeEstadoPago", "EL PAGO DEL PLAN ESTA PENDIENTE DE CONFIRMACIÓN");
         assertEquals("redirect:/planes/mostrar", viewName);
     }
 }
