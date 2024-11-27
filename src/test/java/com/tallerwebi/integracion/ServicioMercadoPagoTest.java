@@ -41,7 +41,8 @@ public class ServicioMercadoPagoTest {
     @Test
     void testCrearPreferencia_Success() throws MPException, MPApiException {
         // Ejecutar el método
-        String linkPago = servicioMercadoPago.crearPreferencia(1L);
+        Double valorPago = 3000D;
+        String linkPago = servicioMercadoPago.crearPreferencia(1L, valorPago);
 
         // Verificar el comportamiento
         assertNotNull(linkPago);
@@ -54,9 +55,10 @@ public class ServicioMercadoPagoTest {
         // Configurar para que el servicio plan retorne null
         when(servicioPlan.buscarPlanPorId(2L)).thenReturn(null);
 
+        Double valorPago = 3000D;
         // Verificar que lanza una excepción cuando el plan no existe
         MPException thrown = assertThrows(MPException.class, () -> {
-            servicioMercadoPago.crearPreferencia(2L);
+            servicioMercadoPago.crearPreferencia(2L, valorPago);
         });
 
         assertEquals("Plan no encontrado", thrown.getMessage());

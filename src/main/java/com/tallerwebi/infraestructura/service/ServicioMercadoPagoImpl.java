@@ -30,7 +30,7 @@ public class ServicioMercadoPagoImpl implements ServicioMercadoPago {
     }
 
     @Override
-    public String crearPreferencia(Long idPlan) throws MPException, MPApiException {
+    public String crearPreferencia(Long idPlan,Double valorPago) throws MPException, MPApiException {
         // Aca busco el plan por el id
         Plan plan = servicioPlan.buscarPlanPorId(idPlan);
 
@@ -43,7 +43,11 @@ public class ServicioMercadoPagoImpl implements ServicioMercadoPago {
 
         // Si el plan tiene precio uso ese, sino es 0
         // Aca se calcularia la logica para aplicar el descuento al precio
-        BigDecimal precioPlan = (plan.getPrecio() != null) ? new BigDecimal(plan.getPrecio()) : BigDecimal.ZERO;
+        BigDecimal precioPlan = (valorPago != null) ? new BigDecimal(valorPago) : BigDecimal.ZERO;
+
+        if(precioPlan.equals(BigDecimal.ZERO)) {
+            throw new MPException("Calculo del precio fallido");
+        }
 
         // Crear el item (producto/plan que se está comprando)
         PreferenceItemRequest item = PreferenceItemRequest.builder()

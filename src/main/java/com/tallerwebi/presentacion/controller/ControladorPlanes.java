@@ -110,6 +110,7 @@ public class ControladorPlanes {
             model.addAttribute("plan", planAcambiar);
             model.addAttribute("usuario", usuarioPlan);
             model.addAttribute("validacionDias", validacionDias);
+            session.setAttribute("validacionDias", validacionDias); // Almacenar en sesión
             model.addAttribute("usuarioplan", usuarioPlan);
 
             Boolean irAMercadopago = servicioUsuarioPlan.validarMercadopago(userId, planId);
@@ -126,9 +127,10 @@ public class ControladorPlanes {
 
     // Se debe pasar el id del plan
     @PostMapping("/pagar/{planId}")
-    public String pagarPlan(@PathVariable Long planId, Model model) {
+    public String pagarPlan(@PathVariable Long planId, Model model,HttpSession session) {
         try {
-            String linkDePago = servicioMercadoPago.crearPreferencia(planId);
+            Double valorPago = (Double) session.getAttribute("validacionDias");
+            String linkDePago = servicioMercadoPago.crearPreferencia(planId,valorPago);
             model.addAttribute("linkDePago", linkDePago);
             System.out.println("Link de pago: " + linkDePago);
             return "redireccionarPago"; // Vista para confirmar y redirigir
