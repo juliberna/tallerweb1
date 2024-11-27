@@ -133,7 +133,7 @@
     </ul>
     <br>
     <p>GRATIS</p>
-    <form method="post" th:action="@{/planes/actualizarPlan/1}">
+    <form method="get" th:action="@{/planes/detalleActualizacion/1}">
       <input type="hidden" name="plan" value="bronce">
       <button type="submit" class="btn-comprar"
               th:text="${session.planAdquirido == 1 ? 'Adquirido' : 'Comprar'}"
@@ -159,7 +159,7 @@
     </ul>
     <br>
     <p>$2000 ARS X MES</p>
-    <form method="post" th:action="@{/planes/actualizarPlan/2}">
+    <form method="get" th:action="@{/planes/detalleActualizacion/2}">
       <input type="hidden" name="plan" value="bronce">
       <button type="submit" class="btn-comprar"
               th:text="${session.planAdquirido == 2 ? 'Adquirido' : 'Comprar'}"
@@ -181,13 +181,14 @@
       <li>Ve actividad y comenta en foros</li>
     </ul>
     <p>$3000 ARS X MES</p>
-    <form method="post" th:action="@{/planes/actualizarPlan/3}">
+    <form method="get" th:action="@{/planes/detalleActualizacion/3}">
       <input type="hidden" name="plan" value="oro">
       <button type="submit" class="btn-comprar"
               th:text="${session.planAdquirido == 3 ? 'Adquirido' : 'Comprar'}"
               th:disabled="${session.planAdquirido == 3}"
               th:classappend="${session.planAdquirido == 3 ? 'btn-adquirido' : ''}"></button>
     </form>
+
   </div>
 </div>
 

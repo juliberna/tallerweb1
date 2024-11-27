@@ -53,7 +53,7 @@
         <!-- Encabezado de la reseña -->
         <div class="row mb-4">
             <div class="col-md-1">
-                <img th:src="${resenia.libro.imagenUrl}" alt="Imagen del libro" style="max-height: 160px;">
+                <img th:src="@{'/Images/' + ${resenia.libro.imagenUrl}}" alt="Imagen del libro" style="max-height: 160px;">
             </div>
             <div class="col-md-6 ms-4">
                 <h2 class="mb-1" th:text="${resenia.libro.titulo}"></h2>

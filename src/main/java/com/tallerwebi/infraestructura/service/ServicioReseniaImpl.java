@@ -87,6 +87,7 @@ public class ServicioReseniaImpl implements ServicioResenia {
     public Double calcularPromedioPuntuacion(Long idLibro) {
         List<Resenia> reseniasDelLibro = repositorioResenia.obtenerReseniasDelLibro(idLibro);
 
+
         if (reseniasDelLibro.isEmpty()) {
             return 0.0;
         }

@@ -36,6 +36,8 @@ public class ControladorInicio {
     private final ServicioUsuarioGenero servicioUsuarioGenero;
     private final ServicioLibroGenero servicioLibroGenero;
     private final ServicioLibro servicioLibro;
+    private final ServicioValidacionPlan servicioValidacionPlan;
+    private final ServicioUsuarioPlan servicioUsuarioPlan;
 
     @Autowired
     public ControladorInicio(ServicioInicio servicioInicio,
@@ -49,7 +51,10 @@ public class ControladorInicio {
                              ServicioComentarioPublicacion comentarioPublicacion,
                              ServicioUsuarioGenero servicioUsuarioGenero,
                              ServicioLibroGenero servicioLibroGenero,
-                             ServicioLibro servicioLibro) {
+                             ServicioLibro servicioLibro,
+                             ServicioValidacionPlan servicioValidacionPlan,
+                             ServicioUsuarioPlan servicioUsuarioPlan) {
+
         this.servicioInicio = servicioInicio;
         this.servicioNotificacion = servicioNotificacion;
         this.servicioUsuario = servicioUsuario;
@@ -60,6 +65,8 @@ public class ControladorInicio {
         this.servicioUsuarioGenero = servicioUsuarioGenero;
         this.servicioLibroGenero = servicioLibroGenero;
         this.servicioLibro = servicioLibro;
+        this.servicioValidacionPlan = servicioValidacionPlan;
+        this.servicioUsuarioPlan = servicioUsuarioPlan;
     }
 
     @GetMapping("/home")
@@ -72,8 +79,11 @@ public class ControladorInicio {
             Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
             model.addAttribute("usuario", usuario);
 
-            if (!usuario.getPlan().getPuedeObtenerRecomendaciones()) {
-                model.addAttribute("mensajePlanRecos", "Estas en el plan " + usuario.getPlan().getNombre() + " actualiza tu plan a ORO para obtener recomendaciones personalizadas.");
+            UsuarioPlan usuarioPlan = servicioUsuarioPlan.buscarUsuarioPlan(userId);
+            model.addAttribute("usuarioPlan", usuarioPlan);
+
+            if (!servicioValidacionPlan.puedeRealizarAccion(usuarioPlan, Accion.OBTENER_RECOMENDACIONES)) {
+                model.addAttribute("mensajePlanRecos", "Estas en el plan " + usuarioPlan.getPlan().getNombre() + " actualiza tu plan a ORO para obtener recomendaciones personalizadas.");
             }
 
 
@@ -126,10 +136,10 @@ public class ControladorInicio {
 
             model.addAttribute("comentariosPorPublicacion", comentariosPorPublicacion);
 
-            if(!usuario.getPlan().getPuedeVerForo()){
-                model.addAttribute("mensajePlan", "Estas en el plan " + usuario.getPlan().getNombre() + " actualiza tu plan a ORO para participar en foros.");
-                model.addAttribute("mensajePlan2", "Estas en el plan " + usuario.getPlan().getNombre() + " actualiza tu plan a ORO para ver las publicaciones de tus amigos.");
-                model.addAttribute("mensajePlan3", "Estas en el plan " + usuario.getPlan().getNombre() + " actualiza tu plan a ORO para ver la actividad de tus amigos.");
+            if(!servicioValidacionPlan.puedeRealizarAccion(usuarioPlan, Accion.VER_FORO)){
+                model.addAttribute("mensajePlan", "Estas en el plan " + usuarioPlan.getPlan().getNombre() + " actualiza tu plan a ORO para participar en foros.");
+                model.addAttribute("mensajePlan2", "Estas en el plan " + usuarioPlan.getPlan().getNombre() + " actualiza tu plan a ORO para ver las publicaciones de tus amigos.");
+                model.addAttribute("mensajePlan3", "Estas en el plan " + usuarioPlan.getPlan().getNombre() + " actualiza tu plan a ORO para ver la actividad de tus amigos.");
             }
 
 
@@ -167,6 +177,8 @@ public class ControladorInicio {
             model.addAttribute("porcentajeLibrosLeidos", 0);
         } catch (MessagingException e) {
             throw new RuntimeException(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         return "home";
     }

@@ -103,7 +103,7 @@ public class ControladorAmistad {
 
             System.out.println(sent + " sent");
             if (sent) {
-                servicioNotificacion.editarNombreNotificacion(requestId, "Has rechazado la solicitud de " + username, 5L);
+                servicioNotificacion.editarNombreNotificacion(requestId, "Has rechazado la solicitud de amistad", 5L);
                 servicioNotificacion.crearNotificacion(friendId, 5L, username + " ha rechazado tu solicitud de amistad", userId);
                 return new ModelAndView("redirect:/home");
             } else {

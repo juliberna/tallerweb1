@@ -53,6 +53,7 @@ public class ControladorLogin {
             request.getSession().setAttribute("ANIOACTUAL", LocalDate.now().getYear());
             request.getSession().setAttribute("PLANACTUAL", usuarioBuscado.getPlan().getNombre());
 
+
             //Inicializa los logros predefinidos del usuario cuando inicia sesion
             servicioLogro.verificarYAsignarLogrosPredefinidos(usuarioBuscado);
 
