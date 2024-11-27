@@ -94,7 +94,7 @@
                             <a th:href="@{/libro/detalle/{id}(id=${entry.key.libro.id})}">
                                 <div class="card mb-3">
                                     <!-- Imagen del libro -->
-                                    <img th:src="${entry.key.libro.imagenUrl}"
+                                    <img th:src="@{'/Images/' + ${entry.key.libro.imagenUrl}}"
                                          class="card-img-top" alt="Portada del libro" style="max-height: 500px">
                                     <div class="card-body">
                                         <h5 class="card-title" th:text="${entry.key.libro.titulo}"></h5>
@@ -129,7 +129,7 @@
                             <a th:href="@{/libro/detalle/{id}(id=${usuarioLibro.libro.id})}">
                                 <div class="card mb-3">
                                     <!-- Imagen del libro -->
-                                    <img th:src="${usuarioLibro.libro.imagenUrl}"
+                                    <img th:src="@{'/Images/' + ${usuarioLibro.libro.imagenUrl}}"
                                          class="card-img-top" alt="Portada del libro" style="max-height: 500px">
                                     <div class="card-body">
                                         <h5 class="card-title" th:text="${usuarioLibro.libro.titulo}"></h5>

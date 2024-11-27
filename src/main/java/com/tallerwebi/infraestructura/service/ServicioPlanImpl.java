@@ -6,11 +6,11 @@ import com.tallerwebi.dominio.model.Plan;
 import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.dominio.repository.RepositorioPlan;
 import com.tallerwebi.dominio.repository.RepositorioUsuario;
+import com.tallerwebi.dominio.repository.RepositorioUsuarioPlan;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -21,12 +21,23 @@ public class ServicioPlanImpl implements ServicioPlan {
 
     private RepositorioUsuario repositorioUsuario;
     private RepositorioPlan repositorioPlan;
+    private RepositorioUsuarioPlan repositorioUsuarioPlan;
 
-    public ServicioPlanImpl(RepositorioUsuario repositorioUsuario, RepositorioPlan repositorioPlan) {
+    public ServicioPlanImpl(RepositorioUsuario repositorioUsuario, RepositorioPlan repositorioPlan, RepositorioUsuarioPlan repositorioUsuarioPlan) {
         this.repositorioUsuario = repositorioUsuario;
         this.repositorioPlan = repositorioPlan;
+        this.repositorioUsuarioPlan = repositorioUsuarioPlan;
     }
 
+    @Override
+    public Plan buscarPlanPorId(Long planId){
+        System.out.println("Buscando plan por id en SERVICIOOO: " + planId);
+       Plan plan = repositorioPlan.buscarPlanPorId(planId);
+       return plan;
+    }
+
+
+    /*
     @Override
     public void actualizarPlanDelUsuario(Long idDelPlan, Long idUsuario) throws PlanNoEncontrado, UsuarioInexistente {
 
@@ -48,6 +59,8 @@ public class ServicioPlanImpl implements ServicioPlan {
 
     }
 
+
+
     @Override
     @Scheduled(cron = "0 0 0 * * ?")
     public void verificarPlanes() {
@@ -62,17 +75,6 @@ public class ServicioPlanImpl implements ServicioPlan {
         }
     }
 
-    @Override
-    public Plan buscarPlanPorId(Long idPlan) {
-        Plan plan = repositorioPlan.buscarPlanPorId(idPlan);
-
-        if(plan == null) {
-            throw new PlanNoEncontrado("No se encontro el plan con el ID: " + idPlan);
-        }
-        return plan;
-    }
-
-
     private Date calcularFechaVencimiento(Plan plan) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -84,6 +86,5 @@ public class ServicioPlanImpl implements ServicioPlan {
         return calendar.getTime();
     }
 
-
-
+     */
 }

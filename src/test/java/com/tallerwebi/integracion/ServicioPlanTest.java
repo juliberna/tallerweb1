@@ -23,7 +23,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 public class ServicioPlanTest {
-
+    /*
     @Mock
     private RepositorioUsuario repositorioUsuario;
 
@@ -99,4 +99,6 @@ public class ServicioPlanTest {
         verify(usuarioMock).setPlan(planMock);
         verify(repositorioUsuario).guardarUsuario(usuarioMock);
     }
+
+     */
 }

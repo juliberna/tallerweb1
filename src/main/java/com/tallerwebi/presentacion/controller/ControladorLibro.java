@@ -31,17 +31,21 @@ public class ControladorLibro {
     private ServicioLibroGenero servicioLibroGenero;
     private ServicioResenia servicioResenia;
     private ServicioUsuarioLogro servicioUsuarioLogro;
+    private ServicioValidacionPlan servicioValidacionPlan;
+    private ServicioUsuarioPlan servicioUsuarioPlan;
 
     @Autowired
     public ControladorLibro(ServicioLibro servicioLibro, ServicioUsuario servicioUsuario,
                             ServicioUsuarioLibro servicioUsuarioLibro, ServicioLibroGenero servicioLibroGenero,
-                            ServicioResenia servicioResenia, ServicioUsuarioLogro servicioUsuarioLogro) {
+                            ServicioResenia servicioResenia, ServicioUsuarioLogro servicioUsuarioLogro, ServicioValidacionPlan servicioValidacionPlan, ServicioUsuarioPlan servicioUsuarioPlan) {
         this.servicioLibro = servicioLibro;
         this.servicioUsuario = servicioUsuario;
         this.servicioUsuarioLibro = servicioUsuarioLibro;
         this.servicioLibroGenero = servicioLibroGenero;
         this.servicioResenia = servicioResenia;
         this.servicioUsuarioLogro = servicioUsuarioLogro;
+        this.servicioValidacionPlan = servicioValidacionPlan;
+        this.servicioUsuarioPlan = servicioUsuarioPlan;
     }
 
     @RequestMapping("/buscar")
@@ -71,6 +75,8 @@ public class ControladorLibro {
             HttpSession session = request.getSession();
             Long userId = (Long) session.getAttribute("USERID");
 
+            System.out.println(userId + "USER IDDDDD");
+
             Libro libro = servicioLibro.obtenerIdLibro(id);
             model.addAttribute("libro", libro);
 
@@ -86,7 +92,18 @@ public class ControladorLibro {
             }
             model.addAttribute("progreso", progreso);
 
-            Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
+            UsuarioPlan usuarioPlan = servicioUsuarioPlan.buscarUsuarioPlan(userId);
+            if(!servicioValidacionPlan.puedeRealizarAccion(usuarioPlan, Accion.LEER_OTRAS_RESEÑAS)){
+                model.addAttribute("reseniasDeOtrosUsuarios", null);
+                model.addAttribute("mensajeDeRestriccion", "Estas en el plan " + usuarioPlan.getPlan().getNombre() + " actualiza tu plan a PLATA u ORO para ver reseñas de otros usuarios.");
+            } else {
+                List<Resenia> reseniasDeOtrosUsuarios = servicioResenia.obtenerReseniasDeOtrosUsuarios(userId, id);
+                model.addAttribute("reseniasDeOtrosUsuarios", reseniasDeOtrosUsuarios);
+            }
+            
+
+
+            /*Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
             if (!usuario.getPlan().getPuedeLeerOtrasResenias()) {
 
                 model.addAttribute("reseniasDeOtrosUsuarios", null);
@@ -94,10 +111,10 @@ public class ControladorLibro {
             } else {
                 List<Resenia> reseniasDeOtrosUsuarios = servicioResenia.obtenerReseniasDeOtrosUsuarios(userId, id);
                 model.addAttribute("reseniasDeOtrosUsuarios", reseniasDeOtrosUsuarios);
-            }
+            }*/
 
-            System.out.println("ID DEL PLAN " + usuario.getPlan().getId());
-            System.out.println("PUEDE LEER OTRAS RESEÑAS?  " + usuario.getPlan().getPuedeLeerOtrasResenias());
+            //System.out.println("ID DEL PLAN " + usuario.getPlan().getId());
+            //System.out.println("PUEDE LEER OTRAS RESEÑAS?  " + usuario.getPlan().getPuedeLeerOtrasResenias());
 
             Resenia resenia = servicioResenia.obtenerReseniaDelUsuario(userId, id);
             model.addAttribute("resenia", resenia);
@@ -112,6 +129,8 @@ public class ControladorLibro {
         } catch (ListaVacia e) {
             model.addAttribute("errorGeneros", e.getMessage());
             return "infoLibro";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

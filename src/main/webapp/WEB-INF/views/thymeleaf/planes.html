@@ -114,145 +114,94 @@
 </div>
 
 <div class="container">
-    <p style="font-size: 18px; color: darkred;"
-       th:if="${usuario.plan.nombre != 'BRONCE'}">
-        Tu plan vence el:
-        <span th:text="${#dates.format(fechaPlanVenc, 'dd/MM/yyyy')}"
-              style="color: darkred; font-weight: bold;">
+  <p style="font-size: 18px; color: darkred;"
+     th:if="${usuario.plan.nombre != 'BRONCE'}">
+    Tu plan vence el:
+    <span th:text="${#dates.format(fechaPlanVenc, 'dd/MM/yyyy')}"
+          style="color: darkred; font-weight: bold;">
     </span>
-    </p>
+  </p>
 </div>
 
 <div class="grid-container">
-    <div class="plan-card bronce">
-        <h3>PLAN BRONCE</h3>
-        <p>Beneficios</p>
-        <ul>
-            <li>Lee los libros que quieras</li>
-            <li>Escribe reseñas</li>
-        </ul>
-        <br>
-        <p>Adquiere otros planes para:</p>
-        <ul>
-            <li>Desbloquear logros</li>
-            <li>Ver reseñas de otros usuarios</li>
-            <li>Obtener recomendaciones</li>
-            <li>Elegir tu desafío de lectura</li>
-            <li>Y más...!</li>
-        </ul>
-        <br>
-        <p>GRATIS</p>
+  <div class="plan-card bronce">
+    <h3>PLAN BRONCE</h3>
+    <p>Beneficios</p>
+    <ul>
+      <li>Lee los libros que quieras</li>
+      <li>Escribe reseñas</li>
+    </ul>
+    <br>
+    <p>Adquiere otros planes para:</p>
+    <ul>
+      <li>Desbloquear logros</li>
+      <li>Ver reseñas de otros usuarios</li>
+      <li>Obtener recomendaciones</li>
+      <li>Elegir tu desafío de lectura</li>
+      <li>Y más...!</li>
+    </ul>
+    <br>
+    <p>GRATIS</p>
+    <form method="get" th:action="@{/planes/detalleActualizacion/1}">
+      <input type="hidden" name="plan" value="bronce">
+      <button type="submit" class="btn-comprar"
+              th:text="${session.planAdquirido == 1 ? 'Adquirido' : 'Comprar'}"
+              th:disabled="${session.planAdquirido == 1}"
+              th:classappend="${session.planAdquirido == 1 ? 'btn-adquirido' : ''}"></button>
+    </form>
+  </div>
 
-        <button type="submit" class="btn-comprar"
-                th:text="${session.planAdquirido == 1 ? 'Adquirido' : 'Comprar'}"
-                th:disabled="${session.planAdquirido == 1}"
-                th:classappend="${session.planAdquirido == 1 ? 'btn-adquirido' : ''}"
-                data-toggle="modal"
-                data-target="#modalConfirmarPago"
-                data-plan-nombre="PLAN BRONCE"
-                data-plan-precio="Gratis"
-                data-plan-url="/spring/planes/actualizarPlan/1">
-        </button>
-    </div>
+  <div class="plan-card plata">
+    <h3>PLAN PLATA</h3>
+    <p>Beneficios</p>
+    <ul>
+      <li>Lee los libros que quieras</li>
+      <li>Escribe reseñas</li>
+      <li>Elige tu desafío de lectura</li>
+      <li>Lee las reseñas de otros usuarios</li>
+      <li>Obtiene recomendaciones</li>
+    </ul>
+    <p>Adquiere el plan ORO para:</p>
+    <ul>
+      <li>Desbloquear logros</li>
+      <li>Ver actividad y comentar en foros</li>
+    </ul>
+    <br>
+    <p>$2000 ARS X MES</p>
+    <form method="get" th:action="@{/planes/detalleActualizacion/2}">
+      <input type="hidden" name="plan" value="bronce">
+      <button type="submit" class="btn-comprar"
+              th:text="${session.planAdquirido == 2 ? 'Adquirido' : 'Comprar'}"
+              th:disabled="${session.planAdquirido == 2}"
+              th:classappend="${session.planAdquirido == 2 ? 'btn-adquirido' : ''}"></button>
+    </form>
+  </div>
 
-    <div class="plan-card plata">
-        <h3>PLAN PLATA</h3>
-        <p>Beneficios</p>
-        <ul>
-            <li>Lee los libros que quieras</li>
-            <li>Escribe reseñas</li>
-            <li>Elige tu desafío de lectura</li>
-            <li>Lee las reseñas de otros usuarios</li>
-            <li>Obtiene recomendaciones</li>
-        </ul>
-        <p>Adquiere el plan ORO para:</p>
-        <ul>
-            <li>Desbloquear logros</li>
-            <li>Ver actividad y comentar en foros</li>
-        </ul>
-        <br>
-        <p>$2000 ARS X MES</p>
+  <div class="plan-card oro">
+    <h3>PLAN ORO</h3>
+    <p>Beneficios</p>
+    <ul>
+      <li>Lee los libros que quieras</li>
+      <li>Escribe reseñas</li>
+      <li>Elige tu desafío de lectura</li>
+      <li>Lee las reseñas de otros usuarios</li>
+      <li>Obtiene recomendaciones</li>
+      <li>Obtiene logros</li>
+      <li>Ve actividad y comenta en foros</li>
+    </ul>
+    <p>$3000 ARS X MES</p>
+    <form method="get" th:action="@{/planes/detalleActualizacion/3}">
+      <input type="hidden" name="plan" value="oro">
+      <button type="submit" class="btn-comprar"
+              th:text="${session.planAdquirido == 3 ? 'Adquirido' : 'Comprar'}"
+              th:disabled="${session.planAdquirido == 3}"
+              th:classappend="${session.planAdquirido == 3 ? 'btn-adquirido' : ''}"></button>
+    </form>
 
-        <button type="submit" class="btn-comprar"
-                th:text="${session.planAdquirido == 2 ? 'Adquirido' : 'Comprar'}"
-                th:disabled="${session.planAdquirido == 2}"
-                th:classappend="${session.planAdquirido == 2 ? 'btn-adquirido' : ''}"
-                data-toggle="modal"
-                data-target="#modalConfirmarPago"
-                data-plan-nombre="PLAN PLATA"
-                data-plan-precio="$2000 ARS X MES"
-                data-plan-url="/spring/planes/pagar/2">
-        </button>
-    </div>
-
-    <div class="plan-card oro">
-        <h3>PLAN ORO</h3>
-        <p>Beneficios</p>
-        <ul>
-            <li>Lee los libros que quieras</li>
-            <li>Escribe reseñas</li>
-            <li>Elige tu desafío de lectura</li>
-            <li>Lee las reseñas de otros usuarios</li>
-            <li>Obtiene recomendaciones</li>
-            <li>Obtiene logros</li>
-            <li>Ve actividad y comenta en foros</li>
-        </ul>
-        <p>$3000 ARS X MES</p>
-
-        <button type="submit" class="btn-comprar"
-                th:text="${session.planAdquirido == 3 ? 'Adquirido' : 'Comprar'}"
-                th:disabled="${session.planAdquirido == 3}"
-                th:classappend="${session.planAdquirido == 3 ? 'btn-adquirido' : ''}"
-                data-toggle="modal"
-                data-target="#modalConfirmarPago"
-                data-plan-nombre="PLAN ORO"
-                data-plan-precio="$5000 ARS X MES"
-                data-plan-url="/spring/planes/pagar/3">
-        </button>
-    </div>
-
-    <!-- Modal de confirmación para confirmar compra plan plata -->
-    <div class="modal fade" id="modalConfirmarPago" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Confirmar Pago</h5>
-                </div>
-                <div class="modal-body">
-                    <p>¿Estás seguro de que deseas adquirir este plan?</p>
-                    <p id="modalPlanNombre"></p>
-                    <p id="modalPlanPrecio"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <form id="modalForm" method="post">
-                        <input type="hidden" name="plan" id="modalHiddenPlan">
-                        <button type="submit" class="btn btn-primary">Confirmar</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
 
 
-<script>
-    $('#modalConfirmarPago').on('show.bs.modal', function (event) {
-        const button = $(event.relatedTarget); // Botón que abrió el modal
-        const planNombre = button.data('plan-nombre');
-        const planPrecio = button.data('plan-precio');
-        const planUrl = button.data('plan-url');
 
-        // Actualizar contenido dinámico del modal
-        const modal = $(this);
-        modal.find('#modalPlanNombre').text(planNombre);
-        modal.find('#modalPlanPrecio').text(`Precio: ${planPrecio}`);
-
-        // Configurar el formulario con la URL y datos correctos
-        const modalForm = modal.find('#modalForm');
-        modalForm.attr('action', planUrl); // Configurar la URL del formulario
-    });
-</script>
 </body>
 </html>

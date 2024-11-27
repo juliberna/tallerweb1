@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 
 public interface ServicioPlan {
-  void actualizarPlanDelUsuario(Long idDelPlan, Long idUsuario) throws PlanNoEncontrado, UsuarioInexistente;
-  public void verificarPlanes();
-  Plan buscarPlanPorId(Long idPlan);
+   Plan buscarPlanPorId(Long planId);
+   //void actualizarPlanDelUsuario(Long idDelPlan, Long idUsuario) throws PlanNoEncontrado, UsuarioInexistente;
+  //void verificarPlanes();
+
+
 }

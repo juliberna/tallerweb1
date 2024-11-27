@@ -2,10 +2,14 @@ package com.tallerwebi.presentacion.controller;
 
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.model.Accion;
 import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.dominio.model.UsuarioLibro;
+import com.tallerwebi.dominio.model.UsuarioPlan;
 import com.tallerwebi.infraestructura.service.ServicioUsuario;
 import com.tallerwebi.infraestructura.service.ServicioUsuarioLibro;
+import com.tallerwebi.infraestructura.service.ServicioUsuarioPlan;
+import com.tallerwebi.infraestructura.service.ServicioValidacionPlan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -25,11 +29,15 @@ public class ControladorDesafio {
 
     private ServicioUsuario servicioUsuario;
     private ServicioUsuarioLibro servicioUsuarioLibro;
+    private ServicioUsuarioPlan servicioUsuarioPlan;
+    private ServicioValidacionPlan servicioValidacionPlan;
 
     @Autowired
-    public ControladorDesafio(ServicioUsuario servicioUsuario, ServicioUsuarioLibro servicioUsuarioLibro) {
+    public ControladorDesafio(ServicioUsuario servicioUsuario, ServicioUsuarioLibro servicioUsuarioLibro, ServicioUsuarioPlan servicioUsuarioPlan, ServicioValidacionPlan servicioValidacionPlan) {
         this.servicioUsuario = servicioUsuario;
         this.servicioUsuarioLibro = servicioUsuarioLibro;
+        this.servicioUsuarioPlan = servicioUsuarioPlan;
+        this.servicioValidacionPlan = servicioValidacionPlan;
     }
 
     @RequestMapping(value = "/desafio-libros")
@@ -45,8 +53,11 @@ public class ControladorDesafio {
             if (!validarMetaUsuario(usuario))
                 return new ModelAndView("redirect:/home");
 
-            if(!usuario.getPlan().getPuedeElegirMetaDeLectura())
-                model.addAttribute("restriccionMeta", "Estas en el plan " + usuario.getPlan().getNombre() + " actualiza tu plan a PLATA u ORO para ver tu desafío de lectura y la de la comunidad.");
+            UsuarioPlan usuarioPlan = servicioUsuarioPlan.buscarUsuarioPlan(userId);
+            model.addAttribute("usuarioPlan", usuarioPlan);
+
+            if(!servicioValidacionPlan.puedeRealizarAccion(usuarioPlan, Accion.ELEGIR_META_DE_LECTURA))
+                model.addAttribute("restriccionMeta", "Estas en el plan " + usuarioPlan.getPlan().getNombre() + " actualiza tu plan a PLATA u ORO para ver tu desafío de lectura y la de la comunidad.");
 
 
             model.addAttribute("usuario", usuario);
@@ -70,6 +81,8 @@ public class ControladorDesafio {
         } catch (ListaVacia e) {
             model.addAttribute("cantidadLibrosLeidos", 0);
             model.addAttribute("porcentajeLibrosLeidos", 0);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         return new ModelAndView("desafio-libros", model);

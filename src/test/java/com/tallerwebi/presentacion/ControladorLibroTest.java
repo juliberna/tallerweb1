@@ -34,8 +34,10 @@ public class ControladorLibroTest {
     ServicioUsuarioLibro servicioUsuarioLibro = mock(ServicioUsuarioLibro.class);
     ServicioLibroGenero servicioLibroGenero = mock(ServicioLibroGenero.class);
     ServicioResenia servicioResenia = mock(ServicioResenia.class);
+    ServicioValidacionPlan servicioValidacionPlan = mock(ServicioValidacionPlan.class);
+    ServicioUsuarioPlan servicioUsuarioPlan = mock(ServicioUsuarioPlan.class);
     ControladorLibro controladorLibro = new ControladorLibro(servicioLibro, servicioUsuario,
-            servicioUsuarioLibro, servicioLibroGenero, servicioResenia, null);
+            servicioUsuarioLibro, servicioLibroGenero, servicioResenia, null, servicioValidacionPlan, servicioUsuarioPlan);
 
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
