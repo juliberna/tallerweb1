@@ -25,9 +25,11 @@ public class ControladorInicioTest {
 
     ServicioLibroGenero servicioLibroGenero = mock(ServicioLibroGenero.class);
     ServicioLibro servicioLibro = mock(ServicioLibro.class);
+    ServicioValidacionPlan servicioValidacionPlan = mock(ServicioValidacionPlan.class);
+    ServicioUsuarioPlan servicioUsuarioPlan = mock(ServicioUsuarioPlan.class);
 
     private ServicioUsuarioGenero servicioUsuarioGenero;
-    ControladorInicio controladorInicio = new ControladorInicio(servicioInicio, servicioUsuario, servicioUsuarioLibro, servicioUsuarioNotificacion,servicioNotificacion, servicioPublicacion, servicioPublicacion, servicioComentarioPublicacion, servicioComentarioPublicacion, servicioUsuarioGenero,servicioLibroGenero, servicioLibro);
+    ControladorInicio controladorInicio = new ControladorInicio(servicioInicio, servicioUsuario, servicioUsuarioLibro, servicioUsuarioNotificacion,servicioNotificacion, servicioPublicacion, servicioPublicacion, servicioComentarioPublicacion, servicioComentarioPublicacion, servicioUsuarioGenero,servicioLibroGenero, servicioLibro, servicioValidacionPlan, servicioUsuarioPlan);
 
     @Test
     public void queSeMuestreElNombreDelUsuarioCorrectamente() {

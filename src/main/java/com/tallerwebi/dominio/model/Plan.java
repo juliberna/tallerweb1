@@ -10,13 +10,14 @@ public class Plan {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    private Integer precio;
-    private Boolean puedeEscribirResenias;
+    private Double precio;
+    /*
+    private Boolean puedeEscribirResenias; //SACAR
     private Boolean puedeElegirMetaDeLectura;
     private Boolean puedeLeerOtrasResenias;
     private Boolean puedeObtenerRecomendaciones;
     private Boolean puedeObtenerLogros;
-    private Boolean puedeVerForo;
+    private Boolean puedeVerForo; */
 
     public Long getId() {
         return id;
@@ -34,14 +35,15 @@ public class Plan {
         this.nombre = nombre;
     }
 
-    public Integer getPrecio() {
+    public Double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(Integer precio) {
+    public void setPrecio(Double precio) {
         this.precio = precio;
     }
 
+    /*
     public Boolean getPuedeEscribirResenias() {
         return puedeEscribirResenias;
     }
@@ -89,4 +91,6 @@ public class Plan {
     public void setPuedeVerForo(Boolean puedeVerForo) {
         this.puedeVerForo = puedeVerForo;
     }
+
+     */
 }

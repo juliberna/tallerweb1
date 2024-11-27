@@ -2,10 +2,11 @@ package com.tallerwebi.presentacion.controller;
 
 import com.tallerwebi.dominio.excepcion.ListaVacia;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
+import com.tallerwebi.dominio.model.Accion;
 import com.tallerwebi.dominio.model.Usuario;
 import com.tallerwebi.dominio.model.UsuarioLogro;
-import com.tallerwebi.infraestructura.service.ServicioUsuario;
-import com.tallerwebi.infraestructura.service.ServicioUsuarioLogro;
+import com.tallerwebi.dominio.model.UsuarioPlan;
+import com.tallerwebi.infraestructura.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -24,11 +25,15 @@ public class ControladorLogro {
 
     private ServicioUsuario servicioUsuario;
     private ServicioUsuarioLogro servicioUsuarioLogro;
+    private ServicioUsuarioPlan servicioUsuarioPlan;
+    private ServicioValidacionPlan servicioValidacionPlan;
 
     @Autowired
-    public ControladorLogro(ServicioUsuario servicioUsuario, ServicioUsuarioLogro servicioUsuarioLogro) {
+    public ControladorLogro(ServicioUsuario servicioUsuario, ServicioUsuarioLogro servicioUsuarioLogro, ServicioUsuarioPlan servicioUsuarioPlan, ServicioValidacionPlan servicioValidacionPlan) {
         this.servicioUsuario = servicioUsuario;
         this.servicioUsuarioLogro = servicioUsuarioLogro;
+        this.servicioUsuarioPlan = servicioUsuarioPlan;
+        this.servicioValidacionPlan = servicioValidacionPlan;
     }
 
     @RequestMapping("/mis-logros")
@@ -41,18 +46,24 @@ public class ControladorLogro {
             Usuario usuario = servicioUsuario.buscarUsuarioPorId(userId);
             model.addAttribute("usuario", usuario);
 
-            if(!usuario.getPlan().getPuedeObtenerLogros()){
+            UsuarioPlan usuarioPlan = servicioUsuarioPlan.buscarUsuarioPlan(userId);
+            model.addAttribute("usuarioPlan", usuarioPlan);
+
+            if(!servicioValidacionPlan.puedeRealizarAccion(usuarioPlan, Accion.OBTENER_LOGROS)){
                 model.addAttribute("logrosUsuario", null);
-                model.addAttribute("mensajeDeRestriccion", "Estas en el plan " + usuario.getPlan().getNombre() + " actualiza tu plan a ORO para obtener logros.");
-            } else {
+                model.addAttribute("mensajeDeRestriccion", "Estas en el plan " + usuarioPlan.getPlan().getNombre() + " actualiza tu plan a ORO para obtener logros.");
+            }else {
                 List<UsuarioLogro> logrosUsuario = servicioUsuarioLogro.obtenerLogrosDelUsuario(usuario);
                 model.addAttribute("logrosUsuario", logrosUsuario);
             }
+
 
         } catch (UsuarioInexistente e) {
             return new ModelAndView("redirect:/login");
         } catch (ListaVacia e) {
             model.addAttribute("error", e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         return new ModelAndView("mostrar-logros", model);
