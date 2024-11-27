@@ -13,6 +13,6 @@ public interface ServicioUsuarioPlan {
 
     void verificarPlanDelUsuario();
     void actualizarPlanDelUsuarioPlan(Long idDelUsuario, Long idPlan) throws PlanNoEncontrado, UsuarioInexistente;
-
+    Boolean validarMercadopago(Long idDelUsuario, Long idPlan) throws UsuarioInexistente;
 
 }

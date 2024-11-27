@@ -137,6 +137,22 @@ public class ServicioUsuarioPlanImpl implements ServicioUsuarioPlan {
 
     }
 
+    @Override
+    public Boolean validarMercadopago(Long idDelUsuario,Long idPlan) throws UsuarioInexistente {
+        UsuarioPlan usuarioPlan = repositorioUsuarioPlan.buscarPlanPorUsuario(idDelUsuario);
+        Plan plan = repositorioPlan.buscarPlanPorId(idPlan);
+
+        if (usuarioPlan == null) {
+            throw new UsuarioInexistente();
+        }
+
+        if (plan == null) {
+            throw new PlanNoEncontrado("No se encontro el plan con el ID: " + idPlan);
+        }
+
+        return (usuarioPlan.getPlan().getNombre().equals("PLATA") && plan.getNombre().equals("ORO")) || (usuarioPlan.getPlan().getNombre().equals("BRONCE") && (plan.getNombre().equals("ORO") || plan.getNombre().equals("PLATA")));
+    }
+
 
     private Date calcularFechaVencimientoDelPlanDelUsuario(Plan plan) {
         Calendar calendar = Calendar.getInstance();

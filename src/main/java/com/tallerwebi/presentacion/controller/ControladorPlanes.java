@@ -1,14 +1,21 @@
 package com.tallerwebi.presentacion.controller;
 
+import com.mercadopago.exceptions.MPApiException;
+import com.mercadopago.exceptions.MPException;
 import com.tallerwebi.dominio.excepcion.UsuarioInexistente;
 import com.tallerwebi.dominio.model.Plan;
 import com.tallerwebi.dominio.model.Usuario;
+import com.tallerwebi.infraestructura.service.ServicioMercadoPago;
+import com.tallerwebi.infraestructura.service.ServicioPlan;
+import com.tallerwebi.infraestructura.service.ServicioUsuario;
 import com.tallerwebi.dominio.model.UsuarioPlan;
 import com.tallerwebi.infraestructura.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,14 +30,15 @@ public class ControladorPlanes {
     private ServicioUsuario servicioUsuario;
     private ServicioUsuarioPlan servicioUsuarioPlan;
     private ServicioValidacionPlan servicioValidacionPlan;
+    private ServicioMercadoPago servicioMercadoPago;
 
     @Autowired
-    public ControladorPlanes(ServicioPlan servicioPlan, ServicioUsuario servicioUsuario, ServicioUsuarioPlan servicioUsuarioPlan, ServicioValidacionPlan servicioValidacionPlan) {
+    public ControladorPlanes(ServicioPlan servicioPlan, ServicioUsuario servicioUsuario, ServicioUsuarioPlan servicioUsuarioPlan, ServicioValidacionPlan servicioValidacionPlan,ServicioMercadoPago servicioMercadoPago) {
         this.servicioPlan = servicioPlan;
         this.servicioUsuario = servicioUsuario;
+        this.servicioMercadoPago = servicioMercadoPago;
         this.servicioUsuarioPlan = servicioUsuarioPlan;
         this.servicioValidacionPlan = servicioValidacionPlan;
-
     }
 
 
@@ -51,8 +59,8 @@ public class ControladorPlanes {
         return "planes";
     }
 
-    @RequestMapping(value = "/actualizarPlan/{planId}" , method = RequestMethod.POST)
-    public String actualizarPlan(HttpServletRequest request, @PathVariable Long planId, ModelMap model) {
+    @RequestMapping(value = "/actualizarPlan/{planId}", method = RequestMethod.POST)
+    public String actualizarPlan(HttpServletRequest request, @PathVariable Long planId, ModelMap model, RedirectAttributes redirectAttributes) {
         HttpSession session = request.getSession();
         Long userId = (Long) session.getAttribute("USERID");
 
@@ -104,6 +112,9 @@ public class ControladorPlanes {
             model.addAttribute("validacionDias", validacionDias);
             model.addAttribute("usuarioplan", usuarioPlan);
 
+            Boolean irAMercadopago = servicioUsuarioPlan.validarMercadopago(userId, planId);
+            model.addAttribute("irAMercadopago", irAMercadopago);
+
             return new ModelAndView("detalleActualizacionPlan");
 
         } catch (Exception e) {
@@ -111,5 +122,25 @@ public class ControladorPlanes {
         }
 
 
+    }
+
+    // Se debe pasar el id del plan
+    @PostMapping("/pagar/{planId}")
+    public String pagarPlan(@PathVariable Long planId, Model model) {
+        try {
+            String linkDePago = servicioMercadoPago.crearPreferencia(planId);
+            model.addAttribute("linkDePago", linkDePago);
+            System.out.println("Link de pago: " + linkDePago);
+            return "redireccionarPago"; // Vista para confirmar y redirigir
+        } catch (MPException | MPApiException e) {
+            e.printStackTrace();
+            return "error";
+        }
+    }
+
+    @GetMapping("/confirmarActualizar/{planId}")
+    public String confirmarActualizarPlan(@PathVariable Long planId, Model model) {
+        model.addAttribute("planId", planId);
+        return "confirmarActualizarPlan";
     }
 }
