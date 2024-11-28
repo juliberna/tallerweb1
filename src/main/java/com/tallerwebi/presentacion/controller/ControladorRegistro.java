@@ -1,9 +1,14 @@
 package com.tallerwebi.presentacion.controller;
 
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import com.tallerwebi.dominio.model.Plan;
 import com.tallerwebi.dominio.model.Usuario;
+import com.tallerwebi.dominio.model.UsuarioPlan;
+import com.tallerwebi.dominio.repository.RepositorioUsuarioPlan;
 import com.tallerwebi.infraestructura.service.ServicioLogin;
 import com.tallerwebi.infraestructura.service.ServicioLoginImpl;
+import com.tallerwebi.infraestructura.service.ServicioPlan;
+import com.tallerwebi.infraestructura.service.ServicioUsuarioPlan;
 import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +19,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 @Controller
@@ -21,10 +28,17 @@ import java.util.regex.Pattern;
 public class ControladorRegistro {
 
     private final ServicioLogin servicioLogin;
+    private final ServicioPlan servicioPlan;
+    private final RepositorioUsuarioPlan repositorioUsuarioPlan;
+    private final ServicioUsuarioPlan servicioUsuarioPlan;
 
     @Autowired
-    public ControladorRegistro(ServicioLogin servicioLogin) {
+    public ControladorRegistro(ServicioLogin servicioLogin, ServicioPlan servicioPlan, RepositorioUsuarioPlan repositorioUsuarioPlan, ServicioUsuarioPlan servicioUsuarioPlan) {
         this.servicioLogin = servicioLogin;
+        this.servicioPlan = servicioPlan;
+        this.repositorioUsuarioPlan = repositorioUsuarioPlan;
+        this.servicioUsuarioPlan = servicioUsuarioPlan;
+
     }
 
     @GetMapping("/mostrarRegistro")
@@ -50,6 +64,10 @@ public class ControladorRegistro {
 
             Usuario usuario = servicioLogin.buscar(email);
             session.setAttribute("USERID", usuario.getId());
+
+            servicioUsuarioPlan.crearPlanInicio(email, 1L);
+
+
             Long userId = (Long) session.getAttribute("USERID");
             return "redirect:/onboarding/mostrarOnboarding" + "/" + userId + "/1";
         } catch (UsuarioExistente e) {
@@ -63,6 +81,18 @@ public class ControladorRegistro {
 
             return "redirect:/nuevo-usuario";
         }
+    }
+
+    private Date calcularFechaVencimientoDelPlanDelUsuario(Plan plan) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        if (!plan.getNombre().equals("BRONCE")) {
+            calendar.add(Calendar.MONTH, 1);
+        } else {
+            calendar.add(Calendar.YEAR, 100);
+        }
+        return calendar.getTime();
+
     }
 
     private boolean esContrasenaValida(String password) {
