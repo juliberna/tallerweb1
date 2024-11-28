@@ -25,12 +25,16 @@ public class ServicioUsuarioPlanImpl implements ServicioUsuarioPlan {
     private RepositorioUsuario repositorioUsuario;
     private RepositorioPlan repositorioPlan;
     private RepositorioUsuarioPlan repositorioUsuarioPlan;
+    private ServicioPlan servicioPlan;
+    private ServicioLogin servicioLogin;
 
-    public ServicioUsuarioPlanImpl(RepositorioUsuario repositorioUsuario, RepositorioPlan repositorioPlan, RepositorioUsuarioPlan repositorioUsuarioPlan, ServicioValidacionPlanImpl servicioValidacionPlanImpl) {
+    public ServicioUsuarioPlanImpl(RepositorioUsuario repositorioUsuario, RepositorioPlan repositorioPlan, RepositorioUsuarioPlan repositorioUsuarioPlan, ServicioValidacionPlanImpl servicioValidacionPlanImpl, ServicioPlan servicioPlan, ServicioLogin servicioLogin) {
         this.repositorioUsuario = repositorioUsuario;
         this.repositorioPlan = repositorioPlan;
         this.repositorioUsuarioPlan = repositorioUsuarioPlan;
         this.servicioValidacionPlanImpl = servicioValidacionPlanImpl;
+        this.servicioPlan = servicioPlan;
+        this.servicioLogin = servicioLogin;
     }
 
     @Override
@@ -153,8 +157,22 @@ public class ServicioUsuarioPlanImpl implements ServicioUsuarioPlan {
         return (usuarioPlan.getPlan().getNombre().equals("PLATA") && plan.getNombre().equals("ORO")) || (usuarioPlan.getPlan().getNombre().equals("BRONCE") && (plan.getNombre().equals("ORO") || plan.getNombre().equals("PLATA")));
     }
 
+    @Override
+    public void crearPlanInicio (String email, Long planid){
 
-    private Date calcularFechaVencimientoDelPlanDelUsuario(Plan plan) {
+        Usuario usuario = servicioLogin.buscar(email);
+
+        UsuarioPlan nuevoUsuarioPlan = new UsuarioPlan();
+        Plan plan = servicioPlan.buscarPlanPorId(planid);
+        nuevoUsuarioPlan.setPlan(plan);
+        nuevoUsuarioPlan.setPrecio(plan.getPrecio());
+        nuevoUsuarioPlan.setUsuario(usuario);
+        nuevoUsuarioPlan.setFecha_plan_adquirido(new Date());
+        nuevoUsuarioPlan.setFecha_plan_venc(calcularFechaVencimientoDelPlanDelUsuario(plan));
+        repositorioUsuarioPlan.guardarUsuarioPlan(nuevoUsuarioPlan);
+    }
+
+    public Date calcularFechaVencimientoDelPlanDelUsuario(Plan plan) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         if (!plan.getNombre().equals("BRONCE")) {
